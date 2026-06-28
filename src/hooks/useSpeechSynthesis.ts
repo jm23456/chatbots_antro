@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { appConfig } from '../../config/appConfig';
 
 // Bot-Farben zu Stimm-Eigenschaften zuordnen
 export type BotColor = 'red' | 'yellow' | 'green' | 'gray' | 'blue';
@@ -8,17 +9,10 @@ interface VoiceConfig {
   rateEn: number;
   rateDe: number;
   voiceType: 'male' | 'female';
+  preferredVoices: { en: string; de: string };
 }
 
-// Verschiedene Stimm-Konfigurationen für jeden Bot
-// Unterschiedliche Rates für Englisch (stärkere Unterschiede für iOS) und Deutsch
-const voiceConfigs: Record<BotColor, VoiceConfig> = {
-  red: { pitch: 1.2, rateEn: 1.15, rateDe: 1.12, voiceType: 'female' },
-  yellow: { pitch: 0.8, rateEn: 0.75, rateDe: 0.85, voiceType: 'male' },
-  blue: { pitch: 0.91, rateEn: 1.0, rateDe: 0.9, voiceType: 'male'},
-  green: { pitch: 1.1, rateEn: 1.25, rateDe: 1.01, voiceType: 'male' },
-  gray: { pitch: 1.25, rateEn: 0.85, rateDe: 0.99, voiceType: 'female' },
-};
+const voiceConfigs: Record<BotColor, VoiceConfig> = appConfig.audio.voiceProfiles as Record<BotColor, VoiceConfig>;
 
 interface SpeakOptions {
   botColor?: BotColor;
@@ -40,8 +34,8 @@ interface UseSpeechSynthesisReturn {
 export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
   // Mute-Status aus sessionStorage laden (persistiert während der Debatte)
   const [isMuted, setIsMuted] = useState(() => {
-    const stored = sessionStorage.getItem('debate-muted');
-    return stored === 'true';
+    const stored = sessionStorage.getItem(appConfig.audio.mutedStorageKey);
+    return stored === 'true' || appConfig.audio.defaultMute;
   });
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
@@ -81,18 +75,9 @@ export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
       );
       if (langVoices.length === 0) return null;
 
-      // Spezifische Stimmen für jeden Bot
-      const botVoiceNames: Record<BotColor, { en: string; de: string }> = {
-        yellow: { en: 'aaron', de: 'martin' },
-        green: { en: 'aaron', de: 'martin' },
-        blue: { en: 'google uk english male', de: 'martin' },
-        gray: { en: 'google uk english female', de: 'helena' },
-        red: { en: 'google us english', de: 'google deutsch' },
-      };
-
-      const targetName = isEnglish 
-        ? botVoiceNames[botColor].en 
-        : botVoiceNames[botColor].de;
+      const targetName = isEnglish
+        ? voiceConfigs[botColor].preferredVoices.en
+        : voiceConfigs[botColor].preferredVoices.de;
 
       // Finde die Stimme mit dem passenden Namen
       const matchingVoice = langVoices.find(v => 
@@ -107,7 +92,7 @@ export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
     setIsMuted(prev => {
       const newValue = !prev;
       // Mute-Status im sessionStorage speichern
-      sessionStorage.setItem('debate-muted', String(newValue));
+      sessionStorage.setItem(appConfig.audio.mutedStorageKey, String(newValue));
       if (newValue) {
         window.speechSynthesis.cancel();
         setIsSpeaking(false);
@@ -141,8 +126,8 @@ export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
     const config = voiceConfigs[botColor];
     
     // Basis: ~260ms pro Wort bei Rate 1.0, angepasst an Bot-Rate
-    const baseWordDuration = 260;
-    const jitter = Math.random() * 40;
+    const baseWordDuration = appConfig.audio.baseWordDurationMs;
+    const jitter = Math.random() * appConfig.audio.jitterMs;
     return Math.round((baseWordDuration + jitter) / config.rateDe);
 
   }, []);
@@ -151,8 +136,7 @@ export const useSpeechSynthesis = (): UseSpeechSynthesisReturn => {
     if (isMuted || !text.trim()) return;
     
     const botColor = options.botColor || 'yellow';
-    // Für Englisch: Amerikanisches Englisch (en-US) statt britisches
-    const lang = options.lang === 'en' ? 'en-US' : (options.lang || 'de-DE');
+    const lang = options.lang === 'en' ? appConfig.audio.englishLang : (options.lang || appConfig.audio.defaultLang);
     
     // Nur sprechen wenn neuer Text
     if (text === lastSpokenTextRef.current) return;

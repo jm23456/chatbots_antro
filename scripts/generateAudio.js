@@ -2,7 +2,8 @@ import "dotenv/config";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
-import voices from "../config/voices.js";
+import voices from "../config/voicesConfig.js";
+import { appConfig } from "../config/appConfig.js";
 
 const openai = new OpenAI();
 const ROOT = process.cwd();
@@ -11,10 +12,10 @@ const DEBATE_DIR = path.join(ROOT, "debate_text");
 const OUTPUT_DIR = path.join(ROOT, "public/audio");
 
 // Weibliche Sprecherinnen (für lautere Stimme)
-const FEMALE_SPEAKERS = ["A", "C"];
+const FEMALE_SPEAKERS = appConfig.audio.femaleSpeakers;
 
 // Basis-Geschwindigkeit (1.2x schneller)
-const BASE_SPEED = 1.2;
+const BASE_SPEED = appConfig.audio.baseSpeed;
 
 // Nur diese Sections verarbeiten
 const SECTIONS = {
