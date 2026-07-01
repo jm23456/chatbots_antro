@@ -46,28 +46,28 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
   ];
   
 
-  const handleRoleSelect = (selectedRole: Role) => {
-    setRole(selectedRole);
+  const handleRoleSelect = () => {
+    setRole("ACTIVE");
   };
   const HEALTH_INSURANCE_TOPIC = t("healthInsurance");
 
   const topics = [t("bilateral"), HEALTH_INSURANCE_TOPIC, t("atom")];
   const [customTopicConfirmed, setCustomTopicConfirmed] = useState(false);
 
-  const handleTopicSelect = (topic: string) => {
-    setSelectedTopic(topic);
-    setCustomTopic("");
-    setCustomTopicConfirmed(false);
+  const handleTopicSelect = () => {
+    setSelectedTopic("HEALTH_INSURANCE_TOPIC");
+    console.log("Topic selected")
+    // setCustomTopic("");
   };
 
-  const handleConfirmCustomTopic = () => {
-    if (customTopic.trim()) {
-      setSelectedTopic("");
-      setCustomTopicConfirmed(true);
-    }
-  };
+  // const handleConfirmCustomTopic = () => {
+  //   if (customTopic.trim()) {
+  //     setSelectedTopic("");
+  //     setCustomTopicConfirmed(true);
+  //   }
+  // };
 
-  const canContinue = role && (selectedTopic || customTopicConfirmed);
+  // const canContinue = role && (selectedTopic || customTopicConfirmed);
 
   return (
       <div className="screen" style={{
@@ -153,7 +153,7 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
                   : "")
               }
               onClick={() => {if (isHealthTopic) {
-                handleTopicSelect(topic);}
+                handleTopicSelect();}
               }}
               disabled={!isHealthTopic}
             >
@@ -161,10 +161,10 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
             </button>
           );})}
         </div>
-
+{/*
         <h3>{t("owntopic")}</h3>
         
-        <div className="custom-topic-row">
+         <div className="custom-topic-row">
           <input
             className={"text-input" + (customTopicConfirmed ? " confirmed" : "")}
             placeholder={t("topicPlaceholder")}
@@ -175,28 +175,15 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
                   setCustomTopicConfirmed(false);
                   setSelectedTopic("");
             }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                      if (e.key === "Enter" && customTopic.trim()) {
-                        e.preventDefault();
-                        handleConfirmCustomTopic();
-                      }
-                    }}
             />
-            <button 
-              className={"send-btn" + (customTopic.trim() && !customTopicConfirmed ? " active" : "")}
-              onClick={handleConfirmCustomTopic}
-              disabled={!customTopic.trim() || customTopicConfirmed}
-            >
-              {customTopicConfirmed ? "✓" : "Enter"}
-            </button>
-          </div>
+
+          </div> */}
       </section>
 
       <div className="footer-end-row" style={{marginBottom: "0px"}}>
         <button 
           className="con-primary-btn" 
           onClick={onContinue}
-          disabled={!canContinue}
         >
           {t("continue")}
         </button>

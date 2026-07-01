@@ -10,7 +10,8 @@ interface TopicIntroProps {
   onExit: () => void;
 }
 
-const TopicIntro: React.FC<TopicIntroProps> = ({ topicTitle, onNext, onExit }) => {
+const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
+  // console.log("Rendering:" + topicTitle);
   const { t, language } = useLanguage();
   const [showExitWarning, setShowExitWarning] = useState(false);
 

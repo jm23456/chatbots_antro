@@ -516,7 +516,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: 350px;
+  max-height: 1050px;
   padding: 10px;
   scroll-behavior: smooth;
 }

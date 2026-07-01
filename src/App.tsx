@@ -5,9 +5,7 @@ import type { Step, Role, DebateMessage } from "./types/types";
 
 import RoleSelection from "./screens/RoleSelection";
 import TopicIntro from "./screens/TopicIntro"
-import ArgumentsIntro from "./screens/ArgumentsIntro";
 import ActiveDebateScreen from "./screens/ActiveDebateScreen";
-import ActiveArgumentsIntro from "./screens/ActiveArgumentsIntro";
 import DebateScreen from "./screens/DebateScreen";
 import Summary from "./screens/Summary";
 import { LanguageProvider } from "./i18n/LanguageContext";
@@ -26,9 +24,9 @@ const STEPS: Record<string, Step> = {
 
 const App: React.FC = () => {
   const [step, setStep] = useState<Step>(STEPS.ROLE);
-  const [selectedTopic, setSelectedTopic] = useState<string>("");
+  const [selectedTopic, setSelectedTopic] = useState<string>("Health Insurance Premiums");
   const [customTopic, setCustomTopic] = useState<string>("");
-  const [role, setRole] = useState<Role>(null);
+  const [role, setRole] = useState<Role>("ACTIVE");
   const [debateMessages, setDebateMessages] = useState<DebateMessage[]>([
     { id: 1, side: "Contra", text: "Introduction" },
     { id: 2, side: "Pro", text: "Introduction" },
@@ -38,32 +36,18 @@ const App: React.FC = () => {
   const [inputText, setInputText] = useState<string>("");
   const [userIntroMessage, setUserIntroMessage] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
-  const [introTime, setIntroTime] = useState<number>(1 * 60); // 1:00
-  const resetIntroTimer = () => setIntroTime(1 * 60); // Reset auf 1 Minute
-  const [activeBot, setActiveBot] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-
-  // Timer für ARGUMENTS_INTRO (1 Min pro Speaker)
-  useEffect(() => {
-    if (!hasStarted) return;
-    if (step !== STEPS.ARGUMENTS_INTRO) return;
-    if (isPaused) return;
-    const id = window.setInterval(() => {
-      setIntroTime((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [step, hasStarted, isPaused]);
 
   // Timer für DEBATE (15 Min)
   useEffect(() => {
     if (step !== STEPS.DEBATE) return;
     if (!hasStarted) return;
     if (isPaused) return;
-    const id = window.setInterval(() => {
+    const id = globalThis.setInterval(() => {
       setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
-    return () => window.clearInterval(id);
+    return () => globalThis.clearInterval(id);
   }, [step, hasStarted, isPaused]);
 
 
@@ -93,22 +77,31 @@ const App: React.FC = () => {
           {step === STEPS.ROLE && (
             <RoleSelection
               role={role}
-            setRole={setRole}
-            selectedTopic={selectedTopic}
-            setSelectedTopic={setSelectedTopic}
-            customTopic={customTopic}
-            setCustomTopic={setCustomTopic}
-            onContinue={() => setStep(STEPS.TOPIC_INTRO)}
-          />
+              setRole={setRole}
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
+              customTopic={customTopic}
+              setCustomTopic={setCustomTopic}
+              onContinue={() => {setStep(STEPS.TOPIC_INTRO);
+                setSelectedTopic("HEALTH_INSURANCE_TOPIC");
+                setRole("ACTIVE");
+                 console.log({
+                  step,
+                  role,
+                  hasStarted,
+                  selectedTopic,
+                  customTopic,
+});}}
+            />
         )}
 
         {step === STEPS.TOPIC_INTRO && (
           <TopicIntro
-            topicTitle={currentTopicTitle}
+            topicTitle= {selectedTopic}
             onNext={() => {
               setHasStarted(false);
               if (role === "ACTIVE") {
-                setStep(STEPS.ACTIVE_ARGUMENTS_INTRO);
+                setStep(STEPS.DEBATE);
               } else {
                 setStep(STEPS.ARGUMENTS_INTRO);
               }
@@ -117,11 +110,12 @@ const App: React.FC = () => {
               setStep(STEPS.SUMMARY);
               setCustomTopic("");
               setSelectedTopic("");
+              setHasStarted(false);
             }}
           />
         )}
         
-        {step === STEPS.ARGUMENTS_INTRO && (
+        {/*{step === STEPS.ARGUMENTS_INTRO && (
           <ArgumentsIntro
             topicTitle={currentTopicTitle}
             onExit={() => { 
@@ -178,33 +172,28 @@ const App: React.FC = () => {
               setIsPaused(false);
             }}
           />
-        )}
+        )}*/}
 
 
         {step === STEPS.DEBATE && role === "ACTIVE" && (
           <ActiveDebateScreen
             topicTitle={currentTopicTitle}
             timeLeft={formatTime(timeLeft)}
-            inputText={inputText}
-            setInputText={setInputText}
-            onSend={handleSend}
             onExit={() => {
               setStep(STEPS.SUMMARY);
-              setIntroTime(1 * 60);
               setCustomTopic("");
               setSelectedTopic("");
               setUserIntroMessage(null);
-              setIsPaused(false);
+              setHasStarted(false);
+              // setIsPaused(false);
             }}
             hasStarted={hasStarted}
             onStart={() => {
               setHasStarted(true);
               setTimeLeft(15 * 60);
-              setActiveBot(0);
             }}
             userIntroMessage={userIntroMessage}
-            isPaused={isPaused}
-            setIsPaused={setIsPaused}
+            // setIsPaused={setIsPaused}
           />
         )}
 
@@ -223,14 +212,15 @@ const App: React.FC = () => {
               setTimeLeft(15 * 60);
               setCustomTopic("");
               setSelectedTopic("");
+              setHasStarted(false);
             }}
             hasStarted={hasStarted}
             onStart={() => {
               setHasStarted(true);
               setTimeLeft(15 * 60);
-              setActiveBot(0);
               setIsPaused(false);
             }}
+            setIsPaused={setIsPaused}
           />
         )}
 
@@ -238,8 +228,14 @@ const App: React.FC = () => {
           <Summary
             topicTitle={currentTopicTitle}
             onStartAnother={() => {
-              setRole(null);
               setStep(STEPS.ROLE);
+              console.log({
+  step,
+  role,
+  hasStarted,
+  selectedTopic,
+  customTopic,
+});
             }}
           />
         )}

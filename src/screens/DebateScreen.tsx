@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import CandidateCard from "../components/CandidateCard";
+// import CandidateCard from "../components/CandidateCard";
 import MuteButton from "../components/MuteButton";
 import ExitWarningModal from "../components/ExitWarningModal";
 import useAudioPlayback from "../hooks/useAudioPlayback";
@@ -498,7 +498,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
         <div ref={messagesEndRef} />
       </section>
 
-      {/* Pro vs Contra stage */}
+      {/* Pro vs Contra stage
       <section className="debate-stage" style={{
         borderRadius: "24px",
     background: `
@@ -514,9 +514,9 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
         #f7f9fc 50%,
         #e9f1fb 100%
       )
-    `
-  }}>
-        <div className="arguments-stage" style={{gap: "100px"}}>
+    ` 
+  }}>*/}
+        {/* <div className="arguments-stage" style={{gap: "100px"}}>
           <CandidateCard 
             color="yellow" 
             hasMic={hasStarted && currentSpeaker === "yellow" && (isTyping || isSpeaking) && visibleBubbles < argumentBubbles.length}
@@ -562,8 +562,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
             isPaused={showExitWarning}
             bubbleLabel={getRoleDescription("green")}
           />
-        </div>
-      </section>
+        </div> 
+      </section>*/}
 
 
       {/* Modal Overlay für Start Debate */}
