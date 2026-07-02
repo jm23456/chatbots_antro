@@ -39,7 +39,7 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
 }) => {
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
-  // const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const hasStartedRef = useRef(false);
@@ -225,9 +225,11 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
       setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
       pendingMessageIdRef.current = null;
       setVisibleBubbles(prev => prev + 1);
-      // setIsTyping(false);
+      setIsTyping(false);
       currentBubbleRef.current = null;
     };
+
+    setIsTyping(true);
 
     setTimeout(() => {
       finalizePendingMessage();
@@ -405,7 +407,7 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
         <button
           className="con-primary-btn"
           onClick={handleContinue}
-          // disabled={isTyping}
+          disabled={isTyping}
         >
           {hasStarted ? t("next") : t("startDebate")}
         </button>
