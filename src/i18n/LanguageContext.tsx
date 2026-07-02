@@ -1,7 +1,7 @@
 import React, { createContext, useState } from 'react';
 import { translations } from './translations';
 import type { Language, TranslationKey } from './translations';
-import { appConfig } from '../../config/appConfig';
+import { appConfig } from '../config/appConfig';
 
 type LanguageContextType = {
     language: Language;

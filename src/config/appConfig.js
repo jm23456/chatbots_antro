@@ -3,7 +3,7 @@ import { debateConfig } from './debateConfig.js';
 
 export const appConfig = {
   app: {
-    defaultLanguage: 'de',
+    defaultLanguage: 'en',
     supportedLanguages: ['de', 'en'],
     title: 'Chatbot-Debattenarena',
     introText: 'Verschiedene KI-Persönlichkeiten. Eine Debatte.',
