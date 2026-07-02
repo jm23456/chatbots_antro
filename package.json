@@ -2,7 +2,7 @@
   "name": "debate-app_A",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://jm23456.github.io/#/debate?topic=HEALTH_INSURANCE_TOPIC&role=ACTIVE",
+  "homepage": "https://jm23456.github.io/#/",
   "type": "module",
   "scripts": {
     "dev": "vite",
