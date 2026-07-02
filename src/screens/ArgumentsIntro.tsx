@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import CandidateCard from "../components/CandidateCard";
-import MuteButton from "../components/MuteButton";
 import ExitWarningModal from "../components/ExitWarningModal";
-import useAudioPlayback from "../hooks/useAudioPlayback";
 import "../App.css";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from '../hooks/useLanguage';    
@@ -87,17 +85,12 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
     }
   }, [introTime, hasStarted, showTimeExpired]);
 
-  // Audio Playback
-  const { isMuted, toggleMute, play, stopPlaying, pausePlaying, resumePlaying } = useAudioPlayback();
-
-  // Skip function - überspringt nur den aktuellen Bot (stoppt Sprechen, zeigt vollen Text)
+  // Skip function - überspringt nur den aktuellen Bot (zeigt vollen Text)
   const handleSkip = () => {
     if (typingIntervalRef.current) {
       clearInterval(typingIntervalRef.current);
       typingIntervalRef.current = null;
     }
-    stopPlaying();
-    
     // Zeige den vollständigen Text des aktuellen Bots an
     const currentBotText = allBots[activeBot].label;
     setCurrentTypingText(undefined);
@@ -111,7 +104,6 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
     setShowExitWarning(true);
     setIsPaused?.(true);
     isPausedRef.current = true;
-    pausePlaying();
   };
 
   const handleExitConfirm = () => {
@@ -121,7 +113,6 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
       clearInterval(typingIntervalRef.current);
       typingIntervalRef.current = null;
     }
-    stopPlaying();
     onExit();
   };
 
@@ -129,7 +120,6 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
     setShowExitWarning(false);
     setIsPaused?.(false);
     isPausedRef.current = false;
-    resumePlaying();
   };
 
   // Pro: B (yellow) = Solidarität & soziale Perspektive, D (gray) = Ökonomische Systemperspektive
@@ -173,16 +163,9 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
       setCurrentTypingText("");
     }
     
-    // Starte Audio-Playback
     const bot = allBots[botIndex];
-    play({
-      section: 'arguments_intro',
-      speaker: bot.speaker,
-      id: bot.id,
-      lang: language,
-    });
-    
-    typingIntervalRef.current = window.setInterval(() => {
+
+    typingIntervalRef.current = globalThis.setInterval(() => {
       if (isPausedRef.current) {
         pausedWordCountRef.current = wordCount;
         return;
@@ -209,9 +192,8 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
       if (typingIntervalRef.current) {
         clearInterval(typingIntervalRef.current);
       }
-      stopPlaying();
     };
-  }, [stopPlaying]);
+  }, []);
 
   const handleNext = () => {
     if (!hasStarted) {
@@ -302,7 +284,6 @@ const ArgumentsIntro: React.FC<ArgumentsIntroProps> = ({
       <div className="top-exit-row">
         <span className="timer-display">{introTime}</span>
         <div className="top-buttons-row">
-          <MuteButton isMuted={isMuted} onToggle={toggleMute} />
           <button className="exit-btn" onClick={handleExitClick}>
             {t("exit")}
           </button>

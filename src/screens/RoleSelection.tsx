@@ -4,6 +4,8 @@ import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from "../hooks/useLanguage";
+import topicConfig from "../config/topicConfig";
+// import roles from "../config/roleConfig";
 
 
 interface RoleSelectionProps {
@@ -49,10 +51,12 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
   const handleRoleSelect = () => {
     setRole("ACTIVE");
   };
-  const HEALTH_INSURANCE_TOPIC = t("healthInsurance");
+  const HEALTH_INSURANCE_TOPIC = topicConfig["HEALTH_INSURANCE_TOPIC"].en;
+  console.log("Selected Topic: " + HEALTH_INSURANCE_TOPIC);
+  console.log(typeof HEALTH_INSURANCE_TOPIC);
 
-  const topics = [t("bilateral"), HEALTH_INSURANCE_TOPIC, t("atom")];
-  const [customTopicConfirmed, setCustomTopicConfirmed] = useState(false);
+  const topics = [t("bilateral"), t(HEALTH_INSURANCE_TOPIC), t("atom")];
+  // const [customTopicConfirmed, setCustomTopicConfirmed] = useState(false);
 
   const handleTopicSelect = () => {
     setSelectedTopic("HEALTH_INSURANCE_TOPIC");

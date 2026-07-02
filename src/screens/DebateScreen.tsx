@@ -1,14 +1,11 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-// import CandidateCard from "../components/CandidateCard";
-import MuteButton from "../components/MuteButton";
 import ExitWarningModal from "../components/ExitWarningModal";
-import useAudioPlayback from "../hooks/useAudioPlayback";
 import type { Role, DebateMessage, ChatMessage } from "../types/types";
 import "../App.css";
 import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../hooks/useLanguage';
-import mockDebateDE from '../../debate_text/mockDebate.de.json';
-import mockDebateEN from '../../debate_text/mockDebate.en.json';
+import mockDebateDE from '../debate_text/mockDebate.de.json';
+import mockDebateEN from '../debate_text/mockDebate.en.json';
 
 interface DebateScreenProps {
   topicTitle: string;
@@ -39,18 +36,14 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const { t, language } = useLanguage();
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentSpeaker, setCurrentSpeaker] = useState<Color>("yellow");
   const [currentTypingText, setCurrentTypingText] = useState<string | undefined>(undefined);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const hasStartedRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingIntervalRef = useRef<number | null>(null);
-  const currentBubbleRef = useRef<{text: string, color: Color, side: "pro" | "contra" | "undecided"} | null>(null);
+  const currentBubbleRef = useRef<{ text: string; color: Color; side: "pro" | "contra" | "undecided" } | null>(null);
   const isPausedRef = useRef(false);
   const pausedWordCountRef = useRef(0);
-  const textFinishedRef = useRef(false);
-  const audioFinishedRef = useRef(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
 
@@ -91,21 +84,16 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     }
   }, [timeLeft, hasStarted, showTimeExpired]);
 
-  // Audio Playback
-  const { isMuted, toggleMute, play, stopPlaying, pausePlaying, resumePlaying } = useAudioPlayback();
-
   // Exit handlers
   const handleExitClick = () => {
     setShowExitWarning(true);
     setIsPaused(true);
     isPausedRef.current = true;
-    pausePlaying();
   };
 
   const handleExitConfirm = () => {
     setShowExitWarning(false);
     isPausedRef.current = false;
-    stopPlaying();
     onExit();
   };
 
@@ -113,7 +101,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     setShowExitWarning(false);
     setIsPaused(false);
     isPausedRef.current = false;
-    resumePlaying();
   };
 
   // Skip function - überspringt nur den aktuellen Bot (stoppt Sprechen, zeigt vollen Text)
@@ -122,13 +109,9 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       clearInterval(typingIntervalRef.current);
       typingIntervalRef.current = null;
     }
-    stopPlaying();
-    setIsSpeaking(false);
-    
-    // Reset completion refs
-    textFinishedRef.current = true;
-    audioFinishedRef.current = true;
-    
+    setCurrentTypingText(undefined);
+    setIsTyping(false);
+
     // Zeige den vollständigen Text des aktuellen Bots an
     if (currentBubbleRef.current) {
       const { text, color, side } = currentBubbleRef.current;
@@ -152,9 +135,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       if (typingIntervalRef.current) {
         clearInterval(typingIntervalRef.current);
       }
-      stopPlaying();
     };
-  }, [stopPlaying]);
+  }, []);
 
   // Auto-scroll zur neuesten Nachricht
   const scrollToBottom = () => {
@@ -190,8 +172,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     green: "C",
   };
 
-  const getRoleDescription = (color: Color) =>
-    debateData.roles?.[roleByColor[color]]?.description ?? "";
+  // const getRoleDescription = (color: Color) =>
+  //   debateData.roles?.[roleByColor[color]]?.description ?? "";
 
   const debateScript = debateData.debate_script ?? [];
   const argumentsIntro = debateData["Arguments Intro"] ?? [];
@@ -251,56 +233,18 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   }, [initialChatHistory]);
 
   // Typewriter-Effekt: Text Wort für Wort in der Chatbot-Bubble aufbauen
-  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided", speaker: string, audioId: number) => {
+  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided", speaker: string) => {
     const words = text.split(" ");
     let wordCount = pausedWordCountRef.current || 0;
     pausedWordCountRef.current = 0;
     
-    // Reset completion tracking
-    textFinishedRef.current = false;
-    audioFinishedRef.current = false;
-    
-    // Speichere aktuelle Bubble-Daten für Skip
     currentBubbleRef.current = { text, color, side };
-    
-    // Funktion die aufgerufen wird, wenn Text ODER Audio fertig ist
-    // Bubble wird erst entfernt wenn BEIDE fertig sind
-    const checkBothFinished = () => {
-      if (textFinishedRef.current && audioFinishedRef.current) {
-        setCurrentTypingText(undefined);
-        currentBubbleRef.current = null;
-        setIsSpeaking(false);
-        setChatHistory(prev => [...prev, {
-          id: Date.now(),
-          type: "bot",
-          color: color,
-          text: text,
-          side: side,
-          isComplete: true
-        }]);
-        setVisibleBubbles(prev => prev + 1);
-      }
-    };
-    
-    // Start mit leerem Text in der Bubble
-    if (wordCount === 0){
-      setCurrentTypingText("");}
-    
-    // Starte Audio-Playback mit onEnded Callback
-    setIsSpeaking(true);
-    play({
-      section: 'debate_script',
-      speaker: speaker,
-      id: audioId,
-      lang: language,
-      onEnded: () => {
-        audioFinishedRef.current = true;
-        checkBothFinished();
-      }
-    });
-    
-    
-    typingIntervalRef.current = window.setInterval(() => {
+
+    if (wordCount === 0) {
+      setCurrentTypingText("");
+    }
+
+    typingIntervalRef.current = globalThis.setInterval(() => {
       if (isPausedRef.current) {  
         pausedWordCountRef.current = wordCount;
         return;
@@ -316,9 +260,18 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
           clearInterval(typingIntervalRef.current);
           typingIntervalRef.current = null;
         }
-        // Text ist fertig - markiere und prüfe ob Audio auch fertig ist
-        textFinishedRef.current = true;
-        checkBothFinished();
+        setCurrentTypingText(undefined);
+        currentBubbleRef.current = null;
+        setChatHistory(prev => [...prev, {
+          id: Date.now(),
+          type: "bot",
+          color,
+          text,
+          side,
+          isComplete: true
+        }]);
+        setVisibleBubbles(prev => prev + 1);
+        setIsTyping(false);
       }
     }, TYPEWRITER_SPEED[speaker] ?? 380);
   };
@@ -330,18 +283,15 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       hasStartedRef.current = true;
       if (!argumentBubbles.length) return;
         const firstBubble = argumentBubbles[0];
-      setCurrentSpeaker(firstBubble.color);
       setIsTyping(true);
-      
+
       setTimeout(() => {
         setIsTyping(false);
-        typewriterEffect(firstBubble.text, firstBubble.color, firstBubble.side, firstBubble.speaker, firstBubble.id);
+        typewriterEffect(firstBubble.text, firstBubble.color, firstBubble.side, firstBubble.speaker);
       }, 1500);
     }
     
-    return () => {
-      stopPlaying();
-    };
+    return () => undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasStarted]);
 
@@ -359,12 +309,11 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
     if (visibleBubbles < argumentBubbles.length && !isBusy) {
       const nextBubble = argumentBubbles[visibleBubbles];
-      setCurrentSpeaker(nextBubble.color);
       setIsTyping(true);
-      
+
       setTimeout(() => {
         setIsTyping(false);
-        typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side, nextBubble.speaker, nextBubble.id);
+        typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side, nextBubble.speaker);
       }, 1500);
     } else if (visibleBubbles >= argumentBubbles.length && !isBusy) {
       onExit();
@@ -378,7 +327,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       typingIntervalRef.current = null;
     }
     stopPlaying();
-    setIsSpeaking(false);
     setIsTyping(false);
     setCurrentTypingText(undefined);
     currentBubbleRef.current = null;
@@ -460,7 +408,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       <div className="top-exit-row" style={{marginBottom: "0px"}}>
         <span className="timer-display">{timeLeft}</span>
         <div className="top-buttons-row">
-          <MuteButton isMuted={isMuted} onToggle={toggleMute} />
           <button className="exit-btn" onClick={handleExitClick}>
             {t("exit")}
           </button>

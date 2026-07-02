@@ -6,8 +6,8 @@ import type { ChatMessage } from "../types/types";
 import "../App.css";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from '../hooks/useLanguage';
-import mockDebateDE from '../../debate_text/mockDebate.de.json';
-import mockDebateEN from '../../debate_text/mockDebate.en.json';
+import mockDebateDE from '../debate_text/mockDebate.de.json';
+import mockDebateEN from '../debate_text/mockDebate.en.json';
 
 type Color = "red" | "yellow" | "green" | "gray" | "blue";
 
@@ -410,42 +410,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
           {hasStarted ? t("next") : t("startDebate")}
         </button>
       </div>
-
-      {/* Debate stage and interactive controls commented out — showing only ChatHistory for now */}
-      {/*
-      Pro vs Contra stage and related UI have been commented to focus on ChatHistory only.
-      Re-enable by uncommenting the block below when needed.
-
-      <section className="active-debate-stage" style={{
-        borderRadius: "24px",
-        background: `
-          radial-gradient(
-            circle at center,
-            rgba(255,255,255,0.9) 0%,
-            rgba(255,255,255,0.6) 30%,
-            rgba(255,255,255,0.0) 60%
-          ),
-          linear-gradient(
-            90deg,
-            #eaf6f1 0%,
-            #f7f9fc 50%,
-            #e9f1fb 100%
-          )
-        `
-  }}> 
-         <div className="arguments-stage" style={{paddingTop: "0px", height:"450px"}}>
-          <CandidateCard color="yellow" />
-          <CandidateCard color="gray" />
-          <CandidateCard color="red" />
-          <CandidateCard color="green" />
-        </div>
-      </section>
-
-      {/* Modal Overlay für Start Debate nach User-Input */}
-      {/* ...modal and controls omitted... */}
-
-      {/* Prominenter User Input Bereich */}
-      {/* ...footer/input omitted... */}
     </div>
   );
 };
