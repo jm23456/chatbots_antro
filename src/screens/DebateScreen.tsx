@@ -9,16 +9,15 @@ import mockDebateEN from '../debate_text/mockDebate.en.json';
 
 interface DebateScreenProps {
   topicTitle: string;
-  role: Role;
-  messages: DebateMessage[];
+  // messages: DebateMessage[];
   timeLeft: string;
-  inputText: string;
-  setInputText: (value: string) => void;
-  onSend: () => void;
+  // inputText: string;
+  // setInputText: (value: string) => void;
+  // onSend: () => void;
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
-  setIsPaused: (value: boolean) => void;
+  // setIsPaused: (value: boolean) => void;
 }
 
 const DebateScreen: React.FC<DebateScreenProps> = ({
@@ -36,14 +35,15 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const { t, language } = useLanguage();
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  const [currentTypingText, setCurrentTypingText] = useState<string | undefined>(undefined);
+  // const [currentTypingText, setCurrentTypingText] = useState<string | undefined>(undefined);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const hasStartedRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingIntervalRef = useRef<number | null>(null);
+  // const typingIntervalRef = useRef<number | null>(null);
   const currentBubbleRef = useRef<{ text: string; color: Color; side: "pro" | "contra" | "undecided" } | null>(null);
-  const isPausedRef = useRef(false);
-  const pausedWordCountRef = useRef(0);
+  const pendingMessageIdRef = useRef<number | null>(null);
+  // const isPausedRef = useRef(false);
+  // const pausedWordCountRef = useRef(0);
   const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
 
@@ -51,13 +51,13 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
   // Typewriter-Geschwindigkeit pro Speaker (ms pro Wort)
   // Höherer Wert = langsamer
-  const TYPEWRITER_SPEED: Record<string, number> = {
-    A: 450,   // Rot - langsamer
-    B: 380,   // Gelb - normal
-    C: 380,   // Grün - normal
-    D: 380,   // Grau - normal
-    E: 380,   // Blau - normal
-  };
+  // const TYPEWRITER_SPEED: Record<string, number> = {
+  //   A: 450,   // Rot - langsamer
+  //   B: 380,   // Gelb - normal
+  //   C: 380,   // Grün - normal
+  //   D: 380,   // Grau - normal
+  //   E: 380,   // Blau - normal
+  // };
 
   type DebateScriptItem = {
     id: number;
@@ -87,56 +87,16 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   // Exit handlers
   const handleExitClick = () => {
     setShowExitWarning(true);
-    setIsPaused(true);
-    isPausedRef.current = true;
   };
 
   const handleExitConfirm = () => {
     setShowExitWarning(false);
-    isPausedRef.current = false;
     onExit();
   };
 
   const handleExitCancel = () => {
-    setShowExitWarning(false);
-    setIsPaused(false);
-    isPausedRef.current = false;
+    setShowExitWarning(false);;
   };
-
-  // Skip function - überspringt nur den aktuellen Bot (stoppt Sprechen, zeigt vollen Text)
-  const handleSkip = () => {
-    if (typingIntervalRef.current) {
-      clearInterval(typingIntervalRef.current);
-      typingIntervalRef.current = null;
-    }
-    setCurrentTypingText(undefined);
-    setIsTyping(false);
-
-    // Zeige den vollständigen Text des aktuellen Bots an
-    if (currentBubbleRef.current) {
-      const { text, color, side } = currentBubbleRef.current;
-      setCurrentTypingText(undefined);
-      setChatHistory(prev => [...prev, {
-        id: Date.now(),
-        type: "bot",
-        color: color,
-        text: text,
-        side: side,
-        isComplete: true
-      }]);
-      setVisibleBubbles(prev => prev + 1);
-      currentBubbleRef.current = null;
-    }
-  };
-
-  // Cleanup interval on unmount
-  useEffect(() => {
-    return () => {
-      if (typingIntervalRef.current) {
-        clearInterval(typingIntervalRef.current);
-      }
-    };
-  }, []);
 
   // Auto-scroll zur neuesten Nachricht
   const scrollToBottom = () => {
@@ -186,7 +146,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     id: msg.id,
     speaker: msg.speaker,
   }));
-}, [debateScript]);
+}, [debateScript,speakerColors, speakerToSide]);
 
   // Check ob alle Argumente gesagt wurden
   useEffect(() => {
@@ -194,14 +154,14 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       hasStarted &&
       visibleBubbles >= argumentBubbles.length &&
       argumentBubbles.length > 0 &&
-      !isTyping &&
-      currentTypingText === undefined &&
+      // !isTyping &&
+      // currentTypingText === undefined &&
       !showDebateFinished &&
       !showTimeExpired
     ) {
       setShowDebateFinished(true);
     }
-  }, [visibleBubbles, argumentBubbles.length, hasStarted, isTyping, currentTypingText, showDebateFinished, showTimeExpired]);
+  }, [visibleBubbles, argumentBubbles.length, hasStarted, showDebateFinished, showTimeExpired]);
 
   // Initiale Chat-History mit Arguments Intro Nachrichten
   // Reihenfolge: B, D, C, A, E (yellow, gray, blue, red, green)
@@ -230,67 +190,49 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     if (chatHistory.length === 0 && initialChatHistory.length > 0) {
       setChatHistory(initialChatHistory);
     }
-  }, [initialChatHistory]);
+  }, [initialChatHistory, chatHistory.length]);
 
   // Typewriter-Effekt: Text Wort für Wort in der Chatbot-Bubble aufbauen
-  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided", speaker: string) => {
-    const words = text.split(" ");
-    let wordCount = pausedWordCountRef.current || 0;
-    pausedWordCountRef.current = 0;
-    
-    currentBubbleRef.current = { text, color, side };
-
-    if (wordCount === 0) {
-      setCurrentTypingText("");
-    }
-
-    typingIntervalRef.current = globalThis.setInterval(() => {
-      if (isPausedRef.current) {  
-        pausedWordCountRef.current = wordCount;
-        return;
-      }
-      wordCount++;
-      
-      if (wordCount <= words.length) {
-        // Text aus den ersten wordCount Wörtern
-        const newText = words.slice(0, wordCount).join(" ");
-        setCurrentTypingText(newText);
-      } else {
-        if (typingIntervalRef.current) {
-          clearInterval(typingIntervalRef.current);
-          typingIntervalRef.current = null;
-        }
-        setCurrentTypingText(undefined);
-        currentBubbleRef.current = null;
+  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
+       currentBubbleRef.current = { text, color, side };
+        const pendingId = Date.now() ;
+        pendingMessageIdRef.current = pendingId;
         setChatHistory(prev => [...prev, {
-          id: Date.now(),
+          id: pendingId,
           type: "bot",
           color,
-          text,
+          text: "",
           side,
-          isComplete: true
-        }]);
+          isComplete: false
+        }] as ChatMessage[]);
+      
+      const finalizePendingMessage = () => {
+        setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
+        pendingMessageIdRef.current = null;
         setVisibleBubbles(prev => prev + 1);
         setIsTyping(false);
-      }
-    }, TYPEWRITER_SPEED[speaker] ?? 380);
-  };
+        currentBubbleRef.current = null;
+      };
 
-  // Starte automatisch die erste Nachricht beim Laden
-  useEffect(() => {
-    if(!hasStarted) return;
-    if (!hasStartedRef.current) {
-      hasStartedRef.current = true;
-      if (!argumentBubbles.length) return;
-        const firstBubble = argumentBubbles[0];
+
       setIsTyping(true);
 
       setTimeout(() => {
-        setIsTyping(false);
-        typewriterEffect(firstBubble.text, firstBubble.color, firstBubble.side, firstBubble.speaker);
-      }, 1500);
-    }
-    
+        finalizePendingMessage();
+      }, 2000); // Simuliere 2 Sekunden "Tippen"
+    };
+
+    const startNextBubble = () => {
+    if (visibleBubbles >= argumentBubbles.length) return;
+    const nextBubble = argumentBubbles[visibleBubbles];
+    hasStartedRef.current = true;
+    typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
+  };
+      useEffect(() => {
+        if (!hasStarted) return;
+        if (!hasStartedRef.current) {
+          startNextBubble();
+        }
     return () => undefined;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasStarted]);
@@ -305,47 +247,20 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       onStart();
       return;
     }
-    const isBusy = isTyping || currentTypingText !== undefined;
+    // const isBusy = isTyping || currentTypingText !== undefined;
 
-    if (visibleBubbles < argumentBubbles.length && !isBusy) {
-      const nextBubble = argumentBubbles[visibleBubbles];
-      setIsTyping(true);
-
-      setTimeout(() => {
-        setIsTyping(false);
-        typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side, nextBubble.speaker);
-      }, 1500);
-    } else if (visibleBubbles >= argumentBubbles.length && !isBusy) {
+    if (visibleBubbles < argumentBubbles.length) {
+      startNextBubble();
+    } else {
       onExit();
     }
   }
 
 
   const handleTimeExpiredContinue = () => {
-    if (typingIntervalRef.current) {
-      clearInterval(typingIntervalRef.current);
-      typingIntervalRef.current = null;
-    }
-    stopPlaying();
-    setIsTyping(false);
-    setCurrentTypingText(undefined);
-    currentBubbleRef.current = null;
-    onExit();
+  currentBubbleRef.current = null;
+  onExit();
   }
-  // User-Nachricht senden und in Chat-History einfügen
-  const handleSendMessage = () => {
-    if (!inputText.trim()) return;
-    
-    setChatHistory(prev => [...prev, {
-      id: Date.now(),
-      type: "user",
-      text: inputText.trim(),
-      isComplete: true
-    }]);
-    
-    onSend();
-  };
-
 
   return (
     
@@ -427,9 +342,17 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
           >
             {msg.isIntro && <span className="intro-label">Intro</span>}
             <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
-              {msg.text}
+                {msg.type === "bot" && !msg.isComplete ? (
+                  <span className="typing-dots">
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                    <span className="dot"></span>
+                  </span>
+              ) : (
+                msg.text
+              )}
             </span>
-            {msg.type === "bot" && (
+            {msg.type === "bot" && msg.isComplete && (
               <button 
                 className="report-btn" 
                 title={t("flag")}
@@ -440,78 +363,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
             )}
           </div>
         ))}
-        
-        {/* Auto-scroll Anker */}
         <div ref={messagesEndRef} />
       </section>
-
-      {/* Pro vs Contra stage
-      <section className="debate-stage" style={{
-        borderRadius: "24px",
-    background: `
-      radial-gradient(
-        circle at center,
-        rgba(255,255,255,0.9) 0%,
-        rgba(255,255,255,0.6) 30%,
-        rgba(255,255,255,0.0) 60%
-      ),
-      linear-gradient(
-        90deg,
-        #eaf6f1 0%,
-        #f7f9fc 50%,
-        #e9f1fb 100%
-      )
-    ` 
-  }}>*/}
-        {/* <div className="arguments-stage" style={{gap: "100px"}}>
-          <CandidateCard 
-            color="yellow" 
-            hasMic={hasStarted && currentSpeaker === "yellow" && (isTyping || isSpeaking) && visibleBubbles < argumentBubbles.length}
-            isTyping={hasStarted && isTyping && currentSpeaker === "yellow"}
-            bubbleText={hasStarted && currentSpeaker === "yellow" ? currentTypingText : undefined}
-            isSpeaking={hasStarted && currentSpeaker === "yellow" && isSpeaking && visibleBubbles < argumentBubbles.length}
-            isPaused={showExitWarning}
-            bubbleLabel={getRoleDescription("yellow")}
-          />
-          <CandidateCard 
-            color="gray" 
-            hasMic={hasStarted && currentSpeaker === "gray" && (isTyping || isSpeaking)&& visibleBubbles < argumentBubbles.length}
-            isTyping={hasStarted && isTyping && currentSpeaker === "gray"}
-            bubbleText={hasStarted && currentSpeaker === "gray" ? currentTypingText : undefined}
-            isSpeaking={hasStarted && currentSpeaker === "gray" && isSpeaking && visibleBubbles < argumentBubbles.length}
-            isPaused={showExitWarning}
-            bubbleLabel={getRoleDescription("gray")}
-          />
-          <CandidateCard 
-            color="blue" 
-            hasMic={hasStarted && currentSpeaker === "blue" && (isTyping || isSpeaking) && visibleBubbles < argumentBubbles.length}
-            isTyping={hasStarted && isTyping && currentSpeaker === "blue"}
-            bubbleText={hasStarted && currentSpeaker === "blue" ? currentTypingText : undefined}
-            isSpeaking={hasStarted && currentSpeaker === "blue" && isSpeaking && visibleBubbles < argumentBubbles.length}
-            isPaused={showExitWarning}
-            bubbleLabel={getRoleDescription("blue")}
-          />
-          <CandidateCard 
-            color="red" 
-            hasMic={hasStarted && currentSpeaker === "red" && (isTyping || isSpeaking) && visibleBubbles < argumentBubbles.length}
-            isTyping={hasStarted && isTyping && currentSpeaker === "red"}
-            bubbleText={hasStarted && currentSpeaker === "red" ? currentTypingText : undefined}
-            isSpeaking={hasStarted && currentSpeaker === "red" && isSpeaking && visibleBubbles < argumentBubbles.length}
-            isPaused={showExitWarning}
-            bubbleLabel={getRoleDescription("red")}
-          />
-          <CandidateCard 
-            color="green" 
-            hasMic={hasStarted && currentSpeaker === "green" && (isTyping || isSpeaking) && visibleBubbles < argumentBubbles.length}
-            isTyping={hasStarted && isTyping && currentSpeaker === "green"}
-            bubbleText={hasStarted && currentSpeaker === "green" ? currentTypingText : undefined}
-            isSpeaking={hasStarted && currentSpeaker === "green" && isSpeaking && visibleBubbles < argumentBubbles.length}
-            isPaused={showExitWarning}
-            bubbleLabel={getRoleDescription("green")}
-          />
-        </div> 
-      </section>*/}
-
 
       {/* Modal Overlay für Start Debate */}
       {!hasStarted && (
@@ -539,49 +392,15 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {/* Input area */}
       <footer className="debate-input-footer">
-        <div className="custom-topic-row">
-          <input
-            className="text-input flex-1"
-            placeholder={t("inputPlaceholder")}
-            value={inputText}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setInputText(e.target.value)
-            }
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-          />
-          <button 
-            className={"send-btn" + (inputText.trim() ? " active" : "")}
-            onClick={handleSendMessage}
-            disabled={!inputText.trim()}
-          >
-            {t("send")}
-          </button>
-        </div>
         {hasStarted && (
           <div className="action-row">
             <button 
               className="con-primary-btn" 
               onClick={handleContinue}
-              disabled={isTyping || currentTypingText !== undefined}
+              disabled={isTyping}
             >
               {visibleBubbles < argumentBubbles.length ? t("continue") : t("finishDebate")}
             </button>
-            {(isTyping || currentTypingText !== undefined) ? (
-              <button 
-                className="skip-icon-btn" 
-                onClick={handleSkip}
-                title={t("skipSpeaker")}
-              >
-                ⏭
-              </button> 
-            ) : (
-              <div className="skip-icon-placeholder"></div>
-            )}
           </div>
         )}
       </footer>

@@ -15,8 +15,8 @@ type BubbleRef = {
   side: "pro" | "contra" | "undecided";
 } | null;
 
-// "Be an Active Part" - Role
-interface ActiveDebateScreenProps {
+// "Steering the Conversation" - Role
+interface SteerDebateScreenProps {
   topicTitle: string;
   timeLeft: string;
   onExit: () => void;
@@ -25,7 +25,7 @@ interface ActiveDebateScreenProps {
   userIntroMessage?: string | null;
 }
 
-const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
+const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   topicTitle,
   timeLeft,
   onExit,
@@ -139,7 +139,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
       }
     }, [visibleBubbles, argumentBubbles.length, hasStarted, // isTyping,
       showDebateFinished, showTimeExpired]);
-  
 
   // Initiale Chat-History mit Arguments Intro Nachrichten
   // Reihenfolge: B, D, A, C (yellow, gray, red, green) - ohne E (blue)
@@ -370,4 +369,4 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
   );
 };
 
-export default ActiveDebateScreen;
+export default SteerDebateScreen;

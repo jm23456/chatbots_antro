@@ -2,13 +2,10 @@ export type Step =
   | "TOPIC"
   | "ROLE"
   | "TOPIC_INTRO"
-  | "CANDIDATES_INTRO"
-  | "ARGUMENTS_INTRO"
-  | "ACTIVE_ARGUMENTS_INTRO"
   | "DEBATE"
   | "SUMMARY";
 
-export type Role = "WATCH" | "COMMENT" | "ACTIVE" | null;
+export type Role = "WATCH" | "STEER" | "PARTICIPATE" | null;
 
 export interface DebateMessage {
   id: number;

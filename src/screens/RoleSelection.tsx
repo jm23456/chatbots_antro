@@ -5,7 +5,7 @@ import "../App.css";
 import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from "../hooks/useLanguage";
 import topicConfig from "../config/topicConfig";
-// import roles from "../config/roleConfig";
+import { useSearchParams } from "react-router-dom";
 
 
 interface RoleSelectionProps {
@@ -13,22 +13,23 @@ interface RoleSelectionProps {
   setRole: (value: Role) => void;
   selectedTopic: string;
   setSelectedTopic: (value: string) => void;
-  customTopic: string;
-  setCustomTopic: (value: string) => void;
   onContinue: () => void;
 }
 
 
 const RoleSelection: React.FC<RoleSelectionProps> = ({
   role,
-  setRole,
   selectedTopic,
-  setSelectedTopic,
-  customTopic,
-  setCustomTopic,
   onContinue,
 }) => {
   const { t, language } = useLanguage();
+  const [params] = useSearchParams();
+  const topicFromURL = params.get("topic");
+  const roleFromURL = params.get("role");
+  console.log("URL Params - Topic: " + topicFromURL + ", Role: " + roleFromURL);
+  const [activeTopic, setActiveTopic] = useState<keyof typeof topicConfig>("HEALTH_INSURANCE_TOPIC");
+  const [activeRole, setActiveRole] = useState<"WATCH" | "ACTIVE" | "STEER" | "PARTICIPATE">("WATCH");
+  // const availableRoles = rolesConfig[activeTopic]
   const roles: { id: Role; label: string; description: string }[] = [
    /* {
       id: "WATCH",
@@ -48,30 +49,25 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
   ];
   
 
-  const handleRoleSelect = () => {
-    setRole("ACTIVE");
-  };
-  const HEALTH_INSURANCE_TOPIC = topicConfig["HEALTH_INSURANCE_TOPIC"].en;
-  console.log("Selected Topic: " + HEALTH_INSURANCE_TOPIC);
-  console.log(typeof HEALTH_INSURANCE_TOPIC);
-
-  const topics = [t("bilateral"), t(HEALTH_INSURANCE_TOPIC), t("atom")];
-  // const [customTopicConfirmed, setCustomTopicConfirmed] = useState(false);
-
-  const handleTopicSelect = () => {
-    setSelectedTopic("HEALTH_INSURANCE_TOPIC");
-    console.log("Topic selected")
-    // setCustomTopic("");
-  };
-
-  // const handleConfirmCustomTopic = () => {
-  //   if (customTopic.trim()) {
-  //     setSelectedTopic("");
-  //     setCustomTopicConfirmed(true);
+  // const handleRoleSelect = () => {
+  //   setRole(roles["ACTIVE"].en);
+  //   console.log("Role selected")
+  // };
+  // const setRoles = (role: string ) => {
+  //   if (rolesConfig[activeTopic].includes(role as any)) {
+  //     setActiveRole(role as any);
   //   }
   // };
+  // const HEALTH_INSURANCE_TOPIC = topicConfig["HEALTH_INSURANCE_TOPIC"].en;
+  // console.log("Selected Topic: " + HEALTH_INSURANCE_TOPIC);
+  // console.log(typeof HEALTH_INSURANCE_TOPIC);
 
-  // const canContinue = role && (selectedTopic || customTopicConfirmed);
+  const topics = [t("bilateral"), t("healthInsurance"), t("atom")];
+
+  // const handleTopicSelect = () => {
+  //   setSelectedTopic("HEALTH_INSURANCE_TOPIC");
+  //   console.log("Topic selected")
+  // };
 
   return (
       <div className="screen" style={{
@@ -107,9 +103,7 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
 
       <header className="screen-header" style={{marginBottom: "30px", marginTop: "0px"}}>
         <p className="subtitle">{t("title")}</p>
-        <p className="intro-text">
-          {t("introText")}
-        </p>
+
       </header>
 
       <div className="screen" style={{
@@ -134,7 +128,7 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
               className={
                 "primary-btn outline" + (role === r.id ? " primary-btn-active" : "")
               }
-              onClick={() => handleRoleSelect(r.id)}
+              // onClick={() => handleRoleSelect(r.id)}
             >
               {r.label}
             </button>
@@ -145,43 +139,26 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
         <h2>{t("chooseTopic")}</h2>
         <div className="button-grid-horizontal">
           {topics.map((topic) => {
-            const isHealthTopic = topic === HEALTH_INSURANCE_TOPIC;
+            const isHealthTopic = topic;
             return (
               <button
                 key={topic}
                 className={
                   "topic-btn outline" +
                   ` lang-${language}` +
-                  (selectedTopic === topic && !customTopic
+                  (selectedTopic === topic
                   ? " topic-btn-active"
                   : "")
               }
-              onClick={() => {if (isHealthTopic) {
-                handleTopicSelect();}
-              }}
+              // onClick={() => {if (isHealthTopic) {
+              //   handleTopicSelect();}
+              // }}
               disabled={!isHealthTopic}
             >
               {topic}
             </button>
           );})}
         </div>
-{/*
-        <h3>{t("owntopic")}</h3>
-        
-         <div className="custom-topic-row">
-          <input
-            className={"text-input" + (customTopicConfirmed ? " confirmed" : "")}
-            placeholder={t("topicPlaceholder")}
-            value={customTopic}
-            disabled 
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                  setCustomTopic(e.target.value);
-                  setCustomTopicConfirmed(false);
-                  setSelectedTopic("");
-            }}
-            />
-
-          </div> */}
       </section>
 
       <div className="footer-end-row" style={{marginBottom: "0px"}}>
