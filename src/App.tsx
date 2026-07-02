@@ -114,67 +114,7 @@ const App: React.FC = () => {
             }}
           />
         )}
-        
-        {/*{step === STEPS.ARGUMENTS_INTRO && (
-          <ArgumentsIntro
-            topicTitle={currentTopicTitle}
-            onExit={() => { 
-              setStep(STEPS.SUMMARY);
-              setIntroTime(1 * 60);
-              setActiveBot(0);
-              setHasStarted(false);
-              setCustomTopic("");
-              setSelectedTopic("");
-            }}
-            introTime={formatTime(introTime)}
-            activeBot={activeBot}
-            setActiveBot={setActiveBot}
-            totalBots={5}
-            onContinue={resetIntroTimer}
-            onFinalContinue={() => {
-              setStep(STEPS.DEBATE);
-              setHasStarted(false);
-            }}
-            hasStarted={hasStarted}
-            onStart={() => {
-              setHasStarted(true);
-              setIntroTime(1 * 60);
-              setActiveBot(0);}}
-            setIsPaused={setIsPaused}
-          />
-        )}
-
-        {step === STEPS.ACTIVE_ARGUMENTS_INTRO && (
-          <ActiveArgumentsIntro
-            topicTitle={currentTopicTitle}
-            introTime={formatTime(introTime)}
-            onExit={() => { 
-              setStep(STEPS.SUMMARY);
-              setIntroTime(1 * 60);
-              setHasStarted(false);
-              setCustomTopic("");
-              setSelectedTopic("");
-              setIsPaused(false);
-            }}
-            inputText={inputText}
-            setInputText={setInputText}
-            onSend={() => {
-              setUserIntroMessage(inputText.trim());
-              handleSend();
-              setStep(STEPS.DEBATE);
-              setHasStarted(false);
-            }}
-            hasStarted={hasStarted}
-            onStart={() => {
-              setHasStarted(true);
-              setIntroTime(1 * 60);
-              setActiveBot(0);
-              setIsPaused(false);
-            }}
-          />
-        )}*/}
-
-
+      
         {step === STEPS.DEBATE && role === "ACTIVE" && (
           <ActiveDebateScreen
             topicTitle={currentTopicTitle}
