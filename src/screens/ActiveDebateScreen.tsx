@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-// import MuteButton from "../components/MuteButton";
 import ExitWarningModal from "../components/ExitWarningModal";
-// import useAudioPlayback from "../hooks/useAudioPlayback";
 import type { ChatMessage } from "../types/types";
 import "../App.css";
 import LanguageToggle from "../components/LanguageToggle";
@@ -25,7 +23,6 @@ interface ActiveDebateScreenProps {
   hasStarted: boolean;
   onStart: () => void;
   userIntroMessage?: string | null;
-  // setIsPaused: (paused: boolean) => void;
 }
 
 const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
@@ -35,7 +32,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
   hasStarted,
   onStart,
   userIntroMessage,
-  // setIsPaused,
 }) => {
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -77,38 +73,19 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
     }
   }, [timeLeft, hasStarted, showTimeExpired]);
 
-  // // Audio Playback
-  // const { isMuted, toggleMute, play, stopPlaying, pausePlaying, resumePlaying } = useAudioPlayback();
-
   // Exit handlers
   const handleExitClick = () => {
     setShowExitWarning(true);
-    // setIsPaused(true);
-    // pausePlaying();
   };
 
   const handleExitConfirm = () => {
     setShowExitWarning(false);
-    // setIsPaused(false);
-    //  isPausedRef.current = false;
-    // stopPlaying();
     onExit();
   };
 
   const handleExitCancel = () => {
     setShowExitWarning(false);
-    // setIsPaused(false);
-    //  isPausedRef.current = false;
-    // resumePlaying();
   };
-
-  // Skip function - überspringt nur den aktuellen Bot (stoppt Sprechen, zeigt vollen Text)
-
-  // useEffect(() => {
-  //   return () => {
-  //     stopPlaying();
-  //   };
-  // }, [stopPlaying]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -207,8 +184,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
   }, [initialChatHistory, chatHistory.length]);
 
   const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
-    // setIsTyping(true);
-
     currentBubbleRef.current = { text, color, side };
     const pendingId = Date.now() ;
     pendingMessageIdRef.current = pendingId;
@@ -234,20 +209,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
     setTimeout(() => {
       finalizePendingMessage();
     }, 2000); // Simuliere 2 Sekunden "Tippen"
-
-    // play({
-    //   section: 'debate_script',
-    //   speaker: speaker,
-    //   id: audioId,
-    //   lang: language,
-    //   onEnded: () => {
-    //     finalizePendingMessage();
-    //   }
-    // });
-
-    // if (isMuted) {
-    //   finalizePendingMessage();
-    // }
   };
 
   // Starte automatisch die erste Nachricht beim Laden
@@ -255,7 +216,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
     if (visibleBubbles >= argumentBubbles.length) return;
     const nextBubble = argumentBubbles[visibleBubbles];
     hasStartedRef.current = true;
-    // setIsTyping(true);
     typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
   };
 
@@ -266,9 +226,7 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
     }
 
     return () => {
-      // stopPlaying();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasStarted]);
 
   useEffect(() => {
@@ -282,8 +240,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
       return;
     }
 
-    // if (isTyping) return;
-
     if (visibleBubbles < argumentBubbles.length) {
       startNextBubble();
     } else {
@@ -292,8 +248,6 @@ const ActiveDebateScreen: React.FC<ActiveDebateScreenProps> = ({
   };
 
   const handleTimeExpiredContinue = () => {
-    // stopPlaying();
-    // setIsTyping(false);
     currentBubbleRef.current = null;
     onExit();
   }
