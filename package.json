@@ -2,7 +2,7 @@
   "name": "debate-app_A",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://jm23456.github.io/debate-app_A",
+  "homepage": "https://jm23456.github.io/chatbots/",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,7 +18,8 @@
     "openai": "^6.16.0",
     "path": "^0.12.7",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.18.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
