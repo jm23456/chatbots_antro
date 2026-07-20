@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import CandidateCardIntro from '../components/CandidateCardIntro';
 import "../App.css";
-import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface SummaryProps {
@@ -23,7 +22,6 @@ const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
       borderRadius: "24px"
     }}>
       <section className="screen-body">
-        <LanguageToggle />
 
         {/* Start Popup für Summary Screen */}
         {showPopup && (

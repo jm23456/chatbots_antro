@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import type { Role } from "../types/types";
 import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
-import LanguageToggle from "../components/LanguageToggle";
 import { useLanguage } from "../hooks/useLanguage";
 import topicConfig from "../config/topicConfig";
 import { useSearchParams } from "react-router-dom";
@@ -80,7 +79,6 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
     }}>
 
       <section className="screen-body">
-        <LanguageToggle />
         <div className="intro-stage">
           {/* Pro Side */}
             <div className="introcandidates-row-left">

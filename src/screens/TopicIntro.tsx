@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ExitWarningModal from '../components/ExitWarningModal';
 import "../App.css";
-import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../hooks/useLanguage';
 
 interface TopicIntroProps {
@@ -34,7 +33,6 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
 
   return (
     <section className="screen-body">
-      <LanguageToggle />
     <div className="screen-wrapper">
       <ExitWarningModal 
         isOpen={showExitWarning} 

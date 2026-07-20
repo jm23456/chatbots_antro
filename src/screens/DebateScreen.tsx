@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
 import type { Role, DebateMessage, ChatMessage } from "../types/types";
 import "../App.css";
-import LanguageToggle from '../components/LanguageToggle';
 import { useLanguage } from '../hooks/useLanguage';
 import mockDebateDE from '../debate_text/mockDebate.de.json';
 import mockDebateEN from '../debate_text/mockDebate.en.json';
@@ -278,7 +277,6 @@ useEffect(() => {
   return (
     
     <div className="screen debate-screen">
-      <LanguageToggle />
       <ExitWarningModal 
         isOpen={showExitWarning} 
         onConfirm={handleExitConfirm} 
