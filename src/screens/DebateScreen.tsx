@@ -102,6 +102,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+  
 
   // Mock-Debatte: Krankenkassenprämien
 
@@ -191,6 +192,18 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       setChatHistory(initialChatHistory);
     }
   }, [initialChatHistory, chatHistory.length]);
+  const firstRender = useRef(true);
+
+useEffect(() => {
+  if (firstRender.current) {
+    firstRender.current = false;
+    return;
+  }
+
+  if (hasStarted) {
+    scrollToBottom();
+  }
+}, [chatHistory]);
 
   // Typewriter-Effekt: Text Wort für Wort in der Chatbot-Bubble aufbauen
   const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
@@ -238,9 +251,9 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   }, [hasStarted]);
 
   // Auto-scroll wenn sich chatHistory oder isTyping ändert
-  useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory, isTyping]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [chatHistory, isTyping]);
 
     const handleContinue = () => {
     if (!hasStarted) {

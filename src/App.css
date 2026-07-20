@@ -517,7 +517,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-height: 1050px;
+  max-height: calc(100vh - 260px);
   padding: 10px;
   scroll-behavior: smooth;
 }
@@ -1325,6 +1325,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   padding: 20px;
+  display: flex;
 }
 
 .active-debate-screen .top-exit-row {
