@@ -48,24 +48,6 @@ const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
           </div>
         )}
 
-        <div className="intro-stage" style={{paddingBottom: "0px"}}>
-          {/* Pro Side */}
-            <div className="introcandidates-row-left">
-              <CandidateCardIntro color="yellow" />
-              <CandidateCardIntro color="gray" />
-            </div>
-
-          {/* Undecided - Blue Bot (Mitte) */}
-          <div className="introcandidates-row-center">
-            <CandidateCardIntro color="blue" />
-          </div>
-
-        {/* Contra Side */}
-          <div className="introcandidates-row-right">
-            <CandidateCardIntro color="red" />
-            <CandidateCardIntro color="green" />
-          </div>
-        </div>
       </section>
       <header className="screen-header" style={{marginBottom: "4px", marginTop: "0px"}}>
         <p className="subtitle">{t("summary")}</p> 
