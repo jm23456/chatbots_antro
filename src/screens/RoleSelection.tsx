@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Role } from "../types/types";
-import CandidateCardIntro from "../components/CandidateCardIntro";
+// import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
 import { useLanguage } from "../hooks/useLanguage";
 import topicConfig from "../config/topicConfig";
@@ -82,18 +82,18 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
         <div className="intro-stage">
           {/* Pro Side */}
             <div className="introcandidates-row-left">
-              <CandidateCardIntro color="yellow" />
-              <CandidateCardIntro color="gray" />
+              {/* <CandidateCardIntro color="yellow" /> */}
+              {/* <CandidateCardIntro color="gray" /> */}
             </div>
 
           <div className="introcandidates-row-center">
-            <CandidateCardIntro color="blue" />
+            {/* <CandidateCardIntro color="blue" /> */}
           </div>
 
         {/* Contra Side */}
           <div className="introcandidates-row-right">
-            <CandidateCardIntro color="red" />
-            <CandidateCardIntro color="green" />
+            {/* <CandidateCardIntro color="red" />
+            <CandidateCardIntro color="green" /> */}
           </div>
         </div>
       </section>
