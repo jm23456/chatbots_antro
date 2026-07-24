@@ -139,10 +139,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const [progress, setProgress] = useState(0);
 
   const continueProgress = () => {
-  console.log("Continuing progress..."+ debateScript.length + " progress: " + progress);
-  console.log("Debate length: " + debateScript.length);
   setProgress((prev) => Math.min(prev + (100/debateScript.length), 100)); // Simuliere langsames Fortschreiten gegen Ende
-  console.log("progress " + progress);
     };
 
     const finishProgress = () => {
@@ -245,7 +242,6 @@ useEffect(() => {
 
     const startNextBubble = () => {
       continueProgress();
-      console.log("Start next Bubble");
     if (visibleBubbles >= argumentBubbles.length) return;
     const nextBubble = argumentBubbles[visibleBubbles];
     hasStartedRef.current = true;
@@ -268,9 +264,7 @@ useEffect(() => {
     const handleContinue = () => {
     if (!hasStarted) {
       continueProgress();
-      console.log("Progress after continue: " + progress);
       onStart();
-      console.log("Debate started");
       return;
     }
     // const isBusy = isTyping || currentTypingText !== undefined;

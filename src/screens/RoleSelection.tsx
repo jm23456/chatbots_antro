@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import type { Role } from "../types/types";
 // import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
@@ -26,8 +26,6 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
   const topicFromURL = params.get("topic");
   const roleFromURL = params.get("role");
   console.log("URL Params - Topic: " + topicFromURL + ", Role: " + roleFromURL);
-  const [activeTopic, setActiveTopic] = useState<keyof typeof topicConfig>("HEALTH_INSURANCE_TOPIC");
-  const [activeRole, setActiveRole] = useState<"WATCH" | "ACTIVE" | "STEER" | "PARTICIPATE">("WATCH");
   // const availableRoles = rolesConfig[activeTopic]
   const roles: { id: Role; label: string; description: string }[] = [
    /* {

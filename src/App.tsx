@@ -39,13 +39,11 @@ const App: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
   const [hasStarted, setHasStarted] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  console.log("FULL URL:", window.location.href);
-  console.log("HASH:", window.location.hash);
-  console.log("params:", params.toString());
-  console.log("Topic: "+urlTopic);
-  console.log("Role: " + urlRole);
-  console.log("InitialStep: " + initialStep);
-    console.log("Step: " + step);
+  // console.log("FULL URL:", window.location.href);
+  // console.log("Topic: "+urlTopic);
+  // console.log("Role: " + urlRole);
+  // console.log("InitialStep: " + initialStep);
+    // console.log("Step: " + step);
   // Timer für DEBATE (15 Min)
   useEffect(() => {
     if (step !== STEPS.DEBATE) return;
@@ -119,15 +117,15 @@ const App: React.FC = () => {
             topicTitle={currentTopicTitle?? ""}
             timeLeft={formatTime(timeLeft ?? 0)}
             onExit={() => {
+              console.log("Debate ended:" , new Date().toLocaleTimeString());
               setStep(STEPS.SUMMARY);
-              setTimeLeft(15 * 60);
               setSelectedTopic("");
               setHasStarted(false);
             }}
             hasStarted={hasStarted}
             onStart={() => {
+              console.log("Debate started:" , new Date().toLocaleTimeString());
               setHasStarted(true);
-              setTimeLeft(15 * 60);
             }}
           />
         )}
@@ -138,6 +136,7 @@ const App: React.FC = () => {
             topicTitle={currentTopicTitle}
             timeLeft={formatTime(timeLeft)}
             onExit={() => {
+              console.log("Debate ended:" , new Date().toLocaleTimeString());
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
               setUserIntroMessage(null);
@@ -145,8 +144,8 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
+              console.log("Debate started:" , new Date().toLocaleTimeString());
               setHasStarted(true);
-              setTimeLeft(15 * 60);
             }}
             userIntroMessage={userIntroMessage}
           />

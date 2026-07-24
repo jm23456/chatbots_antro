@@ -133,10 +133,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const progressInterval = useRef<number | null>(null);
 
   const continueProgress = () => {
-  console.log("Continuing progress..."+ debateScript.length);
-  console.log( " progress: " + progress);
   setProgress((prev) => Math.min(prev + 100/debateScript.length || 1, 100)); // Simuliere langsames Fortschreiten gegen Ende
-  console.log("progress" + progress);
 
   }
     const finishProgress = () => {
@@ -257,7 +254,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
   // Starte automatisch die erste Nachricht beim Laden
   const startNextBubble = () => {
-    console.log("Start next Bubble");
     continueProgress();
     const currentIndex = visibleBubblesRef.current;
     if (currentIndex >= argumentBubbles.length) return;
@@ -283,9 +279,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const handleContinue = () => {
     if (!hasStarted) {
       continueProgress();
-      console.log("Progress after continue: " + progress);
       onStart();
-      console.log("Debate started");
       startNextBubble();
       return;
     }
@@ -464,7 +458,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
                 key={`${pendingSteerEntry.id}-${index}`}
                 className="con-primary-btn"
                 style={{width: "100%", background: "#f5f3ff", color: "#5b21b6", border: "1px solid #c4b5fd"}}
-                onClick={() => {handleSelectSteerOption(option); console.log(option);}}
+                onClick={() => {handleSelectSteerOption(option); console.log("Chosen option: " +option);}}
               >
                 {option}
               </button>
