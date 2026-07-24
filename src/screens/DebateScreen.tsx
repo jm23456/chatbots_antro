@@ -227,6 +227,7 @@ useEffect(() => {
       const finalizePendingMessage = () => {
         setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
         pendingMessageIdRef.current = null;
+        continueProgress();
         setVisibleBubbles(prev => prev + 1);
         setIsTyping(false);
         currentBubbleRef.current = null;
@@ -241,7 +242,6 @@ useEffect(() => {
     };
 
     const startNextBubble = () => {
-      continueProgress();
     if (visibleBubbles >= argumentBubbles.length) return;
     const nextBubble = argumentBubbles[visibleBubbles];
     hasStartedRef.current = true;

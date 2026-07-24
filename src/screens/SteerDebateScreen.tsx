@@ -44,6 +44,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
   const [pendingSteerEntry, setPendingSteerEntry] = useState<SteerOptionEntry | null>(null);
+  const [selectedOption, setSelectedOption] = useState<"option1" | "option2" | "option3" | null>(null);
   const nextMessageIdRef = useRef(1000);
 
   type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
@@ -71,6 +72,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
   type DebateData = {
     debate_script?: DebateScriptItem[];
+    debate_script_2?: DebateScriptItem[];
+    debate_script_3?: DebateScriptItem[];
     "Arguments Intro"?: DebateScriptItem[];
     roles?: Record<string, RoleData>;
     Steer?: SteerOptionEntry[];
@@ -114,27 +117,34 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     E: "undecided",
   };
   const debateScript = debateData.debate_script ?? [];
+  const debateScript2 = debateData.debate_script_2 ?? [];
+  const debateScript3 = debateData.debate_script_3 ?? [];
   const argumentsIntro = debateData["Arguments Intro"] ?? [];
   const steerEntries = debateData.Steer ?? [];
 
+  const getScriptForOption = (option: "option1" | "option2" | "option3" | null) => {
+    if (option === "option2") return debateScript2;
+    if (option === "option3") return debateScript3;
+    return debateScript;
+  };
+
+  const activeDebateScript = useMemo(() => getScriptForOption(selectedOption), [debateScript, debateScript2, debateScript3, selectedOption]);
+
     const argumentBubbles = useMemo(() => {
-      return debateScript
-        .filter((msg) => msg.speaker !== "E") // Filtere Speaker E (blau) heraus
-        .map((msg) => ({
+      return activeDebateScript.map((msg) => ({
       color: speakerColors[msg.speaker as keyof typeof speakerColors],
       side: speakerToSide[msg.speaker as keyof typeof speakerToSide],
       text: msg.text,
       id: msg.id,
       speaker: msg.speaker,
     }));
-  }, [debateScript, speakerColors, speakerToSide]);
+  }, [activeDebateScript, speakerColors, speakerToSide]);
 
   const [progress, setProgress] = useState(0);
   const progressInterval = useRef<number | null>(null);
 
   const continueProgress = () => {
-  setProgress((prev) => Math.min(prev + 100/debateScript.length || 1, 100)); // Simuliere langsames Fortschreiten gegen Ende
-
+  setProgress((prev) => Math.min(prev + 100/(activeDebateScript.length + steerEntries.length) || 1, 100));
   }
     const finishProgress = () => {
       if (progressInterval.current) {
@@ -164,12 +174,10 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       showDebateFinished, showTimeExpired]);
 
   // Initiale Chat-History mit Arguments Intro Nachrichten
-  // Reihenfolge: B, D, A, C (yellow, gray, red, green) - ohne E (blue)
-  const speakerOrder: SpeakerKey[] = ["B", "D", "A", "C"];
+  // Reihenfolge: B, D, E, A, C (yellow, gray, blue, red, green)
+  const speakerOrder: SpeakerKey[] = ["B", "D", "E", "A", "C"];
   const initialChatHistory: ChatMessage[] = useMemo(() => {
-    const sortedIntro = [...argumentsIntro]
-      .filter((msg) => msg.speaker !== "E") // Filtere blauen Sprecher (E) heraus
-      .sort((a, b) => {
+    const sortedIntro = [...argumentsIntro].sort((a, b) => {
       const indexA = speakerOrder.indexOf(a.speaker);
       const indexB = speakerOrder.indexOf(b.speaker);
       return indexA - indexB;
@@ -210,7 +218,12 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     return nextMessageIdRef.current;
   };
 
-  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
+  const typewriterEffect = (
+    text: string,
+    color: Color,
+    side: "pro" | "contra" | "undecided",
+    scriptForThisTurn: DebateScriptItem[]
+  ) => {
     currentBubbleRef.current = { text, color, side };
     const pendingId = getNextMessageId();
     pendingMessageIdRef.current = pendingId;
@@ -226,10 +239,11 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     const finalizePendingMessage = () => {
       setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
       pendingMessageIdRef.current = null;
+      continueProgress();
       setVisibleBubbles(prev => {
         const nextVisible = prev + 1;
         visibleBubblesRef.current = nextVisible;
-        const shouldPauseForSteer = nextVisible > 0 && nextVisible % 3 === 0 && nextVisible < argumentBubbles.length;
+        const shouldPauseForSteer = nextVisible > 0 && nextVisible % 3 === 0 && nextVisible < scriptForThisTurn.length;
 
         if (shouldPauseForSteer) {
           const steerId = Math.floor((nextVisible - 1) / 3) + 1; // alle 3 Nachrichten Optionen anzeigen & auswählen
@@ -253,13 +267,13 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   };
 
   // Starte automatisch die erste Nachricht beim Laden
-  const startNextBubble = () => {
-    continueProgress();
+  const startNextBubble = (option: "option1" | "option2" | "option3" | null = selectedOption) => {
     const currentIndex = visibleBubblesRef.current;
-    if (currentIndex >= argumentBubbles.length) return;
-    const nextBubble = argumentBubbles[currentIndex];
+    const scriptForThisTurn = getScriptForOption(option);
+    if (currentIndex >= scriptForThisTurn.length) return;
+    const nextBubble = scriptForThisTurn[currentIndex];
     hasStartedRef.current = true;
-    typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
+    typewriterEffect(nextBubble.text, speakerColors[nextBubble.speaker as keyof typeof speakerColors], speakerToSide[nextBubble.speaker as keyof typeof speakerToSide], scriptForThisTurn);
   };
 
   useEffect(() => {
@@ -280,7 +294,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     if (!hasStarted) {
       continueProgress();
       onStart();
-      startNextBubble();
       return;
     }
 
@@ -298,7 +311,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }
   };
 
-  const handleSelectSteerOption = (optionText: string) => {
+  const handleSelectSteerOption = (optionText: string, optionKey: "option1" | "option2" | "option3") => {
+    setSelectedOption(optionKey);
     setChatHistory(prev => [
       ...prev,
       {
@@ -310,7 +324,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       },
     ]);
     setPendingSteerEntry(null);
-    startNextBubble();
+    continueProgress();
+    startNextBubble(optionKey);
   };
 
     useEffect(() => {
@@ -449,6 +464,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         ))}
         
         <div ref={messagesEndRef} />
+
+
               {pendingSteerEntry && (
         <div style={{marginTop: "12px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center"}}>
           <p style={{margin: 0, fontWeight: 600}}>Choose an option:</p>
@@ -457,8 +474,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
               <button
                 key={`${pendingSteerEntry.id}-${index}`}
                 className="con-primary-btn"
-                style={{width: "100%", background: "#f5f3ff", color: "#5b21b6", border: "1px solid #c4b5fd"}}
-                onClick={() => {handleSelectSteerOption(option); console.log("Chosen option: " +option);}}
+                style={{width: "100%", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)"}}
+                onClick={() => {handleSelectSteerOption(option, index === 0 ? "option1" : index === 1 ? "option2" : "option3");}}
               >
                 {option}
               </button>
@@ -468,13 +485,36 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       )}
       </section>
 
+      {/* Modal Overlay für Start Debate */}
+      {!hasStarted && (
+        <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{padding: 0, overflow: "hidden"}}>
+            <div style={{
+              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
+              padding: "1.25rem 1.5rem",
+              borderRadius: "1.5rem 1.5rem 0 0",
+              marginBottom: "0.5rem"
+            }}>
+            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("readyText1")}</p>
+            </div>
+            <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
+            <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2>
+            <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>{t("readyText")}</p>
+            <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p>
+            <button className="start-debate-btn" onClick={onStart}>
+              {t("startDebate")}
+            </button>
+          </div>
+        </div>
+        </div>
+      )}
       <div className="footer-end-row" style={{marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center"}}>
         <button
           className="con-primary-btn"
           onClick={handleContinue}
           disabled={isTyping || !!pendingSteerEntry}
         >
-          {hasStarted ? t("next") : t("startDebate")}
+          {visibleBubbles < argumentBubbles.length ? t("continue") : t("finishDebate")}
         </button>
       </div>
     </div>
