@@ -88,7 +88,7 @@ en: {
     topicPlaceholder: "Enter your own topic here...",
     comment: "Ask questions and comment",
     active: "Be an active part of the debate",
-    topicIntro: "Introduction to the topic:",
+    topicIntro: "Introduction to the debate topic:",
     bilateral: "Bilateral Agreements",
     atom: "Nuclear Phase-out",
     healthInsurance: "Health Insurance Premiums",
