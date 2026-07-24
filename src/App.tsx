@@ -7,6 +7,7 @@ import RoleSelection from "./screens/RoleSelection";
 import TopicIntro from "./screens/TopicIntro"
 import SteerDebateScreen from "./screens/SteerDebateScreen";
 import DebateScreen from "./screens/DebateScreen";
+import PartyDebateScreen from "./screens/PartyDebateScreen";
 import Summary from "./screens/Summary";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { useSearchParams } from "react-router-dom";
@@ -34,44 +35,44 @@ const App: React.FC = () => {
     { id: 3, side: "Contra", text: "Introduction" },
     { id: 4, side: "Pro", text: "Introduction" },
   ]);
-  const [inputText, setInputText] = useState<string>("");
+  // const [inputText, setInputText] = useState<string>("");
   const [userIntroMessage, setUserIntroMessage] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
+  // const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
   const [hasStarted, setHasStarted] = useState(false);
-  const [isPaused, setIsPaused] = useState(false);
+  // const [isPaused, setIsPaused] = useState(false);
   // console.log("FULL URL:", window.location.href);
   // console.log("Topic: "+urlTopic);
   // console.log("Role: " + urlRole);
   // console.log("InitialStep: " + initialStep);
     // console.log("Step: " + step);
-  // Timer für DEBATE (15 Min)
-  useEffect(() => {
-    if (step !== STEPS.DEBATE) return;
-    if (!hasStarted) return;
-    if (isPaused) return;
-    const id = globalThis.setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => globalThis.clearInterval(id);
-  }, [step, hasStarted, isPaused]);
+  // // Timer für DEBATE (15 Min)
+  // useEffect(() => {
+  //   if (step !== STEPS.DEBATE) return;
+  //   if (!hasStarted) return;
+  //   if (isPaused) return;
+  //   const id = globalThis.setInterval(() => {
+  //     setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+  //   }, 1000);
+  //   return () => globalThis.clearInterval(id);
+  // }, [step, hasStarted, isPaused]);
 
 
-  const formatTime = (seconds: number): string => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${m}:${s.toString().padStart(2, "0")}`;
-  };
+  // const formatTime = (seconds: number): string => {
+  //   const m = Math.floor(seconds / 60);
+  //   const s = seconds % 60;
+  //   return `${m}:${s.toString().padStart(2, "0")}`;
+  // };
 
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-    const newMessage: DebateMessage = {
-      id: Date.now(),
-      side: "You",
-      text: inputText.trim(),
-    };
-    setDebateMessages((prev) => [...prev, newMessage]);
-    setInputText("");
-  };
+  // const handleSend = () => {
+  //   if (!inputText.trim()) return;
+  //   const newMessage: DebateMessage = {
+  //     id: Date.now(),
+  //     side: "You",
+  //     text: inputText.trim(),
+  //   };
+  //   setDebateMessages((prev) => [...prev, newMessage]);
+  //   setInputText("");
+  // };
 
   const currentTopicTitle = selectedTopic;
 
@@ -115,7 +116,6 @@ const App: React.FC = () => {
         {step === STEPS.DEBATE && role === "WATCH" && (
           <DebateScreen
             topicTitle={currentTopicTitle?? ""}
-            timeLeft={formatTime(timeLeft ?? 0)}
             onExit={() => {
               console.log("Debate ended:" , new Date().toLocaleTimeString());
               setStep(STEPS.SUMMARY);
@@ -134,7 +134,25 @@ const App: React.FC = () => {
         {step === STEPS.DEBATE && role === "STEER" && (
           <SteerDebateScreen
             topicTitle={currentTopicTitle}
-            timeLeft={formatTime(timeLeft)}
+            onExit={() => {
+              console.log("Debate ended:" , new Date().toLocaleTimeString());
+              setStep(STEPS.SUMMARY);
+              setSelectedTopic("");
+              setUserIntroMessage(null);
+              setHasStarted(false);
+            }}
+            hasStarted={hasStarted}
+            onStart={() => {
+              console.log("Debate started:" , new Date().toLocaleTimeString());
+              setHasStarted(true);
+            }}
+            userIntroMessage={userIntroMessage}
+          />
+        )}
+
+        {step === STEPS.DEBATE && role === "PARTY" && (
+          <PartyDebateScreen
+            topicTitle={currentTopicTitle}
             onExit={() => {
               console.log("Debate ended:" , new Date().toLocaleTimeString());
               setStep(STEPS.SUMMARY);
