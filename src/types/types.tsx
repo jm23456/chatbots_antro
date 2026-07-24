@@ -5,7 +5,7 @@ export type Step =
   | "DEBATE"
   | "SUMMARY";
 
-export type Role = "WATCH" | "STEER" | "PARTICIPATE" | null;
+export type Role = "WATCH" | "STEER" | "PARTY" | null;
 
 export interface DebateMessage {
   id: number;
