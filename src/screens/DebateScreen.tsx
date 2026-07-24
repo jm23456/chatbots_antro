@@ -8,19 +8,13 @@ import mockDebateEN from '../debate_text/mockDebate.en.json';
 
 interface DebateScreenProps {
   topicTitle: string;
-  // messages: DebateMessage[];
-  timeLeft: string;
-  // inputText: string;
-  // setInputText: (value: string) => void;
-  // onSend: () => void;
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
-  // setIsPaused: (value: boolean) => void;
 }
 
 const DebateScreen: React.FC<DebateScreenProps> = ({
-  timeLeft,
+  topicTitle,
   onExit,
   hasStarted,
   onStart,
@@ -38,7 +32,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const pendingMessageIdRef = useRef<number | null>(null);
   // const isPausedRef = useRef(false);
   // const pausedWordCountRef = useRef(0);
-  const [showTimeExpired, setShowTimeExpired] = useState(false);
+  // const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
 
   type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
@@ -71,12 +65,12 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     roles?: Record<string, RoleData>;
   }
 
-  // Timer abgelaufen Check
-  useEffect(() => {
-    if (timeLeft === "0:00" && hasStarted && !showTimeExpired) {
-      setShowTimeExpired(true);
-    }
-  }, [timeLeft, hasStarted, showTimeExpired]);
+  // // Timer abgelaufen Check
+  // useEffect(() => {
+  //   if (timeLeft === "0:00" && hasStarted && !showTimeExpired) {
+  //     setShowTimeExpired(true);
+  //   }
+  // }, [timeLeft, hasStarted, showTimeExpired]);
 
   // Exit handlers
   const handleExitClick = () => {
@@ -162,12 +156,12 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       argumentBubbles.length > 0 &&
       // !isTyping &&
       // currentTypingText === undefined &&
-      !showDebateFinished &&
-      !showTimeExpired
+      !showDebateFinished
+      // !showTimeExpired
     ) {
       // setShowDebateFinished(true);
     }
-  }, [visibleBubbles, argumentBubbles.length, hasStarted, showDebateFinished, showTimeExpired]);
+  }, [visibleBubbles, argumentBubbles.length, hasStarted, showDebateFinished]);
 
   // Initiale Chat-History mit Arguments Intro Nachrichten
   // Reihenfolge: B, D, C, A, E (yellow, gray, blue, red, green)
@@ -296,10 +290,10 @@ useEffect(() => {
     };
   }, [isTyping, hasStarted, visibleBubbles]);
 
-  const handleTimeExpiredContinue = () => {
-  currentBubbleRef.current = null;
-  onExit();
-  }
+  // const handleTimeExpiredContinue = () => {
+  // currentBubbleRef.current = null;
+  // onExit();
+  // }
 
   return (
     
@@ -385,7 +379,7 @@ useEffect(() => {
       </div>
 
       <header className="screen-header" style={{marginBottom: "10px", marginTop: "0px"}}>
-        <p className="subtitle" style={{marginTop: "0px"}}>{t("healthInsurance")}</p>
+        <p className="subtitle" style={{marginTop: "0px"}}>{topicTitle || t("healthInsurance")}</p>
       </header>
 
       {/* Chat-History - chronologisch */}

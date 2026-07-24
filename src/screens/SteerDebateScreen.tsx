@@ -235,9 +235,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }] as ChatMessage[]);
 
     const finalizePendingMessage = () => {
-      console.log("Finalize");
       const messageID = pendingMessageIdRef.current
-      setChatHistory(prev => prev.map(m => {console.log("CHECK: ", m.id, "vs", messageID); return m.id === messageID? { ...m, text, isComplete: true } : m}));
+      setChatHistory(prev => prev.map(m => { return m.id === messageID? { ...m, text, isComplete: true } : m}));
       pendingMessageIdRef.current = null;
       continueProgress();
       setVisibleBubbles(prev => {
@@ -272,7 +271,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     const scriptForThisTurn = getScriptForOption(option);
     if (currentIndex >= scriptForThisTurn.length) return;
     const nextBubble = scriptForThisTurn[currentIndex];
-    console.log("NEXT BUBBLE: ", nextBubble);
     hasStartedRef.current = true;
     typewriterEffect(nextBubble.text, speakerColors[nextBubble.speaker as keyof typeof speakerColors], speakerToSide[nextBubble.speaker as keyof typeof speakerToSide], scriptForThisTurn);
   };
@@ -476,7 +474,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
                 key={`${pendingSteerEntry.id}-${index}`}
                 className="con-primary-btn"
                 style={{width: "100%", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)"}}
-                onClick={() => {handleSelectSteerOption(option, index === 0 ? "option1" : index === 1 ? "option2" : "option3");}}
+                onClick={() => {console.log("Chosen option: "+ option); handleSelectSteerOption(option, index === 0 ? "option1" : index === 1 ? "option2" : "option3"); }}
               >
                 {option}
               </button>
