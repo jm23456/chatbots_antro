@@ -13,8 +13,8 @@ type BubbleRef = {
   side: "pro" | "contra" | "undecided";
 } | null;
 
-// "Steering the Conversation" - Role
-interface SteerDebateScreenProps {
+// "Participate the Conversation" - Role
+interface PartyDebateScreenProps {
   topicTitle: string;
   onExit: () => void;
   hasStarted: boolean;
@@ -22,7 +22,7 @@ interface SteerDebateScreenProps {
   userIntroMessage?: string | null;
 }
 
-const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
+const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   topicTitle,
   onExit,
   hasStarted,
@@ -126,7 +126,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     return debateScript;
   };
 
-  const activeDebateScript = useMemo(() => getScriptForOption(selectedOption), [debateScript, debateScript2, debateScript3, selectedOption]);
+  const activeDebateScript = useMemo(() => getScriptForOption(selectedOption), [selectedOption]);
 
     const argumentBubbles = useMemo(() => {
       return activeDebateScript.map((msg) => ({
@@ -235,9 +235,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }] as ChatMessage[]);
 
     const finalizePendingMessage = () => {
-      console.log("Finalize");
       const messageID = pendingMessageIdRef.current
-      setChatHistory(prev => prev.map(m => {console.log("CHECK: ", m.id, "vs", messageID); return m.id === messageID? { ...m, text, isComplete: true } : m}));
+      setChatHistory(prev => prev.map(m => m.id === messageID ? { ...m, text, isComplete: true } : m));
       pendingMessageIdRef.current = null;
       continueProgress();
       setVisibleBubbles(prev => {
@@ -272,7 +271,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     const scriptForThisTurn = getScriptForOption(option);
     if (currentIndex >= scriptForThisTurn.length) return;
     const nextBubble = scriptForThisTurn[currentIndex];
-    console.log("NEXT BUBBLE: ", nextBubble);
     hasStartedRef.current = true;
     typewriterEffect(nextBubble.text, speakerColors[nextBubble.speaker as keyof typeof speakerColors], speakerToSide[nextBubble.speaker as keyof typeof speakerToSide], scriptForThisTurn);
   };
@@ -522,4 +520,4 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   );
 };
 
-export default SteerDebateScreen;
+export default PartyDebateScreen;
