@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
-import type { Role, DebateMessage, ChatMessage } from "../types/types";
+import type { ChatMessage } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import mockDebateDE from '../debate_text/mockDebate.de.json';
@@ -20,15 +20,10 @@ interface DebateScreenProps {
 }
 
 const DebateScreen: React.FC<DebateScreenProps> = ({
-  topicTitle,
   timeLeft,
-  inputText,
-  setInputText,
-  onSend,
   onExit,
   hasStarted,
   onStart,
-  setIsPaused
 }) => {
   type Color = "red" | "yellow" | "green" | "gray" | "blue";
   const { t, language } = useLanguage();
@@ -123,14 +118,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     E: "undecided",
   };
 
-  // Map the candidate color to the mockDebate role key so we can show language-specific descriptions
-  const roleByColor: Record<Color, SpeakerKey> = {
-    yellow: "B",
-    gray: "D",
-    blue: "E",
-    red: "A",
-    green: "C",
-  };
 
   // const getRoleDescription = (color: Color) =>
   //   debateData.roles?.[roleByColor[color]]?.description ?? "";
@@ -148,6 +135,28 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   }));
 }, [debateScript,speakerColors, speakerToSide]);
 
+  const progressInterval = useRef<number | null>(null);
+  const [progress, setProgress] = useState(0);
+
+  const continueProgress = () => {
+  console.log("Continuing progress..."+ debateScript.length + " progress: " + progress);
+  console.log("Debate length: " + debateScript.length);
+  setProgress((prev) => Math.min(prev + (100/debateScript.length), 100)); // Simuliere langsames Fortschreiten gegen Ende
+  console.log("progress " + progress);
+    };
+
+    const finishProgress = () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+
+      setProgress(100);
+
+      setTimeout(() => {
+        setProgress(0);
+      }, 300); // Kurze Verzögerung, um den Fortschrittsbalken auf 100% anzuzeigen
+    }
+
   // Check ob alle Argumente gesagt wurden
   useEffect(() => {
     if (
@@ -159,7 +168,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       !showDebateFinished &&
       !showTimeExpired
     ) {
-      setShowDebateFinished(true);
+      // setShowDebateFinished(true);
     }
   }, [visibleBubbles, argumentBubbles.length, hasStarted, showDebateFinished, showTimeExpired]);
 
@@ -235,6 +244,8 @@ useEffect(() => {
     };
 
     const startNextBubble = () => {
+      continueProgress();
+      console.log("Start next Bubble");
     if (visibleBubbles >= argumentBubbles.length) return;
     const nextBubble = argumentBubbles[visibleBubbles];
     hasStartedRef.current = true;
@@ -256,7 +267,10 @@ useEffect(() => {
 
     const handleContinue = () => {
     if (!hasStarted) {
+      continueProgress();
+      console.log("Progress after continue: " + progress);
       onStart();
+      console.log("Debate started");
       return;
     }
     // const isBusy = isTyping || currentTypingText !== undefined;
@@ -264,10 +278,29 @@ useEffect(() => {
     if (visibleBubbles < argumentBubbles.length) {
       startNextBubble();
     } else {
+      setShowDebateFinished(true);
+      finishProgress();
       onExit();
     }
   }
 
+    useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+
+        if (!isTyping) {
+          handleContinue();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isTyping, hasStarted, visibleBubbles]);
 
   const handleTimeExpiredContinue = () => {
   currentBubbleRef.current = null;
@@ -283,7 +316,7 @@ useEffect(() => {
         onCancel={handleExitCancel} 
       />
       {/* Timer abgelaufen Popup */}
-      {showTimeExpired && (
+      {/* {showTimeExpired && (
         <div className="start-debate-modal-overlay">
           <div className="start-debate-modal"style={{padding: 0, overflow: "hidden"}}>
             <div style={{
@@ -308,7 +341,7 @@ useEffect(() => {
           </div>
         </div>
         </div>
-      )}
+      )} */}
     
       {/* Debatte beendet Popup */}
       {showDebateFinished && (
@@ -332,9 +365,26 @@ useEffect(() => {
         </div>
       )}
       <div className="top-exit-row" style={{marginBottom: "0px"}}>
-        <span className="timer-display">{timeLeft}</span>
+        <div
+        style={{
+          width: "180px",
+          height: "8px",
+          backgroundColor: "#e5e7eb",
+          borderRadius: "999px",
+          overflow: "hidden",
+        }}>
+          <div
+            style={{
+              width: `${progress}%`,
+              height: "100%",
+              background: "#7c3aed",
+              transition: "width 150ms linear",
+            }}
+          />
+        </div>
+        <div>{Math.round(progress)}%</div>
         <div className="top-buttons-row">
-          <button className="exit-btn" onClick={handleExitClick}>
+          <button className="exit-btn" style={{marginLeft: "605px"}} onClick={handleExitClick}>
             {t("exit")}
           </button>
         </div>

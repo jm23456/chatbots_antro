@@ -124,6 +124,28 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }));
   }, [debateScript, speakerColors, speakerToSide]);
 
+  const [progress, setProgress] = useState(0);
+  const progressInterval = useRef<number | null>(null);
+
+  const continueProgress = () => {
+  console.log("Continuing progress..."+ debateScript.length);
+  console.log( " progress: " + progress);
+  setProgress((prev) => Math.min(prev + 100/debateScript.length || 1, 100)); // Simuliere langsames Fortschreiten gegen Ende
+  console.log("progress" + progress);
+
+  }
+    const finishProgress = () => {
+      if (progressInterval.current) {
+        clearInterval(progressInterval.current);
+      }
+
+      setProgress(100);
+
+      setTimeout(() => {
+        setProgress(0);
+      }, 300); // Kurze Verzögerung, um den Fortschrittsbalken auf 100% anzuzeigen
+    }
+
    // Check ob alle Argumente gesagt wurden
     useEffect(() => {
       if (
@@ -134,7 +156,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         !showDebateFinished &&
         !showTimeExpired
       ) {
-        setShowDebateFinished(true);
+        // setShowDebateFinished(true);
       }
     }, [visibleBubbles, argumentBubbles.length, hasStarted, // isTyping,
       showDebateFinished, showTimeExpired]);
@@ -211,6 +233,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
   // Starte automatisch die erste Nachricht beim Laden
   const startNextBubble = () => {
+    console.log("Start next Bubble");
+    continueProgress();
     if (visibleBubbles >= argumentBubbles.length) return;
     const nextBubble = argumentBubbles[visibleBubbles];
     hasStartedRef.current = true;
@@ -233,7 +257,10 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
   const handleContinue = () => {
     if (!hasStarted) {
+      continueProgress();
+      console.log("Progress after continue: " + progress);
       onStart();
+      console.log("Debate started");
       startNextBubble();
       return;
     }
@@ -241,9 +268,30 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     if (visibleBubbles < argumentBubbles.length) {
       startNextBubble();
     } else {
+      setShowDebateFinished(true);
+      finishProgress();
       onExit();
+
     }
   };
+
+    useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.code === "Space") {
+        event.preventDefault();
+
+        if (!isTyping) {
+          handleContinue();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isTyping, hasStarted, visibleBubbles]);
 
   const handleTimeExpiredContinue = () => {
     currentBubbleRef.current = null;
@@ -259,7 +307,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         onCancel={handleExitCancel} 
       />
       {/* Timer abgelaufen Popup */}
-      {showTimeExpired && (
+      {/* {showTimeExpired && (
         <div className="start-debate-modal-overlay">
           <div className="start-debate-modal"style={{padding: 0, overflow: "hidden"}}>
             <div style={{
@@ -284,7 +332,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
           </div>
         </div>
         </div>
-      )}
+      )} */}
       {/* Debatte beendet Popup */}
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
@@ -307,10 +355,27 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         </div>
       )}
       <div className="top-exit-row" style={{marginBottom: "0px"}}>
-        <span className="timer-display">{timeLeft}</span>
+        <div
+        style={{
+          width: "180px",
+          height: "8px",
+          backgroundColor: "#e5e7eb",
+          borderRadius: "999px",
+          overflow: "hidden",
+        }}>
+          <div
+            style={{
+              width: `${progress}%`,
+              height: "100%",
+              background: "#7c3aed",
+              transition: "width 150ms linear",
+            }}
+          />
+        </div>
+        <div>{Math.round(progress)}%</div>
         <div className="top-buttons-row">
           {/* <MuteButton isMuted={isMuted} onToggle={toggleMute} /> */}
-          <button className="exit-btn" onClick={handleExitClick}>
+          <button className="exit-btn" style={{marginLeft: "605px"}} onClick={handleExitClick}>
             {t("exit")}
           </button>
         </div>
