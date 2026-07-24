@@ -3,8 +3,7 @@ import ExitWarningModal from "../components/ExitWarningModal";
 import type { ChatMessage } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
-import mockDebateDE from '../debate_text/mockDebate.de.json';
-import mockDebateEN from '../debate_text/mockDebate.en.json';
+import steerDebateEN from '../debate_text/steerDebate.en.json';
 
 type Color = "red" | "yellow" | "green" | "gray" | "blue";
 
@@ -40,9 +39,12 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const hasStartedRef = useRef(false);
   const currentBubbleRef = useRef<BubbleRef>(null);
   const pendingMessageIdRef = useRef<number | null>(null);
+  const visibleBubblesRef = useRef(0);
   const { t, language } = useLanguage();
   const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
+  const [pendingSteerEntry, setPendingSteerEntry] = useState<SteerOptionEntry | null>(null);
+  const nextMessageIdRef = useRef(1000);
 
   type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
 
@@ -59,18 +61,20 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     orientation?: "pro" | "contra" | "undecided";
   }
 
+  type SteerOptionEntry = {
+    id: number;
+    speaker: SpeakerKey;
+    option1: string;
+    option2: string;
+    option3: string;
+  }
+
   type DebateData = {
     debate_script?: DebateScriptItem[];
     "Arguments Intro"?: DebateScriptItem[];
     roles?: Record<string, RoleData>;
+    Steer?: SteerOptionEntry[];
   }
-
-  // Timer abgelaufen Check
-  useEffect(() => {
-    if (timeLeft === "0:00" && hasStarted && !showTimeExpired) {
-      setShowTimeExpired(true);
-    }
-  }, [timeLeft, hasStarted, showTimeExpired]);
 
   // Exit handlers
   const handleExitClick = () => {
@@ -90,9 +94,9 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Mock-Debatte: Krankenkassenprämien
+  // Steer-Debatte
 
-  const debateData = (language === 'de' ? mockDebateDE : mockDebateEN) as DebateData;
+  const debateData = useMemo(() => (steerDebateEN) as DebateData, [language]);
 
   const speakerColors: Record<string, Color> = {
     A: "red",
@@ -111,6 +115,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   };
   const debateScript = debateData.debate_script ?? [];
   const argumentsIntro = debateData["Arguments Intro"] ?? [];
+  const steerEntries = debateData.Steer ?? [];
 
     const argumentBubbles = useMemo(() => {
       return debateScript
@@ -182,16 +187,16 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       isIntro: true
     }));
     
-    // Füge User-Nachricht vom Intro hinzu, falls vorhanden
-    if (userIntroMessage) {
-      messages.push({
-        id: Date.now(),
-        type: "user",
-        text: userIntroMessage,
-        isComplete: true,
-        isIntro: true
-      });
-    }
+    // // Füge User-Nachricht vom Intro hinzu, falls vorhanden
+    // if (userIntroMessage) {
+    //   messages.push({
+    //     id: messages.length + 1000,
+    //     type: "user",
+    //     text: userIntroMessage,
+    //     isComplete: true,
+    //     isIntro: true
+    //   });
+    // }
     
     return messages;
   }, [argumentsIntro, userIntroMessage, speakerColors, speakerOrder, speakerToSide]);
@@ -203,9 +208,14 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }
   }, [initialChatHistory, chatHistory.length]);
 
+  const getNextMessageId = () => {
+    nextMessageIdRef.current += 1;
+    return nextMessageIdRef.current;
+  };
+
   const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
     currentBubbleRef.current = { text, color, side };
-    const pendingId = Date.now() ;
+    const pendingId = getNextMessageId();
     pendingMessageIdRef.current = pendingId;
     setChatHistory(prev => [...prev, {
       id: pendingId,
@@ -219,7 +229,21 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     const finalizePendingMessage = () => {
       setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
       pendingMessageIdRef.current = null;
-      setVisibleBubbles(prev => prev + 1);
+      setVisibleBubbles(prev => {
+        const nextVisible = prev + 1;
+        visibleBubblesRef.current = nextVisible;
+        const shouldPauseForSteer = nextVisible > 0 && nextVisible % 3 === 0 && nextVisible < argumentBubbles.length;
+
+        if (shouldPauseForSteer) {
+          const steerId = Math.floor((nextVisible - 1) / 3) + 1; // alle 3 Nachrichten Optionen anzeigen & auswählen
+          const matchingSteerEntry = steerEntries.find((entry) => entry.id === steerId);
+          setPendingSteerEntry(matchingSteerEntry ?? null);
+        } else {
+          setPendingSteerEntry(null);
+        }
+
+        return nextVisible;
+      });
       setIsTyping(false);
       currentBubbleRef.current = null;
     };
@@ -235,8 +259,9 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const startNextBubble = () => {
     console.log("Start next Bubble");
     continueProgress();
-    if (visibleBubbles >= argumentBubbles.length) return;
-    const nextBubble = argumentBubbles[visibleBubbles];
+    const currentIndex = visibleBubblesRef.current;
+    if (currentIndex >= argumentBubbles.length) return;
+    const nextBubble = argumentBubbles[currentIndex];
     hasStartedRef.current = true;
     typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
   };
@@ -265,6 +290,10 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       return;
     }
 
+    if (pendingSteerEntry) {
+      return;
+    }
+
     if (visibleBubbles < argumentBubbles.length) {
       startNextBubble();
     } else {
@@ -273,6 +302,21 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       onExit();
 
     }
+  };
+
+  const handleSelectSteerOption = (optionText: string) => {
+    setChatHistory(prev => [
+      ...prev,
+      {
+        id: getNextMessageId(),
+        type: "user" as const,
+        text: optionText,
+        isComplete: true,
+        isIntro: false,
+      },
+    ]);
+    setPendingSteerEntry(null);
+    startNextBubble();
   };
 
     useEffect(() => {
@@ -292,12 +336,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isTyping, hasStarted, visibleBubbles]);
-
-  const handleTimeExpiredContinue = () => {
-    currentBubbleRef.current = null;
-    onExit();
-  }
-
 
   return (
     <div className="screen active-debate-screen">
@@ -417,13 +455,30 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         ))}
         
         <div ref={messagesEndRef} />
+              {pendingSteerEntry && (
+        <div style={{marginTop: "12px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center"}}>
+          <p style={{margin: 0, fontWeight: 600}}>Choose an option:</p>
+          <div style={{display: "flex", flexDirection: "row", gap: "8px", width: "100%", maxWidth: "520px"}}>
+            {[pendingSteerEntry.option1, pendingSteerEntry.option2, pendingSteerEntry.option3].map((option, index) => (
+              <button
+                key={`${pendingSteerEntry.id}-${index}`}
+                className="con-primary-btn"
+                style={{width: "100%", background: "#f5f3ff", color: "#5b21b6", border: "1px solid #c4b5fd"}}
+                onClick={() => {handleSelectSteerOption(option); console.log(option);}}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
       </section>
 
       <div className="footer-end-row" style={{marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center"}}>
         <button
           className="con-primary-btn"
           onClick={handleContinue}
-          disabled={isTyping}
+          disabled={isTyping || !!pendingSteerEntry}
         >
           {hasStarted ? t("next") : t("startDebate")}
         </button>
