@@ -34,6 +34,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   // const pausedWordCountRef = useRef(0);
   // const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
+  const nextMessageIdRef = useRef(1000);
+  const visibleBubblesRef = useRef(0);
 
   type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
 
@@ -191,6 +193,13 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       setChatHistory(initialChatHistory);
     }
   }, [initialChatHistory, chatHistory.length]);
+
+  
+  const getNextMessageId = () => {
+    nextMessageIdRef.current += 1;
+    return nextMessageIdRef.current;
+  };
+
   const firstRender = useRef(true);
 
 useEffect(() => {
@@ -207,7 +216,7 @@ useEffect(() => {
   // Typewriter-Effekt: Text Wort für Wort in der Chatbot-Bubble aufbauen
   const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
        currentBubbleRef.current = { text, color, side };
-        const pendingId = Date.now() ;
+        const pendingId = getNextMessageId() ;
         pendingMessageIdRef.current = pendingId;
         setChatHistory(prev => [...prev, {
           id: pendingId,
@@ -219,12 +228,18 @@ useEffect(() => {
         }] as ChatMessage[]);
       
       const finalizePendingMessage = () => {
-        setChatHistory(prev => prev.map(m => m.id === pendingMessageIdRef.current ? { ...m, text, isComplete: true } : m));
+        setChatHistory(prev => prev.map(m => m.id === pendingId ? { ...m, text, isComplete: true } : m));
         pendingMessageIdRef.current = null;
         continueProgress();
-        setVisibleBubbles(prev => prev + 1);
+        setVisibleBubbles(prev => {
+        const nextVisible = prev + 1;
+        visibleBubblesRef.current = nextVisible;
+        return nextVisible;
+        });
+
         setIsTyping(false);
         currentBubbleRef.current = null;
+
       };
 
 
@@ -236,8 +251,8 @@ useEffect(() => {
     };
 
     const startNextBubble = () => {
-    if (visibleBubbles >= argumentBubbles.length) return;
-    const nextBubble = argumentBubbles[visibleBubbles];
+      if (visibleBubblesRef.current >= argumentBubbles.length) return;
+      const nextBubble = argumentBubbles[visibleBubblesRef.current];
     hasStartedRef.current = true;
     typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
   };
@@ -271,6 +286,11 @@ useEffect(() => {
       onExit();
     }
   }
+
+  // Auto-scroll wenn sich chatHistory oder isTyping ändert
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory, isTyping]);
 
     useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -425,12 +445,11 @@ useEffect(() => {
               borderRadius: "1.5rem 1.5rem 0 0",
               marginBottom: "0.5rem"
             }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("readyText1")}</p>
+            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2>
-            <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>{t("readyText")}</p>
-            <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p>
+            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
+            <p className="modal-text" style={{fontSize: "16px", marginBottom: "10px", color: "#050505"}}>🗣 The chatbots will discuss the topic now</p>
             <button className="start-debate-btn" onClick={onStart}>
               {t("startDebate")}
             </button>
