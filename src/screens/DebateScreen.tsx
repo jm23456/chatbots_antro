@@ -23,31 +23,16 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const { t, language } = useLanguage();
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
-  // const [currentTypingText, setCurrentTypingText] = useState<string | undefined>(undefined);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const hasStartedRef = useRef(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  // const typingIntervalRef = useRef<number | null>(null);
   const currentBubbleRef = useRef<{ text: string; color: Color; side: "pro" | "contra" | "undecided" } | null>(null);
   const pendingMessageIdRef = useRef<number | null>(null);
-  // const isPausedRef = useRef(false);
-  // const pausedWordCountRef = useRef(0);
-  // const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
   const nextMessageIdRef = useRef(1000);
   const visibleBubblesRef = useRef(0);
 
   type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
-
-  // Typewriter-Geschwindigkeit pro Speaker (ms pro Wort)
-  // Höherer Wert = langsamer
-  // const TYPEWRITER_SPEED: Record<string, number> = {
-  //   A: 450,   // Rot - langsamer
-  //   B: 380,   // Gelb - normal
-  //   C: 380,   // Grün - normal
-  //   D: 380,   // Grau - normal
-  //   E: 380,   // Blau - normal
-  // };
 
   type DebateScriptItem = {
     id: number;
@@ -66,13 +51,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     "Arguments Intro"?: DebateScriptItem[];
     roles?: Record<string, RoleData>;
   }
-
-  // // Timer abgelaufen Check
-  // useEffect(() => {
-  //   if (timeLeft === "0:00" && hasStarted && !showTimeExpired) {
-  //     setShowTimeExpired(true);
-  //   }
-  // }, [timeLeft, hasStarted, showTimeExpired]);
 
   // Exit handlers
   const handleExitClick = () => {
@@ -95,7 +73,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   
 
   // Mock-Debatte: Krankenkassenprämien
-
   const debateData = (language === 'de' ? mockDebateDE : mockDebateEN) as DebateData;
 
   const speakerColors: Record<string, Color> = {
@@ -113,10 +90,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     D: "pro",
     E: "undecided",
   };
-
-
-  // const getRoleDescription = (color: Color) =>
-  //   debateData.roles?.[roleByColor[color]]?.description ?? "";
 
   const debateScript = debateData.debate_script ?? [];
   const argumentsIntro = debateData["Arguments Intro"] ?? [];
@@ -156,10 +129,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       hasStarted &&
       visibleBubbles >= argumentBubbles.length &&
       argumentBubbles.length > 0 &&
-      // !isTyping &&
-      // currentTypingText === undefined &&
       !showDebateFinished
-      // !showTimeExpired
     ) {
       // setShowDebateFinished(true);
     }
@@ -262,13 +232,7 @@ useEffect(() => {
           startNextBubble();
         }
     return () => undefined;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasStarted]);
-
-  // Auto-scroll wenn sich chatHistory oder isTyping ändert
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [chatHistory, isTyping]);
 
     const handleContinue = () => {
     if (!hasStarted) {
@@ -276,7 +240,6 @@ useEffect(() => {
       onStart();
       return;
     }
-    // const isBusy = isTyping || currentTypingText !== undefined;
 
     if (visibleBubbles < argumentBubbles.length) {
       startNextBubble();
@@ -310,11 +273,6 @@ useEffect(() => {
     };
   }, [isTyping, hasStarted, visibleBubbles]);
 
-  // const handleTimeExpiredContinue = () => {
-  // currentBubbleRef.current = null;
-  // onExit();
-  // }
-
   return (
     
     <div className="screen debate-screen">
@@ -323,33 +281,6 @@ useEffect(() => {
         onConfirm={handleExitConfirm} 
         onCancel={handleExitCancel} 
       />
-      {/* Timer abgelaufen Popup */}
-      {/* {showTimeExpired && (
-        <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal"style={{padding: 0, overflow: "hidden"}}>
-            <div style={{
-              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-              borderRadius: "1.5rem 1.5rem 0 0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px"
-            }}>
-            <div className="modal-icon">⏱️</div>
-            <span style={{fontSize: "16px", fontWeight: "600", color: "#dc2626"}}>{t("timeExpired")}</span>
-            </div>
-            <div style={{padding: "0rem 1rem 1.5rem 1rem"}}>
-              <div className="time-bar">
-              <div className="time-bar-fill"></div>
-              </div>
-            <p style={{fontSize: "18px"}}>{t("timeExpiredFinish")}</p>
-            <button className="start-debate-btn" onClick={() => {setShowTimeExpired(false); handleTimeExpiredContinue();}}>
-              {t("continue")}
-            </button>
-          </div>
-        </div>
-        </div>
-      )} */}
     
       {/* Debatte beendet Popup */}
       {showDebateFinished && (
@@ -448,7 +379,6 @@ useEffect(() => {
             <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
             <p className="modal-text" style={{fontSize: "16px", marginBottom: "10px", color: "#050505"}}>🗣 The chatbots will discuss the topic now</p>
             <button className="start-debate-btn" onClick={onStart}>
               {t("startDebate")}

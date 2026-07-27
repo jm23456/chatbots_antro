@@ -3,7 +3,7 @@ import ExitWarningModal from "../components/ExitWarningModal";
 import type { ChatMessage } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
-import steerDebateEN from '../debate_text/steerDebate.en.json';
+import partyDebateEN from '../debate_text/partyDebate.en.json';
 
 type Color = "red" | "yellow" | "green" | "gray" | "blue";
 
@@ -19,7 +19,6 @@ interface PartyDebateScreenProps {
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
-  userIntroMessage?: string | null;
 }
 
 const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
@@ -27,7 +26,6 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   onExit,
   hasStarted,
   onStart,
-  userIntroMessage,
 }) => {
   const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -102,9 +100,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Steer-Debatte
-
-  const debateData = useMemo(() => (steerDebateEN) as DebateData, [language]);
+  // Party-MockDebatte 
+  const debateData = useMemo(() => (partyDebateEN) as DebateData, [language]);
 
   const speakerColors: Record<string, Color> = {
     A: "red",
@@ -379,33 +376,6 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
         onConfirm={handleExitConfirm} 
         onCancel={handleExitCancel} 
       />
-      {/* Timer abgelaufen Popup */}
-      {/* {showTimeExpired && (
-        <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal"style={{padding: 0, overflow: "hidden"}}>
-            <div style={{
-              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-              borderRadius: "1.5rem 1.5rem 0 0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px"
-            }}>
-            <div className="modal-icon">⏱️</div>
-            <span style={{fontSize: "16px", fontWeight: "600", color: "#dc2626"}}>{t("timeExpired")}</span>
-            </div>
-            <div style={{padding: "0rem 1rem 1.5rem 1rem"}}>
-              <div className="time-bar">
-              <div className="time-bar-fill"></div>
-              </div>
-            <p style={{fontSize: "18px"}}>{t("timeExpiredFinish")}</p>
-            <button className="start-debate-btn" onClick={() => {setShowTimeExpired(false); handleTimeExpiredContinue();}}>
-              {t("continue")}
-            </button>
-          </div>
-        </div>
-        </div>
-      )} */}
       {/* Debatte beendet Popup */}
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
@@ -534,8 +504,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
             <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>Your Role</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <p className="modal-text" style={{fontSize: "18px", marginTop: "5px", marginBottom: "3px", color: "#050505"}}>You are part of the debate</p>
-            <p className="modal-text" style={{fontSize: "18px", marginBottom: "5px", color: "#050505"}}>You will be given three options to decide how you want to participate in it</p> 
+            <p className="modal-text" style={{fontSize: "16px", marginTop: "5px", marginBottom: "3px", color: "#050505"}}>You are part of the debate.</p>
+            <p className="modal-text" style={{fontSize: "16px", marginBottom: "5px", color: "#050505"}}>Start by reading the Intros of the Chatbot and choose the Intro that best represents your opinion</p> 
             {/* <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p> */}
             <button className="start-debate-btn" onClick={handleStart}>
               Start
@@ -557,9 +527,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
             <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
-            {/* <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>{t("readyText")}</p>
-            <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p> */}
+            <p className="modal-text" style={{fontSize: "16px", marginBottom: "10px", color: "#050505"}}>From Time to Time, you will be given three options to decide how you want to participate in the debate</p> 
             <button className="start-debate-btn" onClick={handleStartDebate}>
               {t("startDebate")}
             </button>

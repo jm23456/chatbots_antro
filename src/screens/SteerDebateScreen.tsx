@@ -95,8 +95,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Steer-Debatte
-
+  // Steer-MockDebatte
   const debateData = useMemo(() => (steerDebateEN) as DebateData, [language]);
 
   const speakerColors: Record<string, Color> = {
@@ -189,17 +188,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       isComplete: true,
       isIntro: true
     }));
-    
-    // // Füge User-Nachricht vom Intro hinzu, falls vorhanden
-    // if (userIntroMessage) {
-    //   messages.push({
-    //     id: messages.length + 1000,
-    //     type: "user",
-    //     text: userIntroMessage,
-    //     isComplete: true,
-    //     isIntro: true
-    //   });
-    // }
     
     return messages;
   }, [argumentsIntro, userIntroMessage, speakerColors, speakerOrder, speakerToSide]);
@@ -352,33 +340,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         onConfirm={handleExitConfirm} 
         onCancel={handleExitCancel} 
       />
-      {/* Timer abgelaufen Popup */}
-      {/* {showTimeExpired && (
-        <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal"style={{padding: 0, overflow: "hidden"}}>
-            <div style={{
-              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-              borderRadius: "1.5rem 1.5rem 0 0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px"
-            }}>
-            <div className="modal-icon">⏱️</div>
-            <span style={{fontSize: "16px", fontWeight: "600", color: "#dc2626"}}>{t("timeExpired")}</span>
-            </div>
-            <div style={{padding: "0rem 1rem 1.5rem 1rem"}}>
-              <div className="time-bar">
-              <div className="time-bar-fill"></div>
-              </div>
-            <p style={{fontSize: "18px"}}>{t("timeExpiredFinish")}</p>
-            <button className="start-debate-btn" onClick={() => {setShowTimeExpired(false); handleTimeExpiredContinue();}}>
-              {t("continue")}
-            </button>
-          </div>
-        </div>
-        </div>
-      )} */}
       {/* Debatte beendet Popup */}
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
@@ -420,7 +381,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         </div>
         <div>{Math.round(progress)}%</div>
         <div className="top-buttons-row">
-          {/* <MuteButton isMuted={isMuted} onToggle={toggleMute} /> */}
           <button className="exit-btn" style={{marginLeft: "605px"}} onClick={handleExitClick}>
             {t("exit")}
           </button>
@@ -497,7 +457,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
             <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
             <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px", color: "#050505"}}>🗣 The chatbots will discuss the topic now.</p>
             <p className="modal-text" style={{fontSize: "16px", marginTop: "0px", color: "#050505"}}>💬 From time to time, you will be asked to guide the direction the debate!</p>
             <button className="start-debate-btn" onClick={onStart}>

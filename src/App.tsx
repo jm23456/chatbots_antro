@@ -165,7 +165,6 @@ const App: React.FC = () => {
               console.log("Debate started:" , new Date().toLocaleTimeString());
               setHasStarted(true);
             }}
-            userIntroMessage={userIntroMessage}
           />
         )}
 
