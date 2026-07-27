@@ -306,7 +306,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   }, [hasStarted]);
 
   useEffect(() => {
-    scrollToBottom();
+    if (hasStarted){
+    scrollToBottom()};
   }, [chatHistory, pendingSteerEntry]);
 
   const handleContinue = () => {
@@ -530,11 +531,11 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               borderRadius: "1.5rem 1.5rem 0 0",
               marginBottom: "0.5rem"
             }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("readyText1")}</p>
+            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>Your Role</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>Your role is to participate in the debate</h2>
-            <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>You are part of the debate. You will be given three options to decide how you want to participate in it.</p>
+            <p className="modal-text" style={{fontSize: "18px", marginTop: "5px", marginBottom: "3px", color: "#050505"}}>You are part of the debate</p>
+            <p className="modal-text" style={{fontSize: "18px", marginBottom: "5px", color: "#050505"}}>You will be given three options to decide how you want to participate in it</p> 
             {/* <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p> */}
             <button className="start-debate-btn" onClick={handleStart}>
               Start
@@ -553,10 +554,10 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               borderRadius: "1.5rem 1.5rem 0 0",
               marginBottom: "0.5rem"
             }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("readyText1")}</p>
+            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2>
+            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
             {/* <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>{t("readyText")}</p>
             <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p> */}
             <button className="start-debate-btn" onClick={handleStartDebate}>
