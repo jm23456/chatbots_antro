@@ -494,12 +494,12 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
               borderRadius: "1.5rem 1.5rem 0 0",
               marginBottom: "0.5rem"
             }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("readyText1")}</p>
+            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
             <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2>
-            <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px"}}>{t("readyText")}</p>
-            <p className="modal-text" style={{fontSize: "16px", marginTop: "0px"}}>{t("readyText4")}</p>
+            {/* <h2 className="modal-title" style={{fontSize: "22px", marginTop: "5px"}}>{t("ready")}</h2> */}
+            <p className="modal-text" style={{fontSize: "16px", marginBottom: "2px", color: "#050505"}}>🗣 The chatbots will discuss the topic now.</p>
+            <p className="modal-text" style={{fontSize: "16px", marginTop: "0px", color: "#050505"}}>💬 From time to time, you will be asked to guide the direction the debate!</p>
             <button className="start-debate-btn" onClick={onStart}>
               {t("startDebate")}
             </button>

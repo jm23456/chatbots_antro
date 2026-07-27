@@ -23,7 +23,7 @@ const ExitWarningModal: React.FC<ExitWarningModalProps> = ({ isOpen, onConfirm, 
             }}>
         <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#D32F2F"}}>{t("exit2")}</p>
         </div>
-        <div style={{padding: "0rem 1.5rem 1rem 0.5rem"}}>
+        <div style={{padding: "0rem 1rem 1rem 1rem"}}>
           <p style={{fontSize: "17px"}}>{t("exitSure")}</p>
           <div className="exit-modal-buttons">
             <button className="exit-cancel-btn" onClick={onCancel}>

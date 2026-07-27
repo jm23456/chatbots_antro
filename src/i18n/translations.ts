@@ -62,8 +62,8 @@ de: {
     debateFinishedText: "Gehe nun weiter zur Zusammenfassung",
     goToSummary: "Zur Zusammenfassung",
     summaryPopup1: "Runde 3 von 3 ●●●",
-    summaryPopup2: "Debatte beendet.",
-    summaryPopup3: "Hier kannst du die wichtigsten Stichpunkte der Debatte nochmals durchlesen.",
+    summaryPopup2: "Debatte beendet",
+    summaryPopup3: "Hier kannst du die wichtigsten Stichpunkte der Debatte nochmals durchlesen",
     skipSpeaker: "Nachricht direkt anzeigen"
 },
 en: {
@@ -128,8 +128,8 @@ en: {
     debateFinishedText: "Go to the summary now to see the key points.",
     goToSummary: "Go to Summary",
     summaryPopup1: "Round 3 of 3 ●●●",
-    summaryPopup2: "Debate finished.",
-    summaryPopup3: "Here you can review the key points of the debate.",
+    summaryPopup2: "Debate finished",
+    summaryPopup3: "Here you can review the key points of the debate",
     skipSpeaker: "Show message directly"
 },
 } as const;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import CandidateCardIntro from '../components/CandidateCardIntro';
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 
@@ -33,10 +32,10 @@ const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
                 borderRadius: "1.5rem 1.5rem 0 0",
                 marginBottom: "0.5rem"
               }}>
-                <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("summaryPopup1")}</p>
+                <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("summaryPopup2")}</p>
               </div>
               <div style={{padding: "0rem 1.5rem 1.5rem 1.5rem"}}>
-                <p style={{fontSize: "18px", marginTop: "10px", fontWeight: "600"}}>{t("summaryPopup2")}</p>
+                {/* <p style={{fontSize: "18px", marginTop: "10px", fontWeight: "600"}}>{t("summaryPopup2")}</p> */}
                 <p style={{fontSize: "18px"}}>{t("summaryPopup3")}</p>
                 <button className="start-debate-btn" onClick={() => setShowPopup(false)}>
                   {t("continue")}
