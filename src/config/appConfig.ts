@@ -1,4 +1,4 @@
-import { debateConfig } from './debateConfig.js';
+import { debateConfig } from './debateConfig';
 
 export const appConfig = {
   app: {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-import type { Step, Role, DebateMessage } from "./types/types";
+import type { Step, Role } from "./types/types";
 
 import RoleSelection from "./screens/RoleSelection";
 import TopicIntro from "./screens/TopicIntro"

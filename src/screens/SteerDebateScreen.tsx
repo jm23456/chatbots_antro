@@ -39,7 +39,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const pendingMessageIdRef = useRef<number | null>(null);
   const visibleBubblesRef = useRef(0);
   const { t, language } = useLanguage();
-  const [showTimeExpired, setShowTimeExpired] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
   const [pendingSteerEntry, setPendingSteerEntry] = useState<SteerOptionEntry | null>(null);
   const [selectedOption, setSelectedOption] = useState<"option1" | "option2" | "option3" | null>(null);
@@ -162,13 +161,12 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         visibleBubbles >= argumentBubbles.length &&
         argumentBubbles.length > 0 &&
         // !isTyping &&
-        !showDebateFinished &&
-        !showTimeExpired
+        !showDebateFinished
       ) {
         // setShowDebateFinished(true);
       }
     }, [visibleBubbles, argumentBubbles.length, hasStarted, // isTyping,
-      showDebateFinished, showTimeExpired]);
+      showDebateFinished]);
 
   // Initiale Chat-History mit Arguments Intro Nachrichten
   // Reihenfolge: B, D, E, A, C (yellow, gray, blue, red, green)

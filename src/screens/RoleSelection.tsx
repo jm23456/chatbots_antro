@@ -3,7 +3,6 @@ import type { Role } from "../types/types";
 // import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
 import { useLanguage } from "../hooks/useLanguage";
-import topicConfig from "../config/topicConfig";
 import { useSearchParams } from "react-router-dom";
 
 
@@ -34,12 +33,12 @@ const RoleSelection: React.FC<RoleSelectionProps> = ({
       description: "You observe and follow the arguments.",
     },*/
     {
-      id: "COMMENT",
+      id: "WATCH",
       label: t("comment"),
       description: "You can send questions and short comments.",
     },
     {
-      id: "ACTIVE",
+      id: "STEER",
       label: t("active"),
       description: "You participate as if you were one side.",
     },
