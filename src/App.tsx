@@ -29,12 +29,12 @@ const App: React.FC = () => {
   const [step, setStep] = useState<string>(initialStep);
   const [selectedTopic, setSelectedTopic] = useState<string>(urlTopic ?? "");
   const [role, setRole] = useState<Role>(urlRole ?? "");
-  const [debateMessages, setDebateMessages] = useState<DebateMessage[]>([
-    { id: 1, side: "Contra", text: "Introduction" },
-    { id: 2, side: "Pro", text: "Introduction" },
-    { id: 3, side: "Contra", text: "Introduction" },
-    { id: 4, side: "Pro", text: "Introduction" },
-  ]);
+  // const [debateMessages, setDebateMessages] = useState<DebateMessage[]>([
+  //   { id: 1, side: "Contra", text: "Introduction" },
+  //   { id: 2, side: "Pro", text: "Introduction" },
+  //   { id: 3, side: "Contra", text: "Introduction" },
+  //   { id: 4, side: "Pro", text: "Introduction" },
+  // ]);
   // const [inputText, setInputText] = useState<string>("");
   const [userIntroMessage, setUserIntroMessage] = useState<string | null>(null);
   // const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
