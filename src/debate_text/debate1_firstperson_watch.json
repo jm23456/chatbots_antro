@@ -1,0 +1,112 @@
+{
+  "schema_version": "1.0",
+
+  "debate_id": "arena_healthcare_premiums",
+  "title": "Steigende Krankenkassenprämien",
+  "source": "Arena SRF 07.10.2016 – Prämienschock (gekürztes Beispiel, 2 Runden)",
+  "language": "de",
+
+  "condition": {
+    "linguistic_style": "first_person",
+    "interaction_level": "watching"
+  },
+
+  "roles": {
+    "SYSTEM": {
+      "label": "System",
+      "description": "Neutraler Ein- und Ausstieg ohne Moderation"
+    },
+    "A": {
+      "label": "Kosten- & Versicherer-Perspektive",
+      "stance": "contra",
+      "orientation": "kostenkritisch, steuerungsorientiert",
+      "description": "Steigende Prämien sind Folge explodierender Kosten von immer mehr Behandlungen; es braucht Steuerungsmöglichkeiten für Krankenkassen.",
+      "display": { "color": "red", "avatar": "red_standard.jpg" }
+    },
+    "B": {
+      "label": "Solidarität & soziale Perspektive",
+      "stance": "pro",
+      "orientation": "links/grün, sozialpolitisch",
+      "description": "Prämien sind für viele Familien kaum mehr tragbar; Lösung liegt in Solidarität und fairer Verteilung von Kosten, nicht im Abbau von Leistungen.",
+      "display": { "color": "blue", "avatar": "blue_standard.jpg" }
+    },
+    "C": {
+      "label": "Medizinische Fachperspektive",
+      "stance": "undecided",
+      "orientation": "ärztlich, spitalnah",
+      "description": "Das System ist widersprüchlich: hervorragende Medizin, aber oft zu viel davon; es fehlt an Qualitätsanreizen.",
+      "display": { "color": "green", "avatar": "green_standard.jpg" }
+    },
+    "D": {
+      "label": "Ökonomische Systemperspektive",
+      "stance": "contra",
+      "orientation": "gesundheitsökonomisch",
+      "description": "Keine aussergewöhnlich hohen Gesundheitskosten; es braucht gezielte Eingriffe statt pauschalem Sparen.",
+      "display": { "color": "yellow", "avatar": "yellow_standard.jpg" }
+    },
+    "E": {
+      "label": "Betroffene Bevölkerung",
+      "stance": "undecided",
+      "orientation": "betroffen, alltagsnah",
+      "description": "Finanzielle Belastung durch seit Jahren stärker steigende Prämien als Löhne; Erwartung an Effizienz und Transparenz.",
+      "display": { "color": "grey", "avatar": "grey_standard.jpg" }
+    }
+  },
+
+  "rounds": [
+    { "round": 1, "topic": "Ursachen der steigenden Prämien" },
+    { "round": 2, "topic": "Lösungsansätze" }
+  ],
+
+  "start_node": "intro",
+  "nodes": {
+
+    "intro": {
+      "round": 0,
+      "kind": "intro",
+      "utterances": [
+        { "uid": "intro_001", "speaker": "SYSTEM",
+          "text": "Die Krankenkassenprämien steigen nächstes Jahr im Schnitt um 4,5 Prozent. Seit Einführung der obligatorischen Krankenversicherung sind sie deutlich stärker gestiegen als Löhne oder Teuerung. Die Frage lautet: Wie krank ist unser Gesundheitssystem – und wo muss angesetzt werden?" }
+      ],
+      "transition": { "type": "linear", "next": "r1_trunk" }
+    },
+
+    "r1_trunk": {
+      "round": 1,
+      "kind": "intro-arguments",
+      "topic": "Ursachen der steigenden Prämien",
+      "utterances": [
+        { "uid": "r1_001", "speaker": "A",
+          "text": "Für mich ist klar: Die steigenden Krankenkassenprämien sind kein Zufall, sondern die direkte Folge explodierender Kosten. Solange Krankenkassen jede Leistung bezahlen müssen, wird sich daran nichts ändern." },
+        { "uid": "r1_002", "speaker": "B",
+          "text": "Ich sehe vor allem ein Gerechtigkeitsproblem. Für viele aus dem Mittelstand werden die Prämien zunehmend zur Belastung, während sehr hohe Einkommen vergleichsweise wenig spüren." },
+        { "uid": "r1_003", "speaker": "C",
+          "text": "Aus medizinischer Sicht ist das System widersprüchlich. Wir haben eine sehr gute Versorgung, aber wir machen oft zu viel Medizin – es fehlt an Anreizen für Qualität." }
+      ],
+      "transition": { "type": "linear", "next": "r2_costs" }
+    },
+
+    "r2_costs": {
+      "round": 2,
+      "kind": "segment",
+      "topic": "Kostensteuerung und Sparpotenzial",
+      "utterances": [
+        { "uid": "r2c_001", "speaker": "A",
+          "text": "Die Prämien sind die Folge der Kosten. Und die Kosten sind die Folge der Behandlungen. Je mehr Behandlungen anfallen, notwendige wie unnötige, desto höher steigen die Kosten und damit auch die Prämien." },
+        { "uid": "r2c_002", "speaker": "A",
+          "text": "Trotzdem müssen wir handeln. Wenn rund 20 Prozent der Leistungen unnötig oder unwirtschaftlich sind, sprechen wir von sechs bis acht Milliarden Franken Sparpotenzial pro Jahr." }
+      ],
+      "transition": { "type": "linear", "next": "summary" }
+    },
+
+    "summary": {
+      "round": 3,
+      "kind": "summary",
+      "utterances": [
+        { "uid": "sum_001", "speaker": "SYSTEM",
+          "text": "Die Debatte zeigt: Steigende Krankenkassenprämien entstehen durch Mengenausweitung, Fehlanreize und ungleiche Kostenverteilung. Klar ist: Einfache Lösungen gibt es nicht – Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen." }
+      ],
+      "transition": { "type": "end" }
+    }
+  }
+}

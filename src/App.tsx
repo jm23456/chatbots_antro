@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 
-import type { Step, Role } from "./types/types";
+import type { Step, Role, Ling } from "./types/types";
 
 import RoleSelection from "./screens/RoleSelection";
 import TopicIntro from "./screens/TopicIntro"
@@ -24,11 +24,13 @@ const STEPS: Record<string, Step> = {
 const App: React.FC = () => {
   const [params] = useSearchParams();
   const urlTopic = params.get("topic") ?? "";
-  const urlRole = params.get("role") as Role ?? "STEER";
+  const urlLing = params.get("ling") as Ling ?? null;
+  const urlRole = params.get("role") as Role ?? null;
   const initialStep = params.get("step") ?? STEPS.ROLE;
   const [step, setStep] = useState<string>(initialStep);
   const [selectedTopic, setSelectedTopic] = useState<string>(urlTopic ?? "");
-  const [role, setRole] = useState<Role>(urlRole ?? "");
+  const [ling, setLing] = useState<Ling>(urlLing ?? null);
+  const [role, setRole] = useState<Role>(urlRole ?? null);
   // const [debateMessages, setDebateMessages] = useState<DebateMessage[]>([
   //   { id: 1, side: "Contra", text: "Introduction" },
   //   { id: 2, side: "Pro", text: "Introduction" },
@@ -86,9 +88,12 @@ const App: React.FC = () => {
               setRole={setRole}
               selectedTopic={selectedTopic}
               setSelectedTopic={setSelectedTopic}
+              ling={ling}
+              setLing={ling}
               onContinue={() => {setStep(STEPS.TOPIC_INTRO);
                 setSelectedTopic(urlTopic);
                 setRole(urlRole);
+                setLing(urlLing);
                  console.log({
                   step,
                   role,

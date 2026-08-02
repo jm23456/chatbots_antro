@@ -7,6 +7,8 @@ export type Step =
 
 export type Role = "WATCH" | "STEER" | "PARTY" | null;
 
+export type Ling = "first_person" | "general" | null;
+
 export interface DebateMessage {
   id: number;
   side: "Pro" | "Contra" | "You";

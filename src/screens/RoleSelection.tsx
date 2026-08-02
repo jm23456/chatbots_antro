@@ -1,5 +1,5 @@
 
-import type { Role } from "../types/types";
+import type { Role, Ling } from "../types/types";
 // import CandidateCardIntro from "../components/CandidateCardIntro";
 import "../App.css";
 import { useLanguage } from "../hooks/useLanguage";
@@ -11,6 +11,8 @@ interface RoleSelectionProps {
   setRole: (value: Role) => void;
   selectedTopic: string;
   setSelectedTopic: (value: string) => void;
+  ling: Ling;
+  setLing: (value: Ling) => void;
   onContinue: () => void;
 }
 
@@ -18,13 +20,15 @@ interface RoleSelectionProps {
 const RoleSelection: React.FC<RoleSelectionProps> = ({
   role,
   selectedTopic,
+  ling,
   onContinue,
 }) => {
   const { t, language } = useLanguage();
   const [params] = useSearchParams();
   const topicFromURL = params.get("topic");
   const roleFromURL = params.get("role");
-  console.log("URL Params - Topic: " + topicFromURL + ", Role: " + roleFromURL);
+  const lingFromURL = params.get("ling");
+  console.log("URL Params - Topic: " + topicFromURL + ", Role: " + roleFromURL +", Linguistic: " + lingFromURL);
   // const availableRoles = rolesConfig[activeTopic]
   const roles: { id: Role; label: string; description: string }[] = [
    /* {

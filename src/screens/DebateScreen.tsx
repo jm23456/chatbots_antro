@@ -3,8 +3,7 @@ import ExitWarningModal from "../components/ExitWarningModal";
 import type { ChatMessage } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
-import mockDebateDE from '../debate_text/mockDebate.de.json';
-import mockDebateEN from '../debate_text/mockDebate.en.json';
+import { useSearchParams } from "react-router-dom";
 
 interface DebateScreenProps {
   topicTitle: string;
@@ -13,253 +12,317 @@ interface DebateScreenProps {
   onStart: () => void;
 }
 
+type Color = "red" | "yellow" | "green" | "gray" | "blue" | "grey" | string;
+type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
+
+type DebateScriptItem = {
+  id: number;
+  speaker: SpeakerKey | "USER";
+  text: string;
+  type: "bot" | "user";
+  color?: Color;
+  side: "pro" | "contra" | "undecided" | "user";
+};
+
+type RoleData = {
+  label?: string;
+  description?: string;
+  stance?: "pro" | "contra" | "undecided";
+  orientation?: string;
+  display?: { color?: string; avatar?: string };
+};
+
+type DebateNode = {
+  round?: number;
+  kind: string;
+  topic?: string;
+  utterances: Array<{ uid: string; speaker: SpeakerKey; text: string; speak_as_user?: boolean }>;
+  transition: {
+    type: "linear" | "choice" | "end" | string;
+    next?: string;
+    prompt?: string;
+    timeout_seconds?: number | null;
+    options?: Array<{
+      option_id: string;
+      label: string;
+      speak_as_user?: boolean;
+      next: string;
+      default_option?: boolean;
+    }>;
+  };
+};
+
+type DebateData = {
+  schema_version?: string;
+  debate_id?: string;
+  title?: string;
+  source?: string;
+  language?: string;
+  condition?: {
+    linguistic_style?: string;
+    interaction_level?: string;
+  };
+  roles?: Record<string, RoleData>;
+  start_node: string;
+  nodes: Record<string, DebateNode>;
+};
+
 const DebateScreen: React.FC<DebateScreenProps> = ({
   topicTitle,
   onExit,
   hasStarted,
   onStart,
 }) => {
-  type Color = "red" | "yellow" | "green" | "gray" | "blue";
-  const { t, language } = useLanguage();
-  const [visibleBubbles, setVisibleBubbles] = useState(0);
+  const { t } = useLanguage();
+  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
-  const hasStartedRef = useRef(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const currentBubbleRef = useRef<{ text: string; color: Color; side: "pro" | "contra" | "undecided" } | null>(null);
-  const pendingMessageIdRef = useRef<number | null>(null);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
-  const nextMessageIdRef = useRef(1000);
-  const visibleBubblesRef = useRef(0);
-
-  type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
-
-  type DebateScriptItem = {
-    id: number;
-    speaker: SpeakerKey;
-    text: string;
-  }
-
-  type RoleData = {
-    label?: string;
-    description?: string;
-    orientation?: "pro" | "contra" | "undecided";
-  }
-
-  type DebateData = {
-    debate_script?: DebateScriptItem[];
-    "Arguments Intro"?: DebateScriptItem[];
-    roles?: Record<string, RoleData>;
-  }
-
-  // Exit handlers
-  const handleExitClick = () => {
-    setShowExitWarning(true);
-  };
-
-  const handleExitConfirm = () => {
-    setShowExitWarning(false);
-    onExit();
-  };
-
-  const handleExitCancel = () => {
-    setShowExitWarning(false);;
-  };
-
-  // Auto-scroll zur neuesten Nachricht
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-  
-
-  // Mock-Debatte: Krankenkassenprämien
-  const debateData = (language === 'de' ? mockDebateDE : mockDebateEN) as DebateData;
-
-  const speakerColors: Record<string, Color> = {
-    A: "red",
-    B: "yellow",
-    C: "green",
-    D: "gray",
-    E: "blue",
-  };
-
-  const speakerToSide: Record < string, "pro" | "contra" | "undecided"> = {
-    A: "contra",
-    B: "pro",
-    C: "contra",
-    D: "pro",
-    E: "undecided",
-  };
-
-  const debateScript = debateData.debate_script ?? [];
-  const argumentsIntro = debateData["Arguments Intro"] ?? [];
-
-  const argumentBubbles = useMemo(() => {
-    return debateScript.map((msg) => ({
-    color: speakerColors[msg.speaker as keyof typeof speakerColors],
-    side: speakerToSide[msg.speaker as keyof typeof speakerToSide],
-    text: msg.text,
-    id: msg.id,
-    speaker: msg.speaker,
-  }));
-}, [debateScript,speakerColors, speakerToSide]);
-
-  const progressInterval = useRef<number | null>(null);
+  const [visibleBubbles, setVisibleBubbles] = useState(0);
   const [progress, setProgress] = useState(0);
+  const [params] = useSearchParams();
 
-  const continueProgress = () => {
-  setProgress((prev) => Math.min(prev + (100/debateScript.length), 100)); // Simuliere langsames Fortschreiten gegen Ende
+  const topicFromURL = params.get("topic");
+  const roleFromURL = params.get("role");
+  const lingFromURL = params.get("ling");
+
+  const hasStartedRef = useRef(false);
+  const visibleBubblesRef = useRef(0);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const nextMessageIdRef = useRef(1000);
+  const pendingMessageIdRef = useRef<number | null>(null);
+
+
+  const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
+
+  const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+  const debateData = useMemo<DebateData | undefined>(() => {
+    if (!filename) return undefined;
+    const key = Object.keys(debateFiles).find((k) => k.endsWith(`/${filename}`) || k.endsWith(filename));
+    return key ? (debateFiles[key] as DebateData) : undefined;
+  }, [filename]);
+
+  const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
+
+  const getRoleColor = (speaker: SpeakerKey) => {
+    const roleColor = debateData?.roles?.[speaker]?.display?.color;
+    if (roleColor) return roleColor as Color;
+    const fallback: Record<SpeakerKey, Color> = {
+      A: "red",
+      B: "yellow",
+      C: "green",
+      D: "gray",
+      E: "blue",
+      SYSTEM: "gray",
     };
+    return fallback[speaker];
+  };
 
-    const finishProgress = () => {
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
+  const getRoleSide = (speaker: SpeakerKey): "pro" | "contra" | "undecided" => {
+    const stance = debateData?.roles?.[speaker]?.stance;
+    if (stance === "pro") return "pro";
+    if (stance === "contra") return "contra";
+    return "undecided";
+  };
+
+  const parsedDebate = useMemo(() => {
+    if (!debateData) return { introUtterances: [] as DebateScriptItem[], scriptUtterances: [] as DebateScriptItem[] };
+
+    const nextId = { current: 1 };
+    const makeItem = (speaker: SpeakerKey | "USER", text: string, type: "bot" | "user") => ({
+      id: nextId.current++,
+      speaker,
+      text,
+      type,
+      color: speaker === "USER" ? undefined : getRoleColor(speaker as SpeakerKey),
+      side: speaker === "USER" ? "user" : getRoleSide(speaker as SpeakerKey),
+    });
+
+    const introUtterances: DebateScriptItem[] = [];
+    const scriptUtterances: DebateScriptItem[] = [];
+    const visited = new Set<string>();
+    let currentNodeKey = debateData.start_node;
+
+    while (currentNodeKey && !visited.has(currentNodeKey)) {
+      visited.add(currentNodeKey);
+      const node = debateData.nodes[currentNodeKey];
+      if (!node) break;
+
+      const nodeItems = node.utterances.map((utterance) => {
+        const isUser = Boolean(utterance.speak_as_user);
+        return makeItem(isUser ? "USER" : utterance.speaker, utterance.text, isUser ? "user" : "bot");
+      });
+
+      if (node.kind === "intro-arguments") {
+        introUtterances.push(...nodeItems);
+        console.log("intro arguments found");
+      } else {
+        scriptUtterances.push(...nodeItems);
+        console.log("intro arguments not found");
+        console.log("node.kind: ", node.kind);
       }
 
-      setProgress(100);
-
-      setTimeout(() => {
-        setProgress(0);
-      }, 300); // Kurze Verzögerung, um den Fortschrittsbalken auf 100% anzuzeigen
+      if (node.transition?.type === "linear") {
+        currentNodeKey = node.transition.next ?? "";
+      } else if (node.transition?.type === "choice") {
+        const defaultOption = node.transition.options?.find((opt) => opt.default_option) || node.transition.options?.[0];
+        if (defaultOption) {
+          if (defaultOption.speak_as_user) {
+            scriptUtterances.push(makeItem("USER", defaultOption.label, "user"));
+          }
+          currentNodeKey = defaultOption.next;
+        } else {
+          currentNodeKey = "";
+        }
+      } else {
+        currentNodeKey = "";
+      }
     }
 
-  // Check ob alle Argumente gesagt wurden
-  useEffect(() => {
-    if (
-      hasStarted &&
-      visibleBubbles >= argumentBubbles.length &&
-      argumentBubbles.length > 0 &&
-      !showDebateFinished
-    ) {
-      // setShowDebateFinished(true);
-    }
-  }, [visibleBubbles, argumentBubbles.length, hasStarted, showDebateFinished]);
+    return { introUtterances, scriptUtterances };
+  }, [debateData]);
 
-  // Initiale Chat-History mit Arguments Intro Nachrichten
-  // Reihenfolge: B, D, C, A, E (yellow, gray, blue, red, green)
-  const speakerOrder: SpeakerKey[] = ["B", "D", "E", "A", "C"];
-  const initialChatHistory: ChatMessage[] = useMemo(() => {
-    const sortedIntro = [...argumentsIntro].sort((a, b) => {
-      const indexA = speakerOrder.indexOf(a.speaker as SpeakerKey);
-      const indexB = speakerOrder.indexOf(b.speaker as SpeakerKey);
-      return indexA - indexB;
-    });
-    return sortedIntro.map((msg, index) => ({
-      id: index + 1,
-      type: "bot" as const,
-      color: speakerColors[msg.speaker as keyof typeof speakerColors],
+  const debateScript = parsedDebate.scriptUtterances;
+  const argumentsIntro = parsedDebate.introUtterances;
+
+  const argumentBubbles = useMemo(
+    () => [
+      ...argumentsIntro.map((msg) => ({
+        color: msg.color,
+        side: msg.side,
+        text: msg.text,
+        id: msg.id,
+        speaker: msg.speaker,
+        type: msg.type,
+        isIntro: true,
+      })),
+      ...debateScript.map((msg) => ({
+      color: msg.color,
+      side: msg.side,
       text: msg.text,
-      side: speakerToSide[msg.speaker as keyof typeof speakerToSide],
-      isComplete: true,
-      isIntro: true
-    }));
-  }, [argumentsIntro]);
+      id: msg.id,
+      speaker: msg.speaker,
+      type: msg.type,
+    })),
+  ],[argumentsIntro, debateScript]
+  );
 
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+  // const initialChatHistory = useMemo(() => {
+  //   return argumentsIntro.map((msg, index) => ({
+  //     id: index + 1,
+  //     type: "bot" as const,
+  //     color: msg.color,
+  //     text: msg.text,
+  //     side: msg.side,
+  //     isComplete: true,
+  //     isIntro: true,
+  //   }));
+  // }, [argumentsIntro]);
 
-  // Setze initiale chatHistory wenn noch leer
-  useEffect(() => {
-    if (chatHistory.length === 0 && initialChatHistory.length > 0) {
-      setChatHistory(initialChatHistory);
-    }
-  }, [initialChatHistory, chatHistory.length]);
+  // useEffect(() => {
+  //   if (chatHistory.length === 0 && initialChatHistory.length > 0) {
+  //     setChatHistory(initialChatHistory);
+  //   }
+  // }, [chatHistory.length, initialChatHistory]);
 
-  
   const getNextMessageId = () => {
     nextMessageIdRef.current += 1;
     return nextMessageIdRef.current;
   };
 
-  const firstRender = useRef(true);
-
-useEffect(() => {
-  if (firstRender.current) {
-    firstRender.current = false;
-    return;
-  }
-
-  if (hasStarted) {
-    scrollToBottom();
-  }
-}, [chatHistory]);
-
-  // Typewriter-Effekt: Text Wort für Wort in der Chatbot-Bubble aufbauen
-  const typewriterEffect = (text: string, color: Color, side: "pro" | "contra" | "undecided") => {
-       currentBubbleRef.current = { text, color, side };
-        const pendingId = getNextMessageId() ;
-        pendingMessageIdRef.current = pendingId;
-        setChatHistory(prev => [...prev, {
-          id: pendingId,
-          type: "bot",
-          color,
-          text: "",
-          side,
-          isComplete: false
-        }] as ChatMessage[]);
-      
-      const finalizePendingMessage = () => {
-        setChatHistory(prev => prev.map(m => m.id === pendingId ? { ...m, text, isComplete: true } : m));
-        pendingMessageIdRef.current = null;
-        continueProgress();
-        setVisibleBubbles(prev => {
-        const nextVisible = prev + 1;
-        visibleBubblesRef.current = nextVisible;
-        return nextVisible;
-        });
-
-        setIsTyping(false);
-        currentBubbleRef.current = null;
-
-      };
-
-
-      setIsTyping(true);
-
-      setTimeout(() => {
-        finalizePendingMessage();
-      }, 2000); // Simuliere 2 Sekunden "Tippen"
-    };
-
-    const startNextBubble = () => {
-      if (visibleBubblesRef.current >= argumentBubbles.length) return;
-      const nextBubble = argumentBubbles[visibleBubblesRef.current];
-    hasStartedRef.current = true;
-    typewriterEffect(nextBubble.text, nextBubble.color, nextBubble.side);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-      useEffect(() => {
-        if (!hasStarted) return;
-        if (!hasStartedRef.current) {
-          startNextBubble();
-        }
-    return () => undefined;
-  }, [hasStarted]);
 
-    const handleContinue = () => {
-    if (!hasStarted) {
+  const advanceBubble = () => {
+    if (visibleBubblesRef.current >= argumentBubbles.length) return;
+    const nextBubble = argumentBubbles[visibleBubblesRef.current];
+    visibleBubblesRef.current += 1;
+    setVisibleBubbles(visibleBubblesRef.current);
+    console.log("Kind: ", nextBubble);
+
+    if (nextBubble.type === "user") {
+      setChatHistory((prev) => [
+        ...prev,
+        {
+          id: getNextMessageId(),
+          type: "user",
+          text: nextBubble.text,
+          isComplete: true,
+          side: nextBubble.side,
+        },
+      ]);
       continueProgress();
-      onStart();
       return;
     }
 
-    if (visibleBubbles < argumentBubbles.length) {
-      startNextBubble();
+    const pendingId = getNextMessageId();
+    pendingMessageIdRef.current = pendingId;
+    setChatHistory((prev) => [
+      ...prev,
+      {
+        id: pendingId,
+        type: "bot",
+        color: nextBubble.color,
+        text: "",
+        side: nextBubble.side,
+        isComplete: false,
+        isIntro: nextBubble.isIntro,
+      },
+    ]);
+
+    setIsTyping(true);
+    setTimeout(() => {
+      setChatHistory((prev) =>
+        prev.map((msg) =>
+          msg.id === pendingId ? { ...msg, text: nextBubble.text, isComplete: true } : msg
+        )
+      );
+      pendingMessageIdRef.current = null;
+      continueProgress();
+      setIsTyping(false);
+    }, 2000);
+  };
+
+  const continueProgress = () => {
+    setProgress((prev) => Math.min(prev + (100 / Math.max(argumentBubbles.length, 1)), 100));
+  };
+
+  const finishProgress = () => {
+    setProgress(100);
+    setTimeout(() => setProgress(0), 300);
+  };
+
+  useEffect(() => {
+    if (!hasStarted) return;
+    if (!hasStartedRef.current) {
+      hasStartedRef.current = true;
+      advanceBubble();
+    }
+  }, [hasStarted]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatHistory, isTyping]);
+
+  const handleContinue = () => {
+    if (!hasStarted) {
+      onStart();
+      return;
+    }
+    if (visibleBubblesRef.current < argumentBubbles.length) {
+      advanceBubble();
     } else {
       setShowDebateFinished(true);
       finishProgress();
       onExit();
     }
-  }
+  };
 
-  // Auto-scroll wenn sich chatHistory oder isTyping ändert
   useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory, isTyping]);
-
-    useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-
         if (!isTyping) {
           handleContinue();
         }
@@ -267,144 +330,100 @@ useEffect(() => {
     };
 
     window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isTyping, hasStarted]);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [isTyping, hasStarted, visibleBubbles]);
+  const handleExitClick = () => setShowExitWarning(true);
+  const handleExitConfirm = () => {
+    setShowExitWarning(false);
+    onExit();
+  };
+  const handleExitCancel = () => setShowExitWarning(false);
+
+  const noDebateFound = Boolean(filename && !debateData);
 
   return (
-    
     <div className="screen debate-screen">
-      <ExitWarningModal 
-        isOpen={showExitWarning} 
-        onConfirm={handleExitConfirm} 
-        onCancel={handleExitCancel} 
-      />
-    
-      {/* Debatte beendet Popup */}
+      <ExitWarningModal isOpen={showExitWarning} onConfirm={handleExitConfirm} onCancel={handleExitCancel} />
+
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{padding: 0, overflow: "hidden"}}>
-             <div style={{
-              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-              padding: "1.25rem 1.5rem",
-              borderRadius: "1.5rem 1.5rem 0 0",
-              marginBottom: "0.5rem"
-            }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("debateFinishedTitle")}</p>
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("debateFinishedTitle")}</p>
             </div>
-            <div style={{padding: "0rem 0.5rem 1.5rem 0.5rem"}}>
-            <p style={{fontSize: "16px"}}>{t("debateFinishedText")}</p>
-            <button className="start-debate-btn" onClick={() => {setShowDebateFinished(false); onExit();}}>
-              {t("continue")}
-            </button>
+            <div style={{ padding: "0rem 0.5rem 1.5rem 0.5rem" }}>
+              <p style={{ fontSize: "16px" }}>{t("debateFinishedText")}</p>
+              <button className="start-debate-btn" onClick={() => { setShowDebateFinished(false); onExit(); }}>{t("continue")}</button>
+            </div>
           </div>
         </div>
-        </div>
       )}
-      <div className="top-exit-row" style={{marginBottom: "0px"}}>
-        <div
-        style={{
-          width: "180px",
-          height: "8px",
-          backgroundColor: "#e5e7eb",
-          borderRadius: "999px",
-          overflow: "hidden",
-        }}>
-          <div
-            style={{
-              width: `${progress}%`,
-              height: "100%",
-              background: "#7c3aed",
-              transition: "width 150ms linear",
-            }}
-          />
+
+      <div className="top-exit-row" style={{ marginBottom: "0px" }}>
+        <div style={{ width: "180px", height: "8px", backgroundColor: "#e5e7eb", borderRadius: "999px", overflow: "hidden" }}>
+          <div style={{ width: `${progress}%`, height: "100%", background: "#7c3aed", transition: "width 150ms linear" }} />
         </div>
         <div>{Math.round(progress)}%</div>
         <div className="top-buttons-row">
-          <button className="exit-btn" style={{marginLeft: "605px"}} onClick={handleExitClick}>
-            {t("exit")}
-          </button>
+          <button className="exit-btn" style={{ marginLeft: "605px" }} onClick={handleExitClick}>{t("exit")}</button>
         </div>
       </div>
 
-      <header className="screen-header" style={{marginBottom: "10px", marginTop: "0px"}}>
-        <p className="subtitle" style={{marginTop: "0px"}}>{topicTitle || t("healthInsurance")}</p>
+      <header className="screen-header" style={{ marginBottom: "10px", marginTop: "0px" }}>
+        <p className="subtitle" style={{ marginTop: "0px" }}>{displayTopicTitle}</p>
       </header>
 
-      {/* Chat-History - chronologisch */}
-      <section className="debate-arguments">
-        {chatHistory.map((msg) => (
-          <div 
-            key={msg.id} 
-            className={`argument-box ${msg.type === "bot" ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}
-          >
-            {msg.isIntro && <span className="intro-label">Intro</span>}
-            <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
+      {noDebateFound ? (
+        <section className="debate-arguments">
+          <div className="argument-box argument-gray">
+            <span className="argument-label">{t("noDebateFound") ?? "Debate not found."}</span>
+          </div>
+        </section>
+      ) : (
+        <section className="debate-arguments">
+          {chatHistory.map((msg) => (
+            <div key={msg.id} className={`argument-box ${msg.type === "bot" ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}>
+              {msg.isIntro && <span className="intro-label">Intro</span>}
+              <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
                 {msg.type === "bot" && !msg.isComplete ? (
-                  <span className="typing-dots">
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                    <span className="dot"></span>
-                  </span>
-              ) : (
-                msg.text
+                  <span className="typing-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></span>
+                ) : (
+                  msg.text
+                )}
+              </span>
+              {msg.type === "bot" && msg.isComplete && (
+                <button className="report-btn" title={t("flag")} onClick={() => alert(`Nachricht gemeldet`)}>⚠️</button>
               )}
-            </span>
-            {msg.type === "bot" && msg.isComplete && (
-              <button 
-                className="report-btn" 
-                title={t("flag")}
-                onClick={() => alert(`Nachricht gemeldet`)}
-              >
-                ⚠️
-              </button>
-            )}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
-      </section>
-
-      {/* Modal Overlay für Start Debate */}
-      {!hasStarted && (
-        <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{padding: 0, overflow: "hidden"}}>
-            <div style={{
-              background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-              padding: "1.25rem 1.5rem",
-              borderRadius: "1.5rem 1.5rem 0 0",
-              marginBottom: "0.5rem"
-            }}>
-            <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("ready")}</p>
             </div>
-            <div style={{padding: "0rem 0.5rem 1rem 0.5rem"}}>
-            <p className="modal-text" style={{fontSize: "16px", marginBottom: "10px", color: "#050505"}}>🗣 The chatbots will discuss the topic now</p>
-            <button className="start-debate-btn" onClick={onStart}>
-              {t("startDebate")}
-            </button>
+          ))}
+          <div ref={messagesEndRef} />
+        </section>
+      )}
+
+      {!hasStarted && debateData && (
+        <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
+            </div>
+            <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 The chatbots will discuss the topic now</p>
+              <button className="start-debate-btn" onClick={onStart}>{t("startDebate")}</button>
+            </div>
           </div>
-        </div>
         </div>
       )}
 
-      {/* Input area */}
       <footer className="debate-input-footer">
-        {hasStarted && (
+        {hasStarted && debateData && (
           <div className="action-row">
-            <button 
-              className="con-primary-btn" 
-              onClick={handleContinue}
-              disabled={isTyping}
-            >
-              {visibleBubbles < argumentBubbles.length ? t("continue") : t("finishDebate")}
-            </button>
+            <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping}>{isTyping || visibleBubblesRef.current < argumentBubbles.length ? t("continue") : t("finishDebate")}</button>
           </div>
         )}
       </footer>
     </div>
   );
 };
-
 
 export default DebateScreen;
