@@ -3,6 +3,7 @@
 
   "debate_id": "arena_healthcare_premiums",
   "title": "Steigende Krankenkassenprämien",
+  "subtitle": "Warum die Kosten steigen und was das für uns bedeutet",
   "source": "Arena SRF 07.10.2016 – Prämienschock (gekürztes Beispiel, 2 Runden)",
   "language": "de",
 
@@ -145,7 +146,12 @@
       "kind": "summary",
       "utterances": [
         { "uid": "sum_001", "speaker": "SYSTEM",
-          "text": "Die Debatte zeigt: Steigende Krankenkassenprämien entstehen durch Mengenausweitung, Fehlanreize und ungleiche Kostenverteilung. Klar ist: Einfache Lösungen gibt es nicht – Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen." }
+          "text": "Die Debatte zeigt, dass die steigende Krankenkassenprämien können mehrere Ursachen haben:",
+              "points": [
+        "Mengenausweitung bei medizinischen Behandlungen",
+        "Fehlanreize im Gesundheitssystem",
+        "Ungleiche Verteilung der Gesundheitskosten"
+      ], "conclusion": "Einfache Lösungen gibt es nicht. Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen." }
       ],
       "transition": { "type": "end" }
     }

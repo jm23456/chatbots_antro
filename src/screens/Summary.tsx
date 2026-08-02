@@ -1,15 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
+import { useSearchParams } from 'react-router-dom';
 
 interface SummaryProps {
   topicTitle: string;
   onStartAnother: () => void;
 }
 
-const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
+type DebateUtterance = {
+  uid: string;
+  speaker: string;
+  text: string;
+  speak_as_user?: boolean;
+  points?: string[];
+  conclusion?: string;
+};
+
+type DebateNode = {
+  round?: number;
+  kind: string;
+  topic?: string;
+  utterances: DebateUtterance[];
+  transition?: any;
+};
+
+type DebateData = {
+  start_node: string;
+  nodes: Record<string, DebateNode>;
+};
+
+type DebateSummary = {
+  text?: string;
+  points?: string[];
+  conclusion?: string;
+};
+
+const Summary: React.FC<SummaryProps> = ({ onStartAnother }) => {
   const { t } = useLanguage();
   const [showPopup, setShowPopup] = useState(true);
+  const [params] = useSearchParams();
+    const topicFromURL = params.get("topic");
+    const roleFromURL = params.get("role");
+    const lingFromURL = params.get("ling");
+  
+    const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
+  
+    const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, DebateData>;
+    const debateData = useMemo<DebateData | undefined>(() => {
+      if (!filename) return undefined;
+      const key = Object.keys(debateFiles).find((k) => k.endsWith(`/${filename}`) || k.endsWith(filename));
+      return key ? debateFiles[key] : undefined;
+    }, [filename, debateFiles]);
+  
+      const debateSummary = useMemo<DebateSummary | null>(() => {
+        if (!debateData) return null;
+
+        const summaryNode = debateData.nodes?.summary;
+        if (!summaryNode) return null;
+
+        const textValue = (summaryNode as any).text;
+        const text = typeof textValue === 'string' && textValue.trim().length
+          ? textValue.trim()
+          : summaryNode.utterances?.map((u) => u.text).join('\n\n');
+
+        const points = summaryNode.utterances
+          ?.flatMap((u) => u.points ?? [])
+          .filter(Boolean);
+
+        const conclusion = summaryNode.utterances
+          ?.map((u) => (typeof u.conclusion === 'string' ? u.conclusion.trim() : undefined))
+          .filter(Boolean)
+          .join('\n\n');
+
+        return {
+          text: text || undefined,
+          points: points?.length ? points : undefined,
+          conclusion: conclusion || undefined,
+        };
+      }, [debateData]);
 
   return (
     <div className="screen" style={{
@@ -48,7 +117,7 @@ const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
       </section>
       <header className="screen-header" style={{marginBottom: "4px", marginTop: "0px"}}>
         <p className="subtitle">{t("summary")}</p> 
-        <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p>
+        {/* <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p> */}
       </header>
 
     <div className="screen" style={{
@@ -62,9 +131,31 @@ const Summary: React.FC<SummaryProps> = ({onStartAnother }) => {
       borderRadius: "24px"
     }}>
       <section className="screen-body scrollable" style={{maxWidth: "600px", margin: "0 auto", padding: "0 32px"}}>
-        <p> {t("summary1")}</p>
-        <p>{t("summary2")}</p>
-        <p>• <strong>{t("summary31")}</strong> {t("summary3")}</p>
+        {debateSummary ? (
+          <>
+            {debateSummary.text && debateSummary.text.split('\n\n').map((paragraph, idx) => (
+              <p key={idx} style={{ marginBottom: '1rem' }}>{paragraph}</p>
+            ))}
+
+            {debateSummary.points && debateSummary.points.length > 0 && (
+              <ul style={{ paddingLeft: '24px', margin: '20px 0' }}>
+                {debateSummary.points.map((point, idx) => (
+                  <li key={idx} style={{ marginBottom: '0.75rem' }}>
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {debateSummary.conclusion && (
+              <p style={{ marginTop: '20px' }}>
+                {debateSummary.conclusion}
+              </p>
+            )}
+          </>
+        ) : (
+          <p>{t('noDebateFound')}</p>
+        )}
       </section>
 
       <footer className="footer-end-row" style= {{ marginTop: "30px", textAlign: "center" , marginBottom: "10px"  }}>

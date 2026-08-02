@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import ExitWarningModal from '../components/ExitWarningModal';
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
+import { useSearchParams } from 'react-router-dom';
 
 interface TopicIntroProps {
   topicTitle: string;
   onNext: () => void;
   onExit: () => void;
 }
+
+type DebateUtterance = {
+  uid: string;
+  speaker: string;
+  text: string;
+  speak_as_user?: boolean;
+};
+
+type DebateNode = {
+  round?: number;
+  kind: string;
+  topic?: string;
+  utterances: DebateUtterance[];
+  transition?: any;
+};
+
+type DebateData = {
+  start_node: string;
+  nodes: Record<string, DebateNode>;
+};
 
 const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
   // console.log("Rendering:" + topicTitle);
@@ -26,6 +47,48 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
   const handleExitCancel = () => {
     setShowExitWarning(false);
   };
+
+  const [params] = useSearchParams();
+  const topicFromURL = params.get("topic");
+  const roleFromURL = params.get("role");
+  const lingFromURL = params.get("ling");
+
+  const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
+
+  const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, DebateData>;
+  const debateData = useMemo<DebateData | undefined>(() => {
+    if (!filename) return undefined;
+    const key = Object.keys(debateFiles).find((k) => k.endsWith(`/${filename}`) || k.endsWith(filename));
+    return key ? debateFiles[key] : undefined;
+  }, [filename, debateFiles]);
+
+    const debateSubtitle = useMemo(() => {
+    if (!debateData) return null;
+    const subtitle = debateData.subtitle;
+    if (subtitle) {
+      return subtitle;
+    }
+  }, [debateData]);
+
+      const debateTitle = useMemo(() => {
+    if (!debateData) return null;
+    const title = debateData.title;
+    if (title) {
+      return title;
+    }
+  }, [debateData]);
+
+  const introText = useMemo(() => {
+    if (!debateData) return null;
+    const startKey = debateData.start_node;
+    const startNode = debateData.nodes?.[startKey];
+    if (startNode && startNode.kind && startNode.kind.startsWith('intro') && startNode.utterances?.length) {
+      return startNode.utterances.map((u) => u.text).join('\n\n');
+    }
+    const introNode = Object.values(debateData.nodes).find((n) => n.kind && n.kind.startsWith('intro'));
+    if (introNode && introNode.utterances?.length) return introNode.utterances.map((u) => u.text).join('\n\n');
+    return null;
+  }, [debateData]);
 
   const image = language === "de"
     ? import.meta.env.BASE_URL + "Infografik_Praemien.png"
@@ -53,8 +116,8 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
       }}>
         <header className="screen-header" style={{marginBottom: "30px"}}>
           <h4 style={{ fontSize: "28px", textAlign: "center", marginBottom: "5px" }}>{t("topicIntro")}</h4>
-          <p className="subtitle" style={{ marginTop: "10px"}}>{t("healthInsurance")}</p>
-          <h2 style={{ textAlign: "center", marginTop: "30px" }}>{t("topicIntroH")}</h2>
+          <p className="subtitle" style={{ marginTop: "10px"}}>{debateTitle}</p>
+          <h2 style={{ textAlign: "center", marginTop: "30px" }}>{debateSubtitle}</h2>
         </header>
         <section className="screen-body scrollable">
           <div className="topic-intro-content">
@@ -62,15 +125,17 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
               <img src={image} alt="Infografik Prämien" />
             </div>
             <div className="topic-intro-text">
-              <p>
-                {t("topicIntroText1")}
-              </p>
-              <p> 
-                {t("topicIntroText2")}
-              </p>
-              <p style={{ marginBottom: "35px" }}>
-                {t("topicIntroText3")}
-              </p>
+              {introText ? (
+                introText.split(/\n{1,}/).map((para, i) => (
+                  <p key={i} style={i === introText.split(/\n{1,}/).length - 1 ? { marginBottom: "35px" } : {}}>{para}</p>
+                ))
+              ) : (
+                <>
+                  <p>{t("topicIntroText1")}</p>
+                  <p>{t("topicIntroText2")}</p>
+                  <p style={{ marginBottom: "35px" }}>{t("topicIntroText3")}</p>
+                </>
+              )}
               <button className="con-primary-btn" onClick={onNext}>
                 {t("next")}
               </button>
