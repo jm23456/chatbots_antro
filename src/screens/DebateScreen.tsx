@@ -1,18 +1,19 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
-import type { ChatMessage } from "../types/types";
+import type { ChatMessage, DebateData } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from "react-router-dom";
 
 interface DebateScreenProps {
   topicTitle: string;
+  participantID: string | null;
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
 }
 
-type Color = "red" | "yellow" | "green" | "gray" | "blue" | "grey" | string;
+type Color = "red" | "yellow" | "green" | "gray" | "blue";
 type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
 
 type DebateScriptItem = {
@@ -24,51 +25,9 @@ type DebateScriptItem = {
   side: "pro" | "contra" | "undecided" | "user";
 };
 
-type RoleData = {
-  label?: string;
-  description?: string;
-  stance?: "pro" | "contra" | "undecided";
-  orientation?: string;
-  display?: { color?: string; avatar?: string };
-};
-
-type DebateNode = {
-  round?: number;
-  kind: string;
-  topic?: string;
-  utterances: Array<{ uid: string; speaker: SpeakerKey; text: string; speak_as_user?: boolean }>;
-  transition: {
-    type: "linear" | "choice" | "end" | string;
-    next?: string;
-    prompt?: string;
-    timeout_seconds?: number | null;
-    options?: Array<{
-      option_id: string;
-      label: string;
-      speak_as_user?: boolean;
-      next: string;
-      default_option?: boolean;
-    }>;
-  };
-};
-
-type DebateData = {
-  schema_version?: string;
-  debate_id?: string;
-  title?: string;
-  source?: string;
-  language?: string;
-  condition?: {
-    linguistic_style?: string;
-    interaction_level?: string;
-  };
-  roles?: Record<string, RoleData>;
-  start_node: string;
-  nodes: Record<string, DebateNode>;
-};
-
 const DebateScreen: React.FC<DebateScreenProps> = ({
   topicTitle,
+  participantID,
   onExit,
   hasStarted,
   onStart,
@@ -104,18 +63,24 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
   const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
 
+  const normalizeColor = (color?: string): Color | undefined => {
+    if (!color) return undefined;
+    const normalized = color.toLowerCase();
+    if (normalized === "grey" || normalized === "gray") return "gray";
+    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
+    return undefined;
+  };
+
   const getRoleColor = (speaker: SpeakerKey) => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
-    if (roleColor) return roleColor as Color;
-    const fallback: Record<SpeakerKey, Color> = {
+    return normalizeColor(roleColor) ?? {
       A: "red",
       B: "yellow",
       C: "green",
       D: "gray",
       E: "blue",
       SYSTEM: "gray",
-    };
-    return fallback[speaker];
+    }[speaker];
   };
 
   const getRoleSide = (speaker: SpeakerKey): "pro" | "contra" | "undecided" => {
@@ -155,11 +120,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       if (node.kind === "intro-arguments") {
         introUtterances.push(...nodeItems);
-        console.log("intro arguments found");
-      } else {
+      } else if (node.kind !== "intro" && node.kind !== "summary") {
         scriptUtterances.push(...nodeItems);
-        console.log("intro arguments not found");
-        console.log("node.kind: ", node.kind);
       }
 
       if (node.transition?.type === "linear") {

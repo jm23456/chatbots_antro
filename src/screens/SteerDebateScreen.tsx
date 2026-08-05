@@ -1,108 +1,34 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
-import type { ChatMessage } from "../types/types";
+import type { ChatMessage, DebateData,  DebateTransitionOption, DebateUtterance, SpeakerKey } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from "react-router-dom";
+import { logEvent } from "../../logs/logs";
 
-type Color = "red" | "yellow" | "green" | "grey" | "blue" | string;
-type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
-
-type DebateUtterance = {
-  uid: string;
-  speaker: SpeakerKey;
-  text: string;
-  speak_as_user?: boolean;
-};
-
-type DebateTransitionOption = {
-  option_id: string;
-  label: string;
-  speak_as_user?: boolean;
-  next: string;
-  default_option?: boolean;
-};
-
-type DebateTransition =
-  | { type: "linear"; next?: string }
-  | { type: "choice"; prompt?: string; timeout_seconds?: number | null; options?: DebateTransitionOption[] }
-  | { type: "end" };
-
-type DebateNode = {
-  round?: number;
-  kind: string;
-  topic?: string;
-  utterances: DebateUtterance[];
-  transition: DebateTransition;
-};
-
-type RoleData = {
-  label?: string;
-  description?: string;
-  stance?: "pro" | "contra" | "undecided";
-  orientation?: string;
-  display?: { color?: string; avatar?: string };
-};
-
-type DebateData = {
-  schema_version?: string;
-  debate_id?: string;
-  title?: string;
-  source?: string;
-  language?: string;
-  condition?: {
-    linguistic_style?: string;
-    interaction_level?: string;
-  };
-  roles?: Record<string, RoleData>;
-  start_node: string;
-  nodes: Record<string, DebateNode>;
-};
+type Color = "red" | "yellow" | "green" | "gray" | "blue";
 
 interface SteerDebateScreenProps {
   topicTitle: string;
+  participantID: string | null;
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
   userIntroMessage?: string | null;
 }
 
-const normalizeTopic = (topic: string | null) => {
-  if (!topic) return null;
-  const cleaned = topic.trim().toLowerCase();
-  if (/^debate\d+/.test(cleaned)) return cleaned;
-  if (/^\d+$/.test(cleaned)) return `debate${cleaned}`;
-  return cleaned;
-};
-
-const normalizeLing = (ling: string | null) => {
-  if (!ling) return null;
-  const cleaned = ling.trim().toLowerCase().replace(/_/g, "");
-  if (cleaned === "firstperson") return "firstperson";
-  if (cleaned === "general") return "general";
-  return cleaned;
-};
-
-const normalizeRole = (role: string | null) => {
-  if (!role) return null;
-  const cleaned = role.trim().toLowerCase();
-  if (cleaned === "watch") return "watch";
-  if (cleaned === "steer") return "steer";
-  if (cleaned === "party") return "party";
-  return cleaned;
-};
-
 const speakerColorFallback: Record<SpeakerKey, Color> = {
   A: "red",
   B: "yellow",
   C: "green",
-  D: "grey",
+  D: "gray",
   E: "blue",
-  SYSTEM: "grey",
+  SYSTEM: "gray",
 };
 
 const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   topicTitle,
+  participantID,
   onExit,
   hasStarted,
   onStart,
@@ -132,26 +58,86 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const [currentUtteranceIndex, setCurrentUtteranceIndex] = useState(0);
   const [pendingChoice, setPendingChoice] = useState<DebateTransitionOption[] | null>(null);
   const [choicePrompt, setChoicePrompt] = useState<string | null>(null);
-  const [progress, setProgress] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState(0);
+  const [totalSteps, setTotalSteps] = useState(0);
   const [hasNodeStarted, setHasNodeStarted] = useState(false);
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(1000);
+  const completedStepsRef = useRef(0);
 
-  const totalUtterances = useMemo(() => {
-    if (!debateData) return 0;
-    return Object.values(debateData.nodes).reduce((sum, node) => sum + (node.utterances?.length ?? 0), 0);
+  const countVisibleProgressSteps = useCallback((startKey: string | null) => {
+    if (!startKey || !debateData) return 0;
+    const visited = new Set<string>();
+    let currentKey: string | null = startKey;
+    let steps = 0;
+
+    while (currentKey && !visited.has(currentKey)) {
+      visited.add(currentKey);
+      const node = debateData.nodes[currentKey];
+      if (!node) break;
+      if (node.kind === "summary") break;
+      if (node.kind === "intro") {
+        if (node.transition.type === "linear") {
+          currentKey = node.transition.next ?? null;
+          continue;
+        }
+        break;
+      }
+
+      steps += node.utterances?.length ?? 0;
+      if (node.transition.type === "choice") {
+        steps += 1;
+      }
+
+      if (node.transition.type === "linear") {
+        currentKey = node.transition.next ?? null;
+      } else if (node.transition.type === "choice") {
+        const defaultOption = node.transition.options?.find((opt) => opt.default_option) || node.transition.options?.[0];
+        currentKey = defaultOption?.next ?? null;
+      } else {
+        break;
+      }
+    }
+
+    return steps;
   }, [debateData]);
+
+  const totalStepsFromStart = useMemo(() => {
+    return countVisibleProgressSteps(debateData?.start_node ?? null);
+  }, [countVisibleProgressSteps, debateData]);
+
+  const progress = useMemo(() => {
+    if (totalSteps === 0) return 0;
+    return Math.min(100, Math.round((completedSteps / totalSteps) * 100));
+  }, [completedSteps, totalSteps]);
 
   const getNextMessageId = useCallback(() => {
     nextMessageIdRef.current += 1;
     return nextMessageIdRef.current;
   }, []);
 
+  const incrementStep = useCallback((count = 1) => {
+    setCompletedSteps((prev) => {
+      const next = Math.min(prev + count, totalSteps);
+      completedStepsRef.current = next;
+      return next;
+    });
+  }, [totalSteps]);
+
+  const normalizeColor = useCallback((color?: string): Color | undefined => {
+    if (!color) return undefined;
+    const normalized = color.toLowerCase();
+    if (normalized === "grey" || normalized === "gray") return "gray";
+    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
+    return undefined;
+  }, []);
+
   const getRoleColor = useCallback((speaker: SpeakerKey): Color => {
-    return debateData?.roles?.[speaker]?.display?.color ?? speakerColorFallback[speaker];
-  }, [debateData]);
+    const roleColor = debateData?.roles?.[speaker]?.display?.color;
+    return normalizeColor(roleColor) ?? speakerColorFallback[speaker];
+  }, [debateData, normalizeColor]);
 
   const getRoleSide = useCallback((speaker: SpeakerKey): "pro" | "contra" | "undecided" => {
     const stance = debateData?.roles?.[speaker]?.stance;
@@ -168,8 +154,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     setPendingChoice(null);
     setChoicePrompt(null);
     setShowDebateFinished(true);
-    setProgress(100);
-  }, []);
+    setCompletedSteps(totalSteps);
+  }, [totalSteps]);
 
   const scrollToBottom = useCallback(() => {
     if (messagesContainerRef.current) {
@@ -230,11 +216,11 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         )
       );
       setIsTyping(false);
-      setProgress((prev) => Math.min(prev + 100 / Math.max(totalUtterances, 1), 100));
+      incrementStep();
     }, 650);
-  }, [getNextMessageId, getRoleColor, getRoleSide, totalUtterances]);
+  }, [getNextMessageId, getRoleColor, getRoleSide, incrementStep]);
 
-  const addUserMessage = useCallback((text: string) => {
+  const addUserMessage = (text: string) => {
     setChatHistory((prev) => [
       ...prev,
       {
@@ -245,8 +231,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         isComplete: true,
       },
     ]);
-    setProgress((prev) => Math.min(prev + 100 / Math.max(totalUtterances, 1), 100));
-  }, [getNextMessageId, totalUtterances]);
+    incrementStep();
+  };
 
   const advanceConversation = useCallback(() => {
     if (!debateData) return;
@@ -308,7 +294,8 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     setCurrentNodeKey(option.next || null);
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
-  }, [addUserMessage]);
+    logEvent("Choice_made", participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
+  }, [addUserMessage, countVisibleProgressSteps, logEvent]);
 
   const handleContinue = () => {
     if (!hasStarted) {
@@ -322,16 +309,19 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
   useEffect(() => {
     if (!hasStarted || !debateData) return;
+    const startNode = findFirstDebateNode(debateData.start_node);
     setChatHistory([]);
     setIsTyping(false);
     setShowDebateFinished(false);
     setPendingChoice(null);
     setChoicePrompt(null);
-    setProgress(0);
+    setCompletedSteps(0);
+    completedStepsRef.current = 0;
+    setTotalSteps(countVisibleProgressSteps(startNode));
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
-    setCurrentNodeKey(findFirstDebateNode(debateData.start_node));
-  }, [hasStarted, debateData, findFirstDebateNode]);
+    setCurrentNodeKey(startNode);
+  }, [hasStarted, debateData, findFirstDebateNode, countVisibleProgressSteps]);
 
   useEffect(() => {
     if (!hasStarted || !debateData || isTyping || pendingChoice) return;
@@ -452,7 +442,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
             </div>
             <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 The chatbots will discuss the topic now.</p>
-              <button className="start-debate-btn" onClick={() => { onStart(); handleContinue(); }}>{t("startDebate")}</button>
+              <button className="start-debate-btn" onClick= { onStart }>{t("startDebate")}</button>
             </div>
           </div>
         </div>

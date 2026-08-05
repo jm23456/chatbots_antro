@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 
 interface SummaryProps {
   topicTitle: string;
+  participantID: string | null;
   onStartAnother: () => void;
 }
 
@@ -36,7 +37,7 @@ type DebateSummary = {
   conclusion?: string;
 };
 
-const Summary: React.FC<SummaryProps> = ({ onStartAnother }) => {
+const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
   const { t } = useLanguage();
   const [showPopup, setShowPopup] = useState(true);
   const [params] = useSearchParams();

@@ -1,67 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
-import type { ChatMessage } from "../types/types";
+import type { ChatMessage, DebateData, DebateTransitionOption, DebateUtterance, SpeakerKey } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from "react-router-dom";
+import { logEvent } from "../../logs/logs";
 
-type Color = "red" | "yellow" | "green" | "gray" | "blue" | "grey" | string;
-
-type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
-
-type DebateUtterance = {
-  uid: string;
-  speaker: SpeakerKey;
-  text: string;
-  speak_as_user?: boolean;
-};
-
-type DebateTransitionOption = {
-  option_id: string;
-  label: string;
-  speak_as_user?: boolean;
-  next: string;
-  default_option?: boolean;
-};
-
-type DebateTransition =
-  | { type: "linear"; next?: string }
-  | { type: "choice"; prompt?: string; timeout_seconds?: number | null; options?: DebateTransitionOption[] }
-  | { type: "end"; };
-
-type DebateNode = {
-  round?: number;
-  kind: string;
-  topic?: string;
-  utterances: DebateUtterance[];
-  transition: DebateTransition;
-};
-
-type RoleData = {
-  label?: string;
-  description?: string;
-  stance?: "pro" | "contra" | "undecided";
-  orientation?: string;
-  display?: { color?: string; avatar?: string };
-};
-
-type DebateData = {
-  schema_version?: string;
-  debate_id?: string;
-  title?: string;
-  source?: string;
-  language?: string;
-  condition?: {
-    linguistic_style?: string;
-    interaction_level?: string;
-  };
-  roles?: Record<string, RoleData>;
-  start_node: string;
-  nodes: Record<string, DebateNode>;
-};
+type Color = "red" | "yellow" | "green" | "grey" | "blue" ;
 
 interface PartyDebateScreenProps {
   topicTitle: string;
+  participantID: string | null;
   onExit: () => void;
   hasStarted: boolean;
   onStart: () => void;
@@ -103,6 +52,7 @@ const speakerColorFallback: Record<SpeakerKey, Color> = {
 
 const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   topicTitle,
+  participantID,
   onExit,
   hasStarted,
   onStart,
@@ -127,9 +77,17 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
 
   const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
 
+  const normalizeColor = (color?: string): Color | undefined => {
+    if (!color) return undefined;
+    const normalized = color.toLowerCase();
+    if (normalized === "grey" || normalized === "gray") return "gray";
+    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
+    return undefined;
+  };
+
   const getRoleColor = (speaker: SpeakerKey) => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
-    return roleColor || speakerColorFallback[speaker];
+    return normalizeColor(roleColor) ?? speakerColorFallback[speaker];
   };
 
   const getRoleSide = (speaker: SpeakerKey): "pro" | "contra" | "undecided" => {
@@ -143,7 +101,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [showDebateFinished, setShowDebateFinished] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [completedSteps, setCompletedSteps] = useState(0);
+  const [totalSteps, setTotalSteps] = useState(0);
   const [currentNodeKey, setCurrentNodeKey] = useState<string | null>(null);
   const [currentUtteranceIndex, setCurrentUtteranceIndex] = useState(0);
   const [pendingChoice, setPendingChoice] = useState<DebateTransitionOption[] | null>(null);
@@ -155,19 +114,65 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const nextMessageIdRef = useRef(1000);
   const pendingMessageIdRef = useRef<number | null>(null);
+  const completedStepsRef = useRef(0);
 
-  const totalUtterances = useMemo(() => {
-    if (!debateData) return 0;
-    return Object.values(debateData.nodes).reduce((total, node) => total + (node.utterances?.length ?? 0), 0);
+  const countVisibleProgressSteps = (startKey: string | null): number => {
+    if (!startKey || !debateData) return 0;
+    const visited = new Set<string>();
+    let currentKey: string | null = startKey;
+    let steps = 0;
+
+    while (currentKey && !visited.has(currentKey)) {
+      visited.add(currentKey);
+      const node = debateData.nodes[currentKey];
+      if (!node) break;
+      if (node.kind === "summary") break;
+      if (node.kind === "intro") {
+        if (node.transition.type === "linear") {
+          currentKey = node.transition.next ?? null;
+          continue;
+        }
+        break;
+      }
+
+      steps += node.utterances?.length ?? 0;
+      if (node.transition.type === "choice") {
+        steps += 1;
+      }
+
+      if (node.transition.type === "linear") {
+        currentKey = node.transition.next ?? null;
+      } else if (node.transition.type === "choice") {
+        const defaultOption = node.transition.options?.find((opt) => opt.default_option) || node.transition.options?.[0];
+        currentKey = defaultOption?.next ?? null;
+      } else {
+        break;
+      }
+    }
+
+    return steps;
+  };
+
+  const totalStepsFromStart = useMemo(() => {
+    return countVisibleProgressSteps(debateData?.start_node ?? null);
   }, [debateData]);
+
+  const progress = useMemo(() => {
+    if (totalSteps === 0) return 0;
+    return Math.min(100, Math.round((completedSteps / totalSteps) * 100));
+  }, [completedSteps, totalSteps]);
 
   const getNextMessageId = () => {
     nextMessageIdRef.current += 1;
     return nextMessageIdRef.current;
   };
 
-  const continueProgress = () => {
-    setProgress((prev) => Math.min(prev + 100 / Math.max(totalUtterances, 1), 100));
+  const incrementStep = () => {
+    setCompletedSteps((prev) => {
+      const next = Math.min(prev + 1, totalSteps);
+      completedStepsRef.current = next;
+      return next;
+    });
   };
 
   const findFirstDebateNode = (startKey: string | null): string | null => {
@@ -193,8 +198,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   };
 
   const finishProgress = () => {
-    setProgress(100);
-    setTimeout(() => setProgress(0), 300);
+    setCompletedSteps(totalSteps);
+    setTimeout(() => setCompletedSteps(0), 300);
   };
 
   const scrollToBottom = () => {
@@ -228,7 +233,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
       );
       pendingMessageIdRef.current = null;
       setIsTyping(false);
-      continueProgress();
+      incrementStep();
     }, 1000);
   };
 
@@ -243,7 +248,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
         isComplete: true,
       },
     ]);
-    continueProgress();
+    incrementStep();
   };
 
   const showNextNode = (nodeKey: string | null) => {
@@ -317,6 +322,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const handleChoiceSelect = (option: DebateTransitionOption) => {
     if (option.speak_as_user) {
       addUserMessage(option.label);
+      logEvent("Choice_made", participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
+    } else {
+      incrementStep();
     }
     showNextNode(option.next);
   };
@@ -325,7 +333,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
     if (!hasStarted || !debateData) return;
     hasStartedRef.current = true;
     setChatHistory([]);
-    setProgress(0);
+    setCompletedSteps(0);
+    completedStepsRef.current = 0;
+    setTotalSteps(totalStepsFromStart);
     setIsTyping(false);
     setShowDebateFinished(false);
     setPendingChoice(null);
@@ -333,7 +343,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
     setCurrentNodeKey(findFirstDebateNode(debateData.start_node));
-  }, [hasStarted, debateData]);
+  }, [hasStarted, debateData, totalStepsFromStart]);
 
   useEffect(() => {
     if (!hasStarted || !debateData || isTyping || pendingChoice) return;
@@ -343,9 +353,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
     advanceConversation();
   }, [advanceConversation, currentNodeKey, currentUtteranceIndex, debateData, hasNodeStarted, hasStarted, isTyping, pendingChoice]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [chatHistory, pendingChoice]);
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [chatHistory, pendingChoice]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -420,7 +430,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
       ) : (
         <section className="debate-arguments" ref={messagesContainerRef}>
           {chatHistory.map((msg) => (
-            <div key={msg.id} className={`argument-box ${msg.type === "bot" ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}>
+            <div key={msg.id} className={`argument-box ${msg.color ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}>
               {msg.isIntro && <span className="intro-label">{msg.type === "user" ? "Du" : "Intro"}</span>}
               <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
                 {msg.type === "bot" && !msg.isComplete ? (
