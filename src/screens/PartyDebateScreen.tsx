@@ -4,6 +4,7 @@ import type { ChatMessage, DebateData, DebateTransitionOption, DebateUtterance, 
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from "react-router-dom";
+import { debateConfig } from "../config/debateConfig";
 import { logEvent } from "../../logs/logs";
 
 type Color = "red" | "yellow" | "green" | "grey" | "blue" ;
@@ -412,9 +413,11 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
           <div style={{ width: `${progress}%`, height: "100%", background: "#7c3aed", transition: "width 150ms linear" }} />
         </div>
         <div>{Math.round(progress)}%</div>
-        <div className="top-buttons-row">
-          <button className="exit-btn" style={{ marginLeft: "605px" }} onClick={handleExitClick}>{t("exit")}</button>
-        </div>
+        {debateConfig.showExitButton && (
+          <div className="top-buttons-row">
+            <button className="exit-btn" style={{ marginLeft: "605px" }} onClick={handleExitClick}>{t("exit")}</button>
+          </div>
+        )}
       </div>
 
       <header className="screen-header" style={{ marginBottom: "10px", marginTop: "0px" }}>

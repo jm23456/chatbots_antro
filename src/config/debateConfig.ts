@@ -3,6 +3,7 @@ export const debateConfig = {
   turnDurationSeconds: 60,
   showSummary: true,
   showExitWarning: true,
+  showExitButton: false,
 };
 
 export default debateConfig;
