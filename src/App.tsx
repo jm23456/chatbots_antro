@@ -34,6 +34,7 @@ const App: React.FC = () => {
   const [role, setRole] = useState<Role>(urlRole ?? null);
   const [userIntroMessage, setUserIntroMessage] = useState<string | null>(null);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isIntro, setIsIntro] = useState(false);
   const currentTopicTitle = selectedTopic;
 
   return (
@@ -112,6 +113,7 @@ const App: React.FC = () => {
             onStart={() => {
               logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
               setHasStarted(true);
+              setIsIntro(true);
             }}
           />
         )}

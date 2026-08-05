@@ -133,10 +133,6 @@
         { "uid": "r2o_001", "speaker": "C",
           "text": "Das stimmt. Es gibt Operationen, die nicht nötig wären. Und es gibt Patienten, die so lange von Arzt zu Arzt gehen, bis jemand den Eingriff durchführt." },
         { "uid": "r2o_002", "speaker": "C",
-          "text": "Zusätzlich fehlt ein Qualitätsanreiz. Ein Spital, das effizient arbeitet, wird gleich entschädigt wie eines, das Patienten länger behält oder unnötige Untersuchungen macht." },
-        { "uid": "r2o_002", "speaker": "C",
-          "text": "Zusätzlich fehlt ein Qualitätsanreiz. Ein Spital, das effizient arbeitet, wird gleich entschädigt wie eines, das Patienten länger behält oder unnötige Untersuchungen macht." },
-        { "uid": "r2o_002", "speaker": "C",
           "text": "Zusätzlich fehlt ein Qualitätsanreiz. Ein Spital, das effizient arbeitet, wird gleich entschädigt wie eines, das Patienten länger behält oder unnötige Untersuchungen macht." }
       ],
       "transition": { "type": "linear", "next": "summary" }
