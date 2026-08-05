@@ -469,7 +469,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               <p style={{ margin: 0, fontWeight: 600 }}>{choicePrompt || "Wähle eine Option:"}</p>
               <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%", maxWidth: "810px" }}>
                 {pendingChoice.map((option) => (
-                  <button key={option.option_id} className="con-primary-btn" style={{ padding: 20, maxWidth: "none", width: "600px", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)"}} onClick={() => handleChoiceSelect(option)}>
+                  <button key={option.option_id} className="con-primary-btn" style={{ padding: 20, maxWidth: "none", width: "80%", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)"}} onClick={() => handleChoiceSelect(option)}>
                     {option.label}
                   </button>
                 ))}
