@@ -566,7 +566,7 @@ body {
   width: 85%;
 }
 
-/* Intro-Bubbles Ausrichtung: Yellow/Red links, Gray/Blue/Green rechts */
+/* Intro-Bubbles Ausrichtung: Yellow/Red links, Turquoise/Blue/Green rechts */
 .argument-intro.argument-yellow,
 .argument-intro.argument-red {
   align-self: flex-start !important;
@@ -574,7 +574,7 @@ body {
   margin-left: 45px !important;
 }
 
-.argument-intro.argument-gray,
+.argument-intro.argument-turquoise,
 .argument-intro.argument-blue,
 .argument-intro.argument-green {
   align-self: flex-end !important;
@@ -650,7 +650,7 @@ body {
 
 
 /* Sprechblasen-Pfeil für rechts (gray, blue, green) */
-.argument-gray::before,
+.argument-turquoise::before,
 .argument-blue::before,
 .argument-green::before {
   content: "";
@@ -663,8 +663,8 @@ body {
   border-color: transparent;
 }
 
-.argument-gray::before {
-  border-left-color: #6b7280;
+.argument-turquoise::before {
+  border-left-color: #03d0feb7;
 }
 
 .argument-blue::before {
@@ -678,7 +678,7 @@ body {
 /* Chatbot-Oval für optische Zuordnung */
 .argument-yellow::after,
 .argument-green::after,
-.argument-gray::after,
+.argument-turquoise::after,
 .argument-blue::after,
 .argument-red::after {
   content: "";
@@ -755,22 +755,22 @@ body {
   left: -55px;
 }
 
-.argument-gray::after,
+.argument-turquoise::after,
 .argument-blue::after,
 .argument-green::after {
   right: -55px;
 }
 
 .argument-yellow::after {
-  background: #f59f0bc8;
+  background: #f59f0b93;
 }
 
 .argument-red::after {
   background: #ef4444d3;
 }
 
-.argument-gray::after {
-  background: #6b7280ce;
+.argument-turquoise::after {
+  background: #03d0fe6a;
 }
 
 .argument-blue::after {
@@ -790,8 +790,8 @@ body {
   margin-left: 45px !important;
 }
 
-/* Bubbles rechts ausrichten (Gray, Blue, Green) */
-.argument-gray,
+/* Bubbles rechts ausrichten (Turquoise, Blue, Green) */
+.argument-turquoise,
 .argument-blue,
 .argument-green {
   align-self: flex-end;
@@ -852,10 +852,10 @@ body {
   border-left: 5px solid #3b82f6;
 }
 
-.argument-gray {
-  background: #e5e7eb;
-  border: 2px solid #6b7280;
-  border-left: 5px solid #6b7280;
+.argument-turqoise {
+  background: #03d0fe2d;
+  border: 2px solid #03d0feb7;
+  border-left: 5px solid #03d0feb7;
 }
 
 .argument-green {
@@ -865,7 +865,7 @@ body {
 }
 
 .argument-yellow {
-  background: #fef3c7;
+  background: #fef3c7e2;
   border: 2px solid #f59e0b;
   border-left: 5px solid #f59e0b;
 }
@@ -919,8 +919,8 @@ body {
   background: #3b82f6;
 }
 
-.argument-gray .typing-dots .dot {
-  background: #6b7280;
+.argument-turqoise .typing-dots .dot {
+  background: #03d0feb7;
 }
 
 .argument-green .typing-dots .dot {
@@ -1199,12 +1199,12 @@ body {
   border-top-color: #eff6ff;
 }
 
-.candidate-gray .candidate-speech-bubble {
+.candidate-turqoise .candidate-speech-bubble {
   background: #e5e7eb;
   border: 1px solid #e5e7eb;
 }
 
-.candidate-gray .candidate-speech-bubble::after {
+.candidate-turqoise .candidate-speech-bubble::after {
   border-top-color: #f3f4f6;
 }
 

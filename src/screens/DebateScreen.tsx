@@ -14,7 +14,7 @@ interface DebateScreenProps {
   onStart: () => void;
 }
 
-type Color = "red" | "yellow" | "green" | "gray" | "blue";
+type Color = "red" | "yellow" | "green" | "turquoise" | "blue";
 type SpeakerKey = "A" | "B" | "C" | "D" | "E" | "SYSTEM";
 
 type DebateScriptItem = {
@@ -67,7 +67,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const normalizeColor = (color?: string): Color | undefined => {
     if (!color) return undefined;
     const normalized = color.toLowerCase();
-    if (normalized === "grey" || normalized === "gray") return "gray";
+    if (normalized === "grey" || normalized === "turquoise") return "turquoise";
     if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
     return undefined;
   };
@@ -78,7 +78,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       A: "red",
       B: "yellow",
       C: "green",
-      D: "gray",
+      D: "turquoise",
       E: "blue",
       SYSTEM: "gray",
     }[speaker];
@@ -343,7 +343,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {noDebateFound ? (
         <section className="debate-arguments">
-          <div className="argument-box argument-gray">
+          <div className="argument-box argument-turquoise">
             <span className="argument-label">{t("noDebateFound") ?? "Debate not found."}</span>
           </div>
         </section>

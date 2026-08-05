@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { debateConfig } from "../config/debateConfig";
 import { logEvent } from "../../logs/logs";
 
-type Color = "red" | "yellow" | "green" | "gray" | "blue";
+type Color = "red" | "yellow" | "green" | "turquoise" | "blue";
 
 interface SteerDebateScreenProps {
   topicTitle: string;
@@ -22,7 +22,7 @@ const speakerColorFallback: Record<SpeakerKey, Color> = {
   A: "red",
   B: "yellow",
   C: "green",
-  D: "gray",
+  D: "turquoise",
   E: "blue",
   SYSTEM: "gray",
 };
@@ -141,7 +141,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const normalizeColor = useCallback((color?: string): Color | undefined => {
     if (!color) return undefined;
     const normalized = color.toLowerCase();
-    if (normalized === "grey" || normalized === "gray") return "gray";
+    if (normalized === "grey" || normalized === "turquoise") return "turquoise";
     if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
     return undefined;
   }, []);
@@ -413,7 +413,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
       {noDebateFound ? (
         <section className="debate-arguments">
-          <div className="argument-box argument-gray">
+          <div className="argument-box argument-turquoise">
             <span className="argument-label">{t("noDebateFound") ?? "Debatte nicht gefunden. Überprüfe die URL."}</span>
           </div>
         </section>
