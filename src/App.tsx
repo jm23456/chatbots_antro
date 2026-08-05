@@ -3,7 +3,6 @@ import "./App.css";
 
 import type { Step, Role, Ling } from "./types/types";
 
-import RoleSelection from "./screens/RoleSelection";
 import TopicIntro from "./screens/TopicIntro"
 import SteerDebateScreen from "./screens/SteerDebateScreen";
 import DebateScreen from "./screens/DebateScreen";
@@ -11,6 +10,7 @@ import PartyDebateScreen from "./screens/PartyDebateScreen";
 import Summary from "./screens/Summary";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { useSearchParams } from "react-router-dom";
+import { logEvent, sendLogsToQualtrics } from "../logs/logs";
 
 
 const STEPS: Record<string, Step> = {
@@ -26,83 +26,20 @@ const App: React.FC = () => {
   const urlTopic = params.get("topic") ?? "";
   const urlLing = params.get("ling") as Ling ?? null;
   const urlRole = params.get("role") as Role ?? null;
-  const initialStep = params.get("step") ?? STEPS.ROLE;
+  const participantID = params.get("participant_id") ?? null;
+  const initialStep = params.get("step") ?? STEPS.TOPIC_INTRO;
   const [step, setStep] = useState<string>(initialStep);
   const [selectedTopic, setSelectedTopic] = useState<string>(urlTopic ?? "");
   const [ling, setLing] = useState<Ling>(urlLing ?? null);
   const [role, setRole] = useState<Role>(urlRole ?? null);
-  // const [debateMessages, setDebateMessages] = useState<DebateMessage[]>([
-  //   { id: 1, side: "Contra", text: "Introduction" },
-  //   { id: 2, side: "Pro", text: "Introduction" },
-  //   { id: 3, side: "Contra", text: "Introduction" },
-  //   { id: 4, side: "Pro", text: "Introduction" },
-  // ]);
-  // const [inputText, setInputText] = useState<string>("");
   const [userIntroMessage, setUserIntroMessage] = useState<string | null>(null);
-  // const [timeLeft, setTimeLeft] = useState<number>(15 * 60); // 15:00
   const [hasStarted, setHasStarted] = useState(false);
-  // const [isPaused, setIsPaused] = useState(false);
-  // console.log("FULL URL:", window.location.href);
-  // console.log("Topic: "+urlTopic);
-  // console.log("Role: " + urlRole);
-  // console.log("InitialStep: " + initialStep);
-    // console.log("Step: " + step);
-  // // Timer für DEBATE (15 Min)
-  // useEffect(() => {
-  //   if (step !== STEPS.DEBATE) return;
-  //   if (!hasStarted) return;
-  //   if (isPaused) return;
-  //   const id = globalThis.setInterval(() => {
-  //     setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-  //   }, 1000);
-  //   return () => globalThis.clearInterval(id);
-  // }, [step, hasStarted, isPaused]);
-
-
-  // const formatTime = (seconds: number): string => {
-  //   const m = Math.floor(seconds / 60);
-  //   const s = seconds % 60;
-  //   return `${m}:${s.toString().padStart(2, "0")}`;
-  // };
-
-  // const handleSend = () => {
-  //   if (!inputText.trim()) return;
-  //   const newMessage: DebateMessage = {
-  //     id: Date.now(),
-  //     side: "You",
-  //     text: inputText.trim(),
-  //   };
-  //   setDebateMessages((prev) => [...prev, newMessage]);
-  //   setInputText("");
-  // };
-
   const currentTopicTitle = selectedTopic;
 
   return (
     <LanguageProvider>
       <div className="app-root">
         <div className="app-card">
-          {step === STEPS.ROLE && (
-            <RoleSelection
-              role={role}
-              setRole={setRole}
-              selectedTopic={selectedTopic}
-              setSelectedTopic={setSelectedTopic}
-              ling={ling}
-              setLing={ling}
-              onContinue={() => {setStep(STEPS.TOPIC_INTRO);
-                setSelectedTopic(urlTopic);
-                setRole(urlRole);
-                setLing(urlLing);
-                 console.log({
-                  step,
-                  role,
-                  hasStarted,
-                  selectedTopic,
-});}}
-            />
-        )}
-
         {step === STEPS.TOPIC_INTRO && (
           <TopicIntro
             topicTitle= {selectedTopic}
@@ -121,15 +58,17 @@ const App: React.FC = () => {
         {step === STEPS.DEBATE && role === "WATCH" && (
           <DebateScreen
             topicTitle={currentTopicTitle?? ""}
+            participantID={participantID}
             onExit={() => {
-              console.log("Debate ended:" , new Date().toLocaleTimeString());
+              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
               setHasStarted(false);
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              console.log("Debate started:" , new Date().toLocaleTimeString());
+              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
               setHasStarted(true);
             }}
           />
@@ -139,8 +78,10 @@ const App: React.FC = () => {
         {step === STEPS.DEBATE && role === "STEER" && (
           <SteerDebateScreen
             topicTitle={currentTopicTitle}
+            participantID={participantID}
             onExit={() => {
-              console.log("Debate ended:" , new Date().toLocaleTimeString());
+              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
               setUserIntroMessage(null);
@@ -148,7 +89,7 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              console.log("Debate started:" , new Date().toLocaleTimeString());
+              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
               setHasStarted(true);
             }}
             userIntroMessage={userIntroMessage}
@@ -158,8 +99,10 @@ const App: React.FC = () => {
         {step === STEPS.DEBATE && role === "PARTY" && (
           <PartyDebateScreen
             topicTitle={currentTopicTitle}
+            participantID={participantID}
             onExit={() => {
-              console.log("Debate ended:" , new Date().toLocaleTimeString());
+              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
               setUserIntroMessage(null);
@@ -167,7 +110,7 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              console.log("Debate started:" , new Date().toLocaleTimeString());
+              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
               setHasStarted(true);
             }}
           />
@@ -176,8 +119,9 @@ const App: React.FC = () => {
         {step === STEPS.SUMMARY && (
           <Summary
             topicTitle={currentTopicTitle}
+            participantID={participantID}
             onStartAnother={() => {
-              setStep(STEPS.ROLE);
+              setStep(STEPS.TOPIC_INTRO);
               console.log({
   step,
   role,
