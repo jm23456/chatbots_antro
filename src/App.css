@@ -561,7 +561,7 @@ body {
 .argument-box.argument-intro {
   padding: 8px 14px;
   min-height: 40px;
-  font-size: 11px;
+  font-size: 12px;
   opacity: 0.85;
   width: 85%;
 }
@@ -571,7 +571,7 @@ body {
 .argument-intro.argument-red {
   align-self: flex-start !important;
   margin-right: auto !important;
-  margin-left: 20px !important;
+  margin-left: 45px !important;
 }
 
 .argument-intro.argument-gray,
@@ -579,7 +579,7 @@ body {
 .argument-intro.argument-green {
   align-self: flex-end !important;
   margin-left: auto !important;
-  margin-right: 20px !important;
+  margin-right: 45px !important;
 }
 
 .intro-label {
@@ -675,12 +675,115 @@ body {
   border-left-color: #10b981;
 }
 
+/* Chatbot-Oval für optische Zuordnung */
+.argument-red::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+}
+
+/* Viereck für blauer Chatbot*/
+.argument-blue::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 0;
+}
+
+/* Sechseck für gelber Chatbot*/
+.argument-yellow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  clip-path: polygon(
+    25% 0%, 
+    75% 0%, 
+    100% 50%, 
+    75% 100%, 
+    25% 100%, 
+    0% 50%
+  );
+}
+
+/* Diamant für grüner Chatbot*/
+.argument-green::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  clip-path: polygon(
+    50% 0%, 
+    100% 50%, 
+    50% 100%, 
+    0% 50%
+  );
+}
+
+/* Dreieck für grauer Chatbot*/
+.argument-gray::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 35px;
+  height: 35px;
+  clip-path: polygon(
+    50% 0%, 
+    100% 100%, 
+    0% 100%
+  );
+}
+
+.argument-yellow::after,
+.argument-red::after {
+  left: -55px;
+}
+
+.argument-gray::after,
+.argument-blue::after,
+.argument-green::after {
+  right: -55px;
+}
+
+.argument-yellow::after {
+  background: #f59e0b;
+}
+
+.argument-red::after {
+  background: #ef4444;
+}
+
+.argument-gray::after {
+  background: #6b7280;
+}
+
+.argument-blue::after {
+  background: #3b82f6;
+}
+
+.argument-green::after {
+  background: #10b981;
+}
+
 /* Bubbles links ausrichten (Yellow, Red) */
 .argument-yellow,
 .argument-red {
   align-self: flex-start;
   margin-right: auto;
   max-width: 95%;
+  margin-left: 45px !important;
 }
 
 /* Bubbles rechts ausrichten (Gray, Blue, Green) */
@@ -690,6 +793,7 @@ body {
   align-self: flex-end;
   margin-left: auto;
   max-width: 95%;
+    margin-right: 45px !important;
 }
 
 /* User Bubbles zentriert */
@@ -713,8 +817,14 @@ body {
 }
 
 .argument-user {
-  background: #dbeafe;
-  border: 3px solid #bfdbfe;
+  background: linear-gradient(
+    135deg,
+    #f6f5f6,
+    #ffffff
+  );
+  border: 1.5px solid rgba(177, 70, 239, 0.45);
+  box-shadow: 
+    0 2px 8px rgba(177, 70, 239, 0.15);
 }
 
 /* User-Intro: gleiche Schriftstärke wie Bot-Nachrichten */
@@ -772,7 +882,7 @@ body {
 /* Intro-Nachrichten: kleinere Schrift */
 .argument-intro .argument-label,
 .argument-intro .argument-text {
-  font-size: 12px;
+  font-size: 15px;
 }
 
 .argument-text {
