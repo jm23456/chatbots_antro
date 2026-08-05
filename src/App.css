@@ -676,18 +676,22 @@ body {
 }
 
 /* Chatbot-Oval für optische Zuordnung */
+.argument-yellow::after,
+.argument-green::after,
+.argument-gray::after,
+.argument-blue::after,
 .argument-red::after {
   content: "";
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   width: 40px;
-  height: 40px;
-  border-radius: 999px;
+  height: 35px;
+  border-radius: 20px;
 }
-
+/* 
 /* Viereck für blauer Chatbot*/
-.argument-blue::after {
+/* .argument-blue::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -695,10 +699,10 @@ body {
   width: 40px;
   height: 40px;
   border-radius: 0;
-}
+} */
 
 /* Sechseck für gelber Chatbot*/
-.argument-yellow::after {
+/* .argument-yellow::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -713,10 +717,10 @@ body {
     25% 100%, 
     0% 50%
   );
-}
+} */
 
 /* Diamant für grüner Chatbot*/
-.argument-green::after {
+/* .argument-green::after {
   content: "";
   position: absolute;
   top: 50%;
@@ -729,9 +733,9 @@ body {
     50% 100%, 
     0% 50%
   );
-}
+} */
 
-/* Dreieck für grauer Chatbot*/
+/* Dreieck für grauer Chatbot
 .argument-gray::after {
   content: "";
   position: absolute;
@@ -744,7 +748,7 @@ body {
     100% 100%, 
     0% 100%
   );
-}
+}  */
 
 .argument-yellow::after,
 .argument-red::after {
@@ -758,23 +762,23 @@ body {
 }
 
 .argument-yellow::after {
-  background: #f59e0b;
+  background: #f59f0bc8;
 }
 
 .argument-red::after {
-  background: #ef4444;
+  background: #ef4444d3;
 }
 
 .argument-gray::after {
-  background: #6b7280;
+  background: #6b7280ce;
 }
 
 .argument-blue::after {
-  background: #3b82f6;
+  background: #3b83f6c9;
 }
 
 .argument-green::after {
-  background: #10b981;
+  background: #10b981d4;
 }
 
 /* Bubbles links ausrichten (Yellow, Red) */
