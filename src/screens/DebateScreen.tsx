@@ -64,17 +64,9 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
   const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
 
-  const normalizeColor = (color?: string): Color | undefined => {
-    if (!color) return undefined;
-    const normalized = color.toLowerCase();
-    if (normalized === "grey" || normalized === "turquoise") return "turquoise";
-    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
-    return undefined;
-  };
-
   const getRoleColor = (speaker: SpeakerKey) => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
-    return normalizeColor(roleColor) ?? {
+    return roleColor ?? {
       A: "red",
       B: "yellow",
       C: "green",

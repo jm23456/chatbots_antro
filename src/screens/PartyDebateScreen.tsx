@@ -7,7 +7,7 @@ import { useSearchParams } from "react-router-dom";
 import { debateConfig } from "../config/debateConfig";
 import { logEvent } from "../../logs/logs";
 
-type Color = "red" | "yellow" | "green" | "grey" | "blue" ;
+type Color = "red" | "yellow" | "green" | "turquoise" | "blue" ;
 
 interface PartyDebateScreenProps {
   topicTitle: string;
@@ -17,31 +17,6 @@ interface PartyDebateScreenProps {
   isIntro?: boolean;
   onStart: () => void;
 }
-
-const normalizeTopic = (topic: string | null) => {
-  if (!topic) return null;
-  const cleaned = topic.trim().toLowerCase();
-  if (/^debate\d+/.test(cleaned)) return cleaned;
-  if (/^\d+$/.test(cleaned)) return `debate${cleaned}`;
-  return cleaned;
-};
-
-const normalizeLing = (ling: string | null) => {
-  if (!ling) return null;
-  const cleaned = ling.trim().toLowerCase().replace(/_/g, "");
-  if (cleaned === "firstperson") return "firstperson";
-  if (cleaned === "general") return "general";
-  return cleaned;
-};
-
-const normalizeRole = (role: string | null) => {
-  if (!role) return null;
-  const cleaned = role.trim().toLowerCase();
-  if (cleaned === "watch") return "watch";
-  if (cleaned === "steer") return "steer";
-  if (cleaned === "party") return "party";
-  return cleaned;
-};
 
 const speakerColorFallback: Record<SpeakerKey, Color> = {
   A: "red",
@@ -65,11 +40,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const topicFromURL = params.get("topic");
   const roleFromURL = params.get("role");
   const lingFromURL = params.get("ling");
-
-  const normalizedTopic = normalizeTopic(topicFromURL);
-  const normalizedLing = normalizeLing(lingFromURL);
-  const normalizedRole = normalizeRole(roleFromURL);
-  const filename = normalizedTopic && normalizedLing && normalizedRole ? `${normalizedTopic}_${normalizedLing}_${normalizedRole}.json` : null;
+  const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
 
   const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
   const debateData = useMemo<DebateData | undefined>(() => {
@@ -80,17 +51,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
 
   const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
 
-  const normalizeColor = (color?: string): Color | undefined => {
-    if (!color) return undefined;
-    const normalized = color.toLowerCase();
-    if (normalized === "turquoise" || normalized === "turquoise") return "turquoise";
-    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
-    return undefined;
-  };
-
   const getRoleColor = (speaker: SpeakerKey) => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
-    return normalizeColor(roleColor) ?? speakerColorFallback[speaker];
+    return roleColor ?? speakerColorFallback[speaker];
   };
 
   const getRoleSide = (speaker: SpeakerKey): "pro" | "contra" | "undecided" => {

@@ -138,18 +138,10 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     });
   }, [totalSteps]);
 
-  const normalizeColor = useCallback((color?: string): Color | undefined => {
-    if (!color) return undefined;
-    const normalized = color.toLowerCase();
-    if (normalized === "grey" || normalized === "turquoise") return "turquoise";
-    if (normalized === "red" || normalized === "yellow" || normalized === "green" || normalized === "blue") return normalized as Color;
-    return undefined;
-  }, []);
-
   const getRoleColor = useCallback((speaker: SpeakerKey): Color => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
-    return normalizeColor(roleColor) ?? speakerColorFallback[speaker];
-  }, [debateData, normalizeColor]);
+    return roleColor ?? speakerColorFallback[speaker];
+  }, [debateData]);
 
   const getRoleSide = useCallback((speaker: SpeakerKey): "pro" | "contra" | "undecided" => {
     const stance = debateData?.roles?.[speaker]?.stance;

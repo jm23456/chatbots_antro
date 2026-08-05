@@ -45,12 +45,12 @@
       "description": "Keine aussergewöhnlich hohen Gesundheitskosten; es braucht gezielte Eingriffe statt pauschalem Sparen.",
       "display": { "color": "yellow", "avatar": "yellow_standard.jpg" }
     },
-    "E": {
+    "E": { 
       "label": "Betroffene Bevölkerung",
       "stance": "undecided",
       "orientation": "betroffen, alltagsnah",
       "description": "Finanzielle Belastung durch seit Jahren stärker steigende Prämien als Löhne; Erwartung an Effizienz und Transparenz.",
-      "display": { "color": "grey", "avatar": "grey_standard.jpg" }
+      "display": { "color": "turquoise", "avatar": "grey_standard.jpg" }
     }
   },
 
@@ -130,9 +130,9 @@
       "kind": "segment",
       "topic": "Unnötige Behandlungen und Qualitätsanreize",
       "utterances": [
-        { "uid": "r2o_001", "speaker": "C",
+        { "uid": "r2o_001", "speaker": "D",
           "text": "Das stimmt. Es gibt Operationen, die nicht nötig wären. Und es gibt Patienten, die so lange von Arzt zu Arzt gehen, bis jemand den Eingriff durchführt." },
-        { "uid": "r2o_002", "speaker": "C",
+        { "uid": "r2o_002", "speaker": "E",
           "text": "Zusätzlich fehlt ein Qualitätsanreiz. Ein Spital, das effizient arbeitet, wird gleich entschädigt wie eines, das Patienten länger behält oder unnötige Untersuchungen macht." }
       ],
       "transition": { "type": "linear", "next": "summary" }

@@ -50,7 +50,7 @@
       "stance": "undecided",
       "orientation": "betroffen, alltagsnah",
       "description": "Finanzielle Belastung durch seit Jahren stärker steigende Prämien als Löhne; Erwartung an Effizienz und Transparenz.",
-      "display": { "color": "grey", "avatar": "grey_standard.jpg" }
+      "display": { "color": "turquoise", "avatar": "grey_standard.jpg" }
     }
   },
 
@@ -92,9 +92,9 @@
       "kind": "segment",
       "topic": "Kostensteuerung und Sparpotenzial",
       "utterances": [
-        { "uid": "r2c_001", "speaker": "A",
+        { "uid": "r2c_001", "speaker": "E",
           "text": "Die Prämien sind die Folge der Kosten. Und die Kosten sind die Folge der Behandlungen. Je mehr Behandlungen anfallen, notwendige wie unnötige, desto höher steigen die Kosten und damit auch die Prämien." },
-        { "uid": "r2c_002", "speaker": "A",
+        { "uid": "r2c_002", "speaker": "D",
           "text": "Trotzdem müssen wir handeln. Wenn rund 20 Prozent der Leistungen unnötig oder unwirtschaftlich sind, sprechen wir von sechs bis acht Milliarden Franken Sparpotenzial pro Jahr." }
       ],
       "transition": { "type": "linear", "next": "summary" }
