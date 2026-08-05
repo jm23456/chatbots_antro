@@ -3,6 +3,7 @@ import ExitWarningModal from '../components/ExitWarningModal';
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from 'react-router-dom';
+import { debateConfig } from '../config/debateConfig';
 
 interface TopicIntroProps {
   topicTitle: string;
@@ -102,11 +103,13 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
         onConfirm={handleExitConfirm} 
         onCancel={handleExitCancel} 
       />
-      <div className="exit-btn-outside">
-        <button className="exit-btn" onClick={handleExitClick}>
-          {t("exit")}
-        </button>
-      </div>
+      {debateConfig.showExitButton && (
+        <div className="exit-btn-outside">
+          <button className="exit-btn" onClick={handleExitClick}>
+            {t("exit")}
+          </button>
+        </div>
+      )}
       <div className="screen" style={{
         boxShadow: "0 10px 40px rgba(80, 60, 160, 0.2), 0 8px 24px rgba(80, 60, 160, 0.12), 0 0 80px rgba(80, 60, 160, 0.08)",
         padding: "24px 40px",

@@ -409,10 +409,12 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
       )}
 
       <div className="top-exit-row" style={{ marginBottom: "0px" }}>
-        <div style={{ width: "180px", height: "8px", backgroundColor: "#e5e7eb", borderRadius: "999px", overflow: "hidden" }}>
-          <div style={{ width: `${progress}%`, height: "100%", background: "#7c3aed", transition: "width 150ms linear" }} />
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginRight: "auto" }}>
+          <div style={{ width: "180px", height: "8px", backgroundColor: "#e5e7eb", borderRadius: "999px", overflow: "hidden" }}>
+            <div style={{ width: `${progress}%`, height: "100%", background: "#7c3aed", transition: "width 150ms linear" }} />
+          </div>
+          <div>{Math.round(progress)}%</div>
         </div>
-        <div>{Math.round(progress)}%</div>
         {debateConfig.showExitButton && (
           <div className="top-buttons-row">
             <button className="exit-btn" style={{ marginLeft: "605px" }} onClick={handleExitClick}>{t("exit")}</button>
