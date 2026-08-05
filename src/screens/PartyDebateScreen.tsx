@@ -14,6 +14,7 @@ interface PartyDebateScreenProps {
   participantID: string | null;
   onExit: () => void;
   hasStarted: boolean;
+  isIntro?: boolean;
   onStart: () => void;
 }
 
@@ -56,6 +57,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   participantID,
   onExit,
   hasStarted,
+  isIntro,
   onStart,
 }) => {
   const { t } = useLanguage();
@@ -116,6 +118,16 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const nextMessageIdRef = useRef(1000);
   const pendingMessageIdRef = useRef<number | null>(null);
   const completedStepsRef = useRef(0);
+
+  const node = currentNodeKey ? debateData?.nodes[currentNodeKey] : null;
+  const isLastMessage = Boolean(
+    node &&
+    !isTyping &&
+    !pendingChoice &&
+    node.transition.type === "linear" &&
+    node.transition.next === "summary" &&
+    currentUtteranceIndex >= (node.utterances?.length ?? 0)
+  );
 
   const countVisibleProgressSteps = (startKey: string | null): number => {
     if (!startKey || !debateData) return 0;
@@ -331,6 +343,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   };
 
   useEffect(() => {
+    console.log("IsIntro", isIntro);
     if (!hasStarted || !debateData) return;
     hasStartedRef.current = true;
     setChatHistory([]);
@@ -482,7 +495,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
 
       <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
         <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping || !!pendingChoice || noDebateFound}>
-          {hasStarted ? (pendingChoice ? t("continue") : t("finishDebate")) : t("continue")}
+          {hasStarted && isLastMessage ? t("finishDebate") : t("continue")}
         </button>
       </div>
     </div>

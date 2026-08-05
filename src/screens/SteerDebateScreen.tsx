@@ -68,6 +68,17 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const nextMessageIdRef = useRef(1000);
   const completedStepsRef = useRef(0);
 
+  const node = currentNodeKey ? debateData?.nodes[currentNodeKey] : null;
+
+  const isLastMessage = Boolean(
+    node &&
+    !isTyping &&
+    !pendingChoice &&
+    node.transition.type === "linear" &&
+    node.transition.next === "summary" &&
+    currentUtteranceIndex >= (node.utterances?.length ?? 0)
+  );
+
   const countVisibleProgressSteps = useCallback((startKey: string | null) => {
     if (!startKey || !debateData) return 0;
     const visited = new Set<string>();
@@ -325,6 +336,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   }, [hasStarted, debateData, findFirstDebateNode, countVisibleProgressSteps]);
 
   useEffect(() => {
+    console.log("LastMessage", isLastMessage);
     if (!hasStarted || !debateData || isTyping || pendingChoice) return;
     if (!currentNodeKey) return;
     if (hasNodeStarted) return;
@@ -455,7 +467,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
       <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
         <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping || !!pendingChoice || noDebateFound}>
-          {hasStarted ? (pendingChoice ? t("continue") : t("continue")) : t("continue")}
+          {hasStarted && isLastMessage ? t("finishDebate") : t("continue")}
         </button>
       </div>
     </div>

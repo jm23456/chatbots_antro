@@ -306,7 +306,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
   const noDebateFound = Boolean(filename && !debateData);
 
   return (
-    <div className="screen debate-screen">
+    <div className="screen active-debate-screen">
       <ExitWarningModal isOpen={showExitWarning} onConfirm={handleExitConfirm} onCancel={handleExitCancel} />
 
       {showDebateFinished && (
@@ -382,13 +382,13 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
         </div>
       )}
 
-      <footer className="debate-input-footer">
+      <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
         {hasStarted && debateData && (
           <div className="action-row">
             <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping}>{isTyping || visibleBubblesRef.current < argumentBubbles.length ? t("continue") : t("finishDebate")}</button>
           </div>
         )}
-      </footer>
+      </div>
     </div>
   );
 };
