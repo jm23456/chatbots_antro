@@ -194,7 +194,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     const nextBubble = argumentBubbles[visibleBubblesRef.current];
     visibleBubblesRef.current += 1;
     setVisibleBubbles(visibleBubblesRef.current);
-    console.log("Kind: ", nextBubble);
 
     if (nextBubble.type === "user") {
       setChatHistory((prev) => [

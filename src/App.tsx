@@ -70,6 +70,7 @@ const App: React.FC = () => {
             hasStarted={hasStarted}
             onStart={() => {
               logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
+              console.log("Log Event:", participantID, new Date().toLocaleTimeString());
               setHasStarted(true);
             }}
           />
