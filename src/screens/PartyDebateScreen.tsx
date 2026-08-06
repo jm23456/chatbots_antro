@@ -179,7 +179,10 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   };
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      const container = messagesContainerRef.current;
+      container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    }
   };
 
   const addBotMessage = (utterance: DebateUtterance, isIntro: boolean) => {
@@ -306,7 +309,6 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   };
 
   useEffect(() => {
-    console.log("IsIntro", isIntro);
     if (!hasStarted || !debateData) return;
     hasStartedRef.current = true;
     setChatHistory([]);
@@ -335,6 +337,10 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   // }, [chatHistory, pendingChoice]);
 
   useEffect(() => {
+    if (chatHistory.length > 0 || pendingChoice) {
+      scrollToBottom();
+    }
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
@@ -346,7 +352,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isTyping, pendingChoice]);
+  }, [chatHistory, isTyping, pendingChoice]);
 
   const handleContinue = () => {
     if (!hasStarted) {
@@ -425,7 +431,6 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               )}
             </div>
           ))}
-          <div ref={messagesEndRef} />
 
           {pendingChoice && (
             <div style={{ marginTop: "12px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
@@ -439,6 +444,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </section>
       )}
 

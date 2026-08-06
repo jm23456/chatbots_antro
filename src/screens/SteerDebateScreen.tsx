@@ -239,9 +239,9 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   };
 
   const advanceConversation = useCallback(() => {
-    if (!debateData) return;
-    if (isTyping) return;
-    if (pendingChoice) return;
+    if (!debateData) {console.log("no debate data, cannot advance conversation.", pendingChoice)}; 
+    if (isTyping) {console.log("Istyping, cannot advance conversation.", pendingChoice)}; 
+    if (pendingChoice) {console.log("Pending choice exists, cannot advance conversation.", pendingChoice)}; // Debugging log
     if (!currentNodeKey) {
       finishDebate();
       return;
@@ -282,6 +282,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }
 
     if (node.transition.type === "choice") {
+      scrollToBottom();
       setPendingChoice(node.transition.options ?? []);
       setChoicePrompt(node.transition.prompt ?? "Wähle eine Option:");
       setHasNodeStarted(false);
@@ -289,7 +290,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     }
 
     finishDebate();
-  }, [addBotMessage, addUserMessage, currentNodeKey, currentUtteranceIndex, debateData, finishDebate, isTyping, pendingChoice]);
+  }, [addBotMessage, addUserMessage, currentNodeKey, currentUtteranceIndex, debateData, finishDebate, isTyping, pendingChoice, scrollToBottom]);
 
   const handleSelectChoice = useCallback((option: DebateTransitionOption) => {
     setPendingChoice(null);
@@ -298,16 +299,19 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     setCurrentNodeKey(option.next || null);
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
-    logEvent("Choice_made", participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
+    logEvent("Choice_made", option.next, participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
   }, [addUserMessage, countVisibleProgressSteps, logEvent]);
 
   const handleContinue = () => {
+    console.log("Wir gehen weiter!");
     if (!hasStarted) {
+      console.log("Wir gehen OPTION 1!");
       onStart();
       return;
     }
-    if (!debateData) return;
-    if (isTyping || pendingChoice) return;
+    if (!debateData) {console.log("Wir gehen OPTION 2!")}; 
+    if (isTyping) {console.log("Wir gehen OPTION 2!", pendingChoice)}; 
+    console.log("Wir gehen OPTION 4!");
     advanceConversation();
   };
 
@@ -328,22 +332,24 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   }, [hasStarted, debateData, findFirstDebateNode, countVisibleProgressSteps]);
 
   useEffect(() => {
-    console.log("LastMessage", isLastMessage);
     if (!hasStarted || !debateData || isTyping || pendingChoice) return;
     if (!currentNodeKey) return;
     if (hasNodeStarted) return;
     if (currentUtteranceIndex !== 0) return;
+    scrollToBottom();
     advanceConversation();
   }, [advanceConversation, currentNodeKey, currentUtteranceIndex, debateData, hasNodeStarted, hasStarted, isTyping, pendingChoice]);
 
   // useEffect(() => {
-  //   scrollToBottom();
+  //   if (pendingChoice) {
+  //     scrollToBottom();
+  //   }
   // }, [chatHistory, scrollToBottom]);
 
   useEffect(() => {
     if (!debateData) return;
     scrollToBottom();
-  }, [chatHistory, scrollToBottom, debateData]);
+  }, [chatHistory, pendingChoice, scrollToBottom, debateData]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -426,7 +432,6 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
               )}
             </div>
           ))}
-          <div ref={messagesEndRef} />
 
           {pendingChoice && (
             <div style={{ marginTop: "12px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
@@ -440,6 +445,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
               </div>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </section>
       )}
 
@@ -459,7 +465,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       )}
 
       <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
-        <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping || !!pendingChoice || noDebateFound}>
+        <button className="con-primary-btn" onClick={() =>{handleContinue();}} disabled={isTyping || !!pendingChoice || noDebateFound}>
           {hasStarted && isLastMessage ? t("finishDebate") : t("continue")}
         </button>
       </div>
