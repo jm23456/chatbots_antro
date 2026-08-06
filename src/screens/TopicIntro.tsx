@@ -4,6 +4,7 @@ import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from 'react-router-dom';
 import { debateConfig } from '../config/debateConfig';
+import { DebateData } from '../types/types';
 
 interface TopicIntroProps {
   topicTitle: string;
@@ -35,6 +36,7 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
   // console.log("Rendering:" + topicTitle);
   const { t, language } = useLanguage();
   const [showExitWarning, setShowExitWarning] = useState(false);
+  const [showStartOverlay, setShowStartOverlay] = useState(true);
 
   const handleExitClick = () => {
     setShowExitWarning(true);
@@ -70,6 +72,8 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
       return subtitle;
     }
   }, [debateData]);
+
+    const introduction = debateData?.introduction;
 
       const debateTitle = useMemo(() => {
     if (!debateData) return null;
@@ -110,6 +114,21 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
           </button>
         </div>
       )}
+
+      {showStartOverlay && (
+        <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+            </div>
+            <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>{introduction}</p>
+              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
+          </div>
+        </div>
+        </div>
+      )}
+
       <div className="screen" style={{
         boxShadow: "0 10px 40px rgba(80, 60, 160, 0.2), 0 8px 24px rgba(80, 60, 160, 0.12), 0 0 80px rgba(80, 60, 160, 0.08)",
         padding: "24px 40px",

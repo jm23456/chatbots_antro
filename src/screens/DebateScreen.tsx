@@ -62,7 +62,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     return key ? (debateFiles[key] as DebateData) : undefined;
   }, [filename]);
 
-  const displayTopicTitle = debateData?.title || topicTitle || topicFromURL || t("healthInsurance");
+  const displayTopicTitle = debateData?.title;
 
   const getRoleColor = (speaker: SpeakerKey) => {
     const roleColor = debateData?.roles?.[speaker]?.display?.color;
@@ -367,7 +367,8 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
               <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
             </div>
             <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 The chatbots will discuss the topic now</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte der fünf Chatbots.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
               <button className="start-debate-btn" onClick={onStart}>{t("startDebate")}</button>
             </div>
           </div>
