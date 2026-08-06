@@ -18,7 +18,7 @@ type IntroArgument = {
   color: Color;
 };
 
-const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => {
+const PartyCandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => {
   const [params] = useSearchParams();
   const [hasStarted, setHasStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
@@ -67,6 +67,13 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
     return Object.keys(debateData.roles).filter((key) => key !== "SYSTEM") as SpeakerKey[];
   }, [debateData]);
 
+  const speakers = useMemo(() => {
+  if (!debateData) return [];
+  return Object.keys(debateData.roles).filter(
+    (speaker) => speaker !== "SYSTEM" && speaker !== "E"
+  );
+}, [debateData]);
+
   const activeArgument = currentIndex >= 0 ? introArguments[currentIndex] : undefined;
 
   const handleNext = () => {
@@ -101,7 +108,7 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
 
       <section className="screen-body">
         <div className="arguments-stage intro-no-dim">
-        {allSpeakers.map((speaker) => {
+        {speakers.map((speaker) => {
           const color = getRoleColor(speaker);
           const isActive = activeArgument?.speaker === speaker;
 
@@ -136,4 +143,4 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
   );
 };
 
-export default CandidatesIntro;
+export default PartyCandidatesIntro;

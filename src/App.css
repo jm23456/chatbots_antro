@@ -1159,6 +1159,13 @@ body {
   transform: scale(0.92);
 }
 
+/* Keep equal brightness in CandidatesIntro: do not dim other candidates */
+.arguments-stage.intro-no-dim:has(.speaking) .candidate-card:not(.speaking),
+.arguments-stage.intro-no-dim .candidate-card:not(.speaking) {
+  filter: none !important;
+  transform: none !important;
+}
+
 /* Breitere Speech Bubbles beim Sprechen - nur in Debate Screens */
 .debate-stage .candidate-card.speaking .candidate-speech-bubble,
 .active-debate-stage .candidate-card.speaking .candidate-speech-bubble {
@@ -1245,7 +1252,7 @@ body {
 }
 
 .candidate-red .candidate-speech-bubble::after {
-  border-top-color: #fef2f2;
+  border-top-color: #fee2e2;
 }
 
 /* .candidate-robot {
@@ -1276,27 +1283,23 @@ body {
 }*/
 
 .candidate-blue .candidate-dot {
-  background: #3b82f6;
-}
-
-.candidate-gray .candidate-dot {
-  background: #9ca3af;
+  background: #3b83f6c9;
 }
 
 .candidate-green .candidate-dot {
-  background: #22c55e;
+  background: #10b981d4;
 }
 
 .candidate-yellow .candidate-dot {
-  background: #facc15;
+  background: #f59f0b93;
 }
 
 .candidate-red .candidate-dot {
-  background: #ef4444;
+  background: #ef4444d3;
 }
 
 .candidate-turquoise .candidate-dot {
-  background: #14b8a6;
+  background: #03d0fe6a;
 } 
 
 .candidate-robot .mic-icon {

@@ -54,7 +54,6 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
           ) : bubbleText !== undefined ? (
             <span>
               {bubbleText}
-              {!isPaused && <span className="cursor">|</span>}
             </span>
           ) : (
             <span>{bubbleLabel}</span>
