@@ -557,6 +557,7 @@ body {
   line-height: 1.5;
 }
 
+
 /* Intro-Nachrichten: kleiner und mit Label */
 .argument-box.argument-intro {
   padding: 8px 14px;
@@ -1041,6 +1042,42 @@ body {
   width: 100%;
 }
 
+
+.candidate-speech-bubble {
+  position: absolute;
+  top: 0;
+  bottom: auto;
+  left: 50%;
+  transform: translate(-50%, -250px);
+  width: 150px;
+  min-height: 80px;
+  max-height: 620px;
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-start;
+  padding: 10px 6px;
+  padding-right: 0px;
+  padding-left: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  z-index: 10;
+  transition: width 0.4s ease, max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+  overflow-y: auto;
+  word-wrap: break-word;
+  scroll-behavior: smooth;
+}
+
+.candidate-dot {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 35px;
+  border-radius: 20px;
+}
+
 /* ARGUMENTS STAGE - Unified layout */
 .arguments-stage {
   display: flex;
@@ -1130,31 +1167,6 @@ body {
   transition: width 0.4s ease, max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
 }
 
-.candidate-speech-bubble {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 25px;
-  width: 165px;
-  min-height: 80px;
-  max-height: 220px;
-  border-radius: 16px;
-  display: flex;
-  align-items: flex-start;
-  padding: 10px 6px;
-  padding-right: 0px;
-  padding-left: 8px;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.4;
-  z-index: 10;
-  transition: width 0.4s ease, max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
-  overflow-y: auto;
-  word-wrap: break-word;
-  scroll-behavior: smooth;
-}
-
 /* Scrollbar immer sichtbar */
 .candidate-speech-bubble::-webkit-scrollbar {
   width: 6px;
@@ -1199,12 +1211,13 @@ body {
   border-top-color: #eff6ff;
 }
 
-.candidate-turqoise .candidate-speech-bubble {
+
+.candidate-turquoise .candidate-speech-bubble {
   background: #e5e7eb;
   border: 1px solid #e5e7eb;
 }
 
-.candidate-turqoise .candidate-speech-bubble::after {
+.candidate-turquoise .candidate-speech-bubble::after {
   border-top-color: #f3f4f6;
 }
 
@@ -1233,6 +1246,64 @@ body {
 
 .candidate-red .candidate-speech-bubble::after {
   border-top-color: #fef2f2;
+}
+
+/* .candidate-robot {
+  width: 110px;
+  min-width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  border: 2px solid transparent;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.candidate-card.speaking .candidate-robot {
+  transform: scale(1.05);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.08);
+}
+
+.candidate-dot {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), 0 6px 16px rgba(15, 23, 42, 0.08);
+}*/
+
+.candidate-blue .candidate-dot {
+  background: #3b82f6;
+}
+
+.candidate-gray .candidate-dot {
+  background: #9ca3af;
+}
+
+.candidate-green .candidate-dot {
+  background: #22c55e;
+}
+
+.candidate-yellow .candidate-dot {
+  background: #facc15;
+}
+
+.candidate-red .candidate-dot {
+  background: #ef4444;
+}
+
+.candidate-turquoise .candidate-dot {
+  background: #14b8a6;
+} 
+
+.candidate-robot .mic-icon {
+  position: absolute;
+  right: -10px;
+  bottom: -8px;
+  font-size: 18px;
 }
 
 /* Speech-Bubble Ausrichtung für äussere Kandidaten - verhindert Überlauf am Rand */

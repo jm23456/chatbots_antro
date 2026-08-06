@@ -77,6 +77,8 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
 
     const introduction = debateData?.introduction;
 
+    const debateFirstStep = debateData?.first_step;
+
       const debateTitle = useMemo(() => {
     if (!debateData) return null;
     const title = debateData.title;
@@ -119,12 +121,13 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
 
       {showStartOverlay && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
             <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
             </div>
-            <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>{introduction}</p>
+            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>{introduction}</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>{debateFirstStep}</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
           </div>
         </div>

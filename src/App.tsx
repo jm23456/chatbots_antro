@@ -11,12 +11,14 @@ import Summary from "./screens/Summary";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { useSearchParams } from "react-router-dom";
 import { logEvent, sendLogsToQualtrics } from "../logs/logs";
+import CandidatesIntro from "./screens/CandidatesIntro";
 
 
 const STEPS: Record<string, Step> = {
   TOPIC: "TOPIC",
   ROLE: "ROLE",
   TOPIC_INTRO: "TOPIC_INTRO",
+  INTRO: "INTRO",
   DEBATE: "DEBATE",
   SUMMARY: "SUMMARY",
 };
@@ -43,10 +45,23 @@ const App: React.FC = () => {
         <div className="app-card">
         {step === STEPS.TOPIC_INTRO && (
           <TopicIntro
-            topicTitle= {selectedTopic}
+            topicTitle={selectedTopic}
             onNext={() => {
               setHasStarted(false);
-              setStep(STEPS.DEBATE);
+              setStep(role === "WATCH" || role === "STEER" ? STEPS.INTRO : STEPS.DEBATE);
+            }}
+            onExit={() => {
+              setStep(STEPS.SUMMARY);
+              setSelectedTopic("");
+              setHasStarted(false);
+            }}
+          />
+        )}
+
+        {step === STEPS.INTRO && (role === "WATCH" || role === "STEER") && (
+          <CandidatesIntro
+            onNext={() => {
+              setHasStarted(false);
             }}
             onExit={() => {
               setStep(STEPS.SUMMARY);
