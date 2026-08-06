@@ -58,6 +58,8 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
 
   const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
 
+  console.log("filename:", filename, "topicFromURL:", topicFromURL, "roleFromURL:", roleFromURL, "lingFromURL:", lingFromURL);
+
   const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, DebateData>;
   const debateData = useMemo<DebateData | undefined>(() => {
     if (!filename) return undefined;
