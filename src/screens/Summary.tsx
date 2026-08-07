@@ -40,6 +40,7 @@ type DebateSummary = {
 const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
   const { t } = useLanguage();
   const [showPopup, setShowPopup] = useState(true);
+  const [showEndOverlay, setShowEndOverlay] = useState(false);
   const [params] = useSearchParams();
     const topicFromURL = params.get("topic");
     const roleFromURL = params.get("role");
@@ -115,6 +116,20 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
           </div>
         )}
 
+        {showEndOverlay &&(
+             <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+            </div>
+            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>Bitte fahren Sie nun in Qualtrics fort.</p>
+              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>debateFirstStep</p> */}
+          </div>
+        </div>
+        </div>
+      )}
+
       </section>
       <header className="screen-header" style={{marginBottom: "4px", marginTop: "0px"}}>
         <p className="subtitle">{t("summary")}</p> 
@@ -160,8 +175,8 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
       </section>
 
       <footer className="footer-end-row" style= {{ marginTop: "30px", textAlign: "center" , marginBottom: "10px"  }}>
-        <button className="con-primary-btn" onClick={onStartAnother}>
-          {t("startNewRound")}
+        <button className="con-primary-btn" onClick={() => setShowEndOverlay(true)}>
+          Fortsetzen
         </button>
       </footer>
     </div>

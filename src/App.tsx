@@ -49,7 +49,7 @@ const App: React.FC = () => {
             topicTitle={selectedTopic}
             onNext={() => {
               setHasStarted(false);
-              setStep(role === "WATCH" || role === "STEER" ? STEPS.INTRO : STEPS.DEBATE);
+              setStep(STEPS.INTRO);
             }}
             onExit={() => {
               setStep(STEPS.SUMMARY);

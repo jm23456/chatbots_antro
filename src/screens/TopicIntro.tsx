@@ -126,8 +126,8 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
               <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
             </div>
             <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>{introduction}</p>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>{debateFirstStep}</p>
+              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Hier: topic Introduction</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
           </div>
         </div>

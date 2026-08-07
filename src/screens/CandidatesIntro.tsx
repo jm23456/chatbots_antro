@@ -3,6 +3,7 @@ import CandidateCard from "../components/CandidateCard";
 import "../App.css";
 import type { DebateData } from "../types/types";
 import { useSearchParams } from "react-router-dom";
+import { useLanguage } from "../hooks/useLanguage";
 
 interface CandidatesIntroProps {
   onNext: () => void;
@@ -23,6 +24,9 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
   const [hasStarted, setHasStarted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [shownArguments, setShownArguments] = useState<number[]>([]);
+  const [showEndOverlay, setShowEndOverlay] = useState(false);
+  const [showStartOverlay, setShowStartOverlay] = useState(true);
+  const { t, language } = useLanguage();
 
   const topicFromURL = params.get("topic");
   const roleFromURL = params.get("role");
@@ -87,17 +91,51 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
       setShownArguments((prev) => [...prev, nextIndex]);
       return;
     }
+    if (currentIndex <= introArguments.length - 1) {
+      setShowEndOverlay(true);
+      return;
+    }
 
     onNext();
   };
 
-  const buttonLabel = !hasStarted ? "Start Introduction" : currentIndex < introArguments.length - 1 ? "Weiter" : "Fertig";
+  const buttonLabel = !hasStarted ? "Start Introduction" : currentIndex < introArguments.length - 1 ? "Weiter" : "Fortfahren";
 
   return (
     <div className="screen">
       <header className="screen-header">
         <p className="subtitle">Präsentation der Kandidaten</p>
       </header>
+
+        {showStartOverlay && (
+        <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+            </div>
+            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
+              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Hier: Candidates Introduction + following with Ranking </p>
+              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
+          </div>
+        </div>
+        </div>
+      )}
+
+
+      {showEndOverlay &&(
+             <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+            </div>
+            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>Bitte fahren Sie nun in Qualtrics fort.</p>
+              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>debateFirstStep</p> */}
+          </div>
+        </div>
+        </div>
+      )}
 
       <section className="screen-body">
         <div className="arguments-stage intro-no-dim">
