@@ -100,6 +100,9 @@ const PartyCandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }
     }
 
     if (currentIndex <= introArguments.length - 1) {
+      window.parent.postMessage({
+        type: "go"
+    }, "*");
       setShowEndOverlay(true);
       return;
     }
@@ -125,7 +128,7 @@ const PartyCandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }
             <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
               {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Hier: Candidates Introduction + following with Ranking </p>
-              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
+              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Fortfahren</button>
           </div>
         </div>
         </div>

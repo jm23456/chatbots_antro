@@ -99,13 +99,11 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
     return null;
   }, [debateData]);
 
-  const image = language === "de"
-    ? import.meta.env.BASE_URL + "Infografik_Praemien.png"
-    : import.meta.env.BASE_URL + "Infografik.en.png";
+  const image = import.meta.env.BASE_URL + "Infografik_Praemien.png";
 
   return (
     <section className="screen-body">
-    <div className="screen-wrapper">
+    <div className="screen-wrapper topic-intro-wrapper">
       <ExitWarningModal 
         isOpen={showExitWarning} 
         onConfirm={handleExitConfirm} 
@@ -128,13 +126,13 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
             <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
               {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Hier: topic Introduction</p>
-              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>{t("continue")}</button>
+              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Starten</button>
           </div>
         </div>
         </div>
       )}
 
-      <div className="screen" style={{
+      <div className="screen topic-intro-card" style={{
         boxShadow: "0 10px 40px rgba(80, 60, 160, 0.2), 0 8px 24px rgba(80, 60, 160, 0.12), 0 0 80px rgba(80, 60, 160, 0.08)",
         padding: "24px 40px",
         margin: "0 auto",
@@ -164,7 +162,7 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
                 </>
               )}
               <button className="con-primary-btn" onClick={onNext}>
-                {t("next")}
+                Fortfahren
               </button>
             </div>
           </div>

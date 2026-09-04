@@ -82,6 +82,17 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
         };
       }, [debateData]);
 
+const handleNext = () => {
+  // setShowEndOverlay(true);
+
+  window.parent.postMessage(
+    {
+      type: "go",
+    },
+    "*"
+  );
+};
+
   return (
     <div className="screen" style={{
      boxShadow: "0 20px 60px rgba(80, 60, 160, 0.15),0 8px 24px rgba(80, 60, 160, 0.10)",
@@ -108,8 +119,9 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
               <div style={{padding: "0rem 1.5rem 1.5rem 1.5rem"}}>
                 {/* <p style={{fontSize: "18px", marginTop: "10px", fontWeight: "600"}}>{t("summaryPopup2")}</p> */}
                 <p style={{fontSize: "18px"}}>{t("summaryPopup3")}</p>
-                <button className="start-debate-btn" onClick={() => setShowPopup(false)}>
-                  {t("continue")}
+                <p style={{fontSize: "18px"}}>Fahren Sie anschliessend in Qualtrics fort.</p>
+                <button className="start-debate-btn" onClick={() => {setShowPopup(false); handleNext();} }>
+                  Fortfahren
                 </button>
               </div>
             </div>
@@ -132,7 +144,7 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
 
       </section>
       <header className="screen-header" style={{marginBottom: "4px", marginTop: "0px"}}>
-        <p className="subtitle">{t("summary")}</p> 
+        <p className="subtitle">Zusammenfassung</p> 
         {/* <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p> */}
       </header>
 
@@ -174,11 +186,11 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
         )}
       </section>
 
-      <footer className="footer-end-row" style= {{ marginTop: "30px", textAlign: "center" , marginBottom: "10px"  }}>
-        <button className="con-primary-btn" onClick={() => setShowEndOverlay(true)}>
+      {/* <footer className="footer-end-row" style= {{ marginTop: "30px", textAlign: "center" , marginBottom: "10px"  }}>
+        <button className="con-primary-btn" onClick={handleNext}>
           Fortsetzen
         </button>
-      </footer>
+      </footer> */}
     </div>
     </div>
   );

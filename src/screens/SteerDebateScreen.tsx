@@ -382,9 +382,9 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
               <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("debateFinishedTitle")}</p>
             </div>
             <div style={{ padding: "0rem 0.5rem 1.5rem 0.5rem" }}>
-              <p style={{ fontSize: "16px" }}>{t("debateFinishedText")}</p>
+              {/* <p style={{ fontSize: "16px" }}>{t("debateFinishedText")}</p> */}
               <button className="start-debate-btn" onClick={() => { setShowDebateFinished(false); onExit(); }}>
-                {t("continue")}
+                Fortfahren
               </button>
             </div>
           </div>
@@ -458,7 +458,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
             <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte. Zwischendurch werden Sie gefragt, dass Sie die Debatte in eine Richtung steuern. Wählen Sie dann die für Sie am interessanteste Option.</p>
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
-              <button className="start-debate-btn" onClick= { onStart }>{t("startDebate")}</button>
+              <button className="start-debate-btn" onClick= { onStart }>Debatte starten</button>
             </div>
           </div>
         </div>
@@ -466,7 +466,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
       <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
         <button className="con-primary-btn" onClick={() =>{handleContinue();}} disabled={isTyping || !!pendingChoice || noDebateFound}>
-          {hasStarted && isLastMessage ? t("finishDebate") : t("continue")}
+          {hasStarted && isLastMessage ? "Debatte beenden" : "Fortfahren"}
         </button>
       </div>
     </div>
