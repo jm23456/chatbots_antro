@@ -1,23 +1,40 @@
 export type DebateLog = {
-  event: string;
   timestamp: string;
-  participantID: string | null;
-  data?: Record<string, any>;
+  event: string;
+  // participantId: string | null;
+  topic?: string;
+  role?: string | null;
+  ling?: string | null;
+  message?: string;
+  data?: Record<string, unknown>;
 };
 
 let logs: DebateLog[] = [];
+let debateContext: Omit<DebateLog, "timestamp" | "event" | "message" | "data"> = {
+  participantId: null,
+};
+
+export const startDebateLog = (context: {
+  participantId?: string | null;
+  topic?: string;
+  role?: string | null;
+  ling?: string | null;
+}) => {
+  logs = [];
+  debateContext = context;
+};
 
 export const logEvent = (
   event: string,
-  participantID: string | null,
-  data = {}
+  participantId: string | null,
+  data: Record<string, unknown> = {}
 ) => {
-
   const log: DebateLog = {
     event,
+    ...debateContext,
+    participantId,
+    ...data,
     timestamp: new Date().toISOString(),
-    participantID,
-    data
   };
 
   console.log("LOG:", log);
@@ -32,15 +49,17 @@ export const getLogs = () => {
 
 
 export const sendLogsToQualtrics = () => {
-
+  console.log("=== SEND TO QUALTRICS ===");
+  console.log("Number of logs:", logs.length);
+  console.log("Logs:", [...logs]);
   window.parent.postMessage(
     {
-      type: "debate_logs",
-      logs: JSON.stringify(logs)
+      type: "DEBATE_LOG",
+      logs: [...logs],
     },
     "*"
   );
-
+    console.log("=== POSTMESSAGE SENT ===");
 };
 
 
