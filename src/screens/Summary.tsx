@@ -108,14 +108,10 @@ const handleNext = () => {
         {showPopup && (
           <div className="start-debate-modal-overlay">
             <div className="start-debate-modal" style={{padding: 0, overflow: "hidden"}}>
-              <div style={{
-                background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)",
-                padding: "1.25rem 1.5rem",
-                borderRadius: "1.5rem 1.5rem 0 0",
-                marginBottom: "0.5rem"
-              }}>
-                <p style={{fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6"}}>{t("summaryPopup2")}</p>
-              </div>
+              <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>4 / 4</span>
+            </div>
               <div style={{padding: "0rem 1.5rem 1.5rem 1.5rem"}}>
                 {/* <p style={{fontSize: "18px", marginTop: "10px", fontWeight: "600"}}>{t("summaryPopup2")}</p> */}
                 <p style={{fontSize: "18px"}}>{t("summaryPopup3")}</p>
@@ -130,9 +126,10 @@ const handleNext = () => {
 
         {showEndOverlay &&(
              <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+                    <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>4 / 4</span>
             </div>
             <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>Bitte fahren Sie nun in Qualtrics fort.</p>

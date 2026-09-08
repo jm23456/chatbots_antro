@@ -33,10 +33,10 @@ type DebateData = {
 };
 
 const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
-  // console.log("Rendering:" + topicTitle);
   const { t, language } = useLanguage();
   const [showExitWarning, setShowExitWarning] = useState(false);
   const [showStartOverlay, setShowStartOverlay] = useState(true);
+  const [showStartOverlay2, setShowStartOverlay2] = useState(false);
 
   const handleExitClick = () => {
     setShowExitWarning(true);
@@ -55,10 +55,11 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
   const topicFromURL = params.get("topic");
   const roleFromURL = params.get("role");
   const lingFromURL = params.get("ling");
+  const idFromURL = params.get("participantId");
 
   const filename = topicFromURL && lingFromURL && roleFromURL ? `${topicFromURL}_${lingFromURL}_${roleFromURL.toLowerCase()}.json` : null;
 
-  console.log("filename:", filename, "topicFromURL:", topicFromURL, "roleFromURL:", roleFromURL, "lingFromURL:", lingFromURL);
+  console.log("filename:", filename, "topicFromURL:", topicFromURL, "roleFromURL:", roleFromURL, "lingFromURL:", lingFromURL, "participantId:", idFromURL);
 
   const debateFiles = import.meta.glob('../debate_text/*.json', { eager: true, import: 'default' }) as Record<string, DebateData>;
   const debateData = useMemo<DebateData | undefined>(() => {
@@ -121,12 +122,45 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
         <div className="start-debate-modal-overlay">
           <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
             <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Willkommen bei unserer interaktiven Debatten-Applikation</p>
             </div>
-            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
+            <div style={{ padding: "0rem 1rem 1.5rem 1rem" }}>
               {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Hier: topic Introduction</p>
-              <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Starten</button>
+  <p style={{ marginBottom: "16px" }}>
+    Die Inhalte werden Schritt für Schritt angezeigt. Um zum nächsten Abschnitt zu gelangen, gibt es zwei Möglichkeiten:
+  </p>
+    <p>
+      <strong> • Leertaste (Spacebar)</strong> drücken
+    </p>
+    <p>
+      <strong>• „Weiter“-Button</strong> anklicken
+    </p>
+  <p style={{ marginTop: "20px", color: "#555" }}>
+    So können Sie selbst bestimmen, in welchem Tempo Sie die Debatte verfolgen.
+  </p>         
+              <button className="start-debate-btn" onClick= { () => {setShowStartOverlay(false); setShowStartOverlay2(true); }}>Starten</button>
+          </div>
+        </div>
+        </div>
+      )}
+
+      {showStartOverlay2 && (
+        <div className="start-debate-modal-overlay">
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>1 / 4</span>
+            </div>
+            <div style={{ padding: "0rem 1rem 1.5rem 1rem" }}>
+              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
+
+  <p style={{ marginBottom: "16px" }}>
+    Zu Beginn wird das Debattenthema vorgestellt.
+  </p>
+    <p style={{ marginBottom: "16px" }}>
+      Nehmen Sie sich Zeit, um die Informationen zu lesen und auch Ihre eigene Meinung dazu zu bilden.
+    </p>       
+              <button className="start-debate-btn" onClick= { () => setShowStartOverlay2(false) }>Starten</button>
           </div>
         </div>
         </div>

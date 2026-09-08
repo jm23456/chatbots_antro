@@ -10,7 +10,7 @@ import PartyDebateScreen from "./screens/PartyDebateScreen";
 import Summary from "./screens/Summary";
 import { LanguageProvider } from "./i18n/LanguageContext";
 import { useSearchParams } from "react-router-dom";
-import { logEvent, sendLogsToQualtrics } from "../logs/logs";
+import { logEvent, sendLogsToQualtrics, startDebateLog } from "../logs/logs";
 import CandidatesIntro from "./screens/CandidatesIntro";
 import PartyCandidatesIntro from "./screens/PartyCandidatesIntro";
 
@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const urlTopic = params.get("topic") ?? "";
   const urlLing = params.get("ling") as Ling ?? null;
   const urlRole = params.get("role") as Role ?? null;
-  const participantID = params.get("participant_id") ?? null;
+  const participantID = params.get("participantId") ?? null;
   const initialStep = params.get("step") ?? STEPS.TOPIC_INTRO;
   const [step, setStep] = useState<string>(initialStep);
   const [selectedTopic, setSelectedTopic] = useState<string>(urlTopic ?? "");
@@ -89,7 +89,7 @@ const App: React.FC = () => {
             topicTitle={currentTopicTitle?? ""}
             participantID={participantID}
             onExit={() => {
-              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              logEvent("debate_ended", participantID);
               sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
@@ -97,7 +97,8 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
+              startDebateLog({ participantId: participantID, topic: currentTopicTitle, role, ling });
+              logEvent("debate_started", participantID);
               console.log("Log Event:", participantID, new Date().toLocaleTimeString());
               setHasStarted(true);
             }}
@@ -110,7 +111,7 @@ const App: React.FC = () => {
             topicTitle={currentTopicTitle}
             participantID={participantID}
             onExit={() => {
-              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              logEvent("debate_ended", participantID);
               sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
@@ -119,7 +120,8 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
+              startDebateLog({ participantId: participantID, topic: currentTopicTitle, role, ling });
+              logEvent("debate_started", participantID);
               setHasStarted(true);
             }}
             userIntroMessage={userIntroMessage}
@@ -131,7 +133,7 @@ const App: React.FC = () => {
             topicTitle={currentTopicTitle}
             participantID={participantID}
             onExit={() => {
-              logEvent("Debate_ended", participantID, { timestamp: new Date().toLocaleTimeString() });
+              logEvent("debate_ended", participantID);
               sendLogsToQualtrics();
               setStep(STEPS.SUMMARY);
               setSelectedTopic("");
@@ -140,7 +142,8 @@ const App: React.FC = () => {
             }}
             hasStarted={hasStarted}
             onStart={() => {
-              logEvent("Debate_started", participantID, { timestamp: new Date().toLocaleTimeString() });
+              startDebateLog({ participantId: participantID, topic: currentTopicTitle, role, ling });
+              logEvent("debate_started", participantID);
               setHasStarted(true);
               setIsIntro(true);
             }}

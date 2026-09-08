@@ -75,7 +75,7 @@ en: {
     chooseRole: "Select your role for the debate:",
     chooseTopic: "Choose a topic:",
     customTopicPlaceholder: "Enter custom topic...",
-    noDebateFound: "Debate not found. Check the URL.",
+    noDebateFound: "Debate Data non-existent.",
     startDebate: "Start Debate",
     chatbotDebateArena: "Chatbot Debate Arena",
     fourAIPersonalitiesOneDebate: "Various AI personalities. One debate.",

@@ -13,6 +13,8 @@
   --text-secondary: #6b7280;
   --border-color: #e5e7eb;
   --shadow-color: rgba(0, 0, 0, 0.1);
+  --content-gutter: clamp(0.75rem, 3cqw, 2.5rem);
+  --control-radius: clamp(0.5rem, 1.2cqw, 0.75rem);
 }
 
 /* Proportionale Skalierung basierend auf Viewport */
@@ -30,6 +32,7 @@ body {
   0 40px 100px rgba(120, 90, 200, 0.18);
   color: var(--text-primary);
   transition: background 0.3s ease, color 0.3s ease;
+  overflow-x: clip;
 }
 
 /* ROOT CONTAINER */
@@ -41,61 +44,67 @@ body {
   padding: 0;
   position: relative;
   background: #FEFEFF;
+  container-type: inline-size;
+  container-name: iframe;
 }
 
 
 /* MAIN CARD – themed background */
 .app-card {
   width: 100%;
-  max-width: 1000px;
+  max-width: none;
   min-height: 100vh;
-  padding: 15px 30px;
+  padding: clamp(0.75rem, 2.5cqw, 2rem) var(--content-gutter);
   background: var(--bg-card);
   border-radius: 0;
   box-shadow: none;
   border: none;
   transition: background 0.3s ease;
+  container-type: inline-size;
+  container-name: app;
+  overflow-x: clip;
 }
 
 /* TYPOGRAPHY */
 .screen-header h1 {
-  font-size: 40px;
+  font-size: clamp(1.5rem, 4cqw, 2.5rem);
   margin: 0;
   font-weight: 800;
   text-align: center;
 }
 
 .screen-header h2 {
-  font-size: 20px;
-  margin: 20px 0 10px 0;
+  font-size: clamp(1rem, 2cqw, 1.25rem);
+  margin: clamp(0.75rem, 2cqw, 1.25rem) 0 0.625rem;
   font-weight: 600;
 }
 
 .subtitle {
-  font-size: 42px;
+  font-size: clamp(1.75rem, 4.2cqw, 2.625rem);
   text-align: center;
   font-weight: 700;
   color: #5e35b1;
-  margin-bottom: 10px;
+  margin: 0 0 clamp(0.5rem, 1.5cqw, 0.75rem);
+  overflow-wrap: anywhere;
 }
 
 .intro-text{
-  font-size: 18px;
-  margin-bottom: 25px;
+  font-size: clamp(0.95rem, 1.8cqw, 1.125rem);
+  margin-bottom: clamp(1rem, 2.5cqw, 1.5625rem);
   text-align: center;
   font-weight: 500;
   color: #4b5563;
 }
 
 .subtitleArgu {
-  font-size: 32px;
+  font-size: clamp(1.35rem, 3.2cqw, 2rem);
   text-align: center;
   font-weight: 700;
   color: #5b21b6;
 }
 
 .current-speaker {
-  font-size: 16px;
+  font-size: clamp(0.875rem, 1.6cqw, 1rem);
   text-align: center;
   color: #4b5563;
   margin-top: 10px;
@@ -104,12 +113,13 @@ body {
 /* LAYOUT */
 .screen {
   width: 100%;
+  min-width: 0;
   background: #FEFEFF;
   
 }
 
 .screen-body {
-  margin-top: 20px;
+  margin-top: clamp(0.75rem, 2cqw, 1.25rem);
 }
 
 .role-title {
@@ -122,25 +132,24 @@ body {
 .divider {
   height: 1px;
   background: #eee;
-  margin: 40px 0;
+  margin: clamp(1.5rem, 4cqw, 2.5rem) 0;
 }
 
 /* BUTTON SECOND VERSION & Next, Continue buttons */
 .con-primary-btn,
 .con-secondary-btn {
-  border-radius: 12px;
-  padding: 14px 0px;
-  font-size: 1rem;
+  border-radius: var(--control-radius);
+  padding: clamp(0.65rem, 1.5cqw, 0.875rem) 0.5rem;
+  font-size: clamp(0.875rem, 1.6cqw, 1rem);
   border: none;
   cursor: pointer;
   font-weight: 600;
   background: #785fc2;
   color: white;
-  width: 250px;
-  min-width: 180px;
-  max-width: 280px;
-  min-height: 46px;
-  margin: 10px auto;
+  width: min(100%, clamp(11rem, 24cqw, 17.5rem));
+  min-width: 0;
+  min-height: clamp(2.625rem, 5cqw, 3rem);
+  margin: clamp(0.5rem, 1.5cqw, 0.625rem) auto;
   display: block;
   transition: 0.2s ease;
   box-sizing: border-box;
@@ -159,18 +168,17 @@ body {
 /* BUTTON FIRST VERSION & TOPIC BUTTONS*/
 .primary-btn,
 .secondary-btn {
-  border-radius: 12px;
-  padding: 14px 20px;
-  font-size: 16px;
+  border-radius: var(--control-radius);
+  padding: clamp(0.65rem, 1.5cqw, 0.875rem) clamp(0.75rem, 2cqw, 1.25rem);
+  font-size: clamp(0.875rem, 1.6cqw, 1rem);
   border: none;
   cursor: pointer;
   font-weight: 500;
   background: #d0d1d6;
   color: #1a1a1a;
-  width: 270px;
-  min-width: 180px;
-  max-width: 300px;
-  min-height: 42px;
+  width: min(100%, clamp(11rem, 26cqw, 18.75rem));
+  min-width: 0;
+  min-height: clamp(2.625rem, 5cqw, 3rem);
   display: block;
   margin: 5px auto;
   transition: 0.15s ease;
@@ -201,9 +209,9 @@ body {
 /* TEXT INPUT */
 .text-input {
   width: 100%;
-  padding: 12px 18px;
-  font-size: 16px;
-  border-radius: 12px;
+  padding: clamp(0.6rem, 1.5cqw, 0.75rem) clamp(0.75rem, 2cqw, 1.125rem);
+  font-size: clamp(0.875rem, 1.6cqw, 1rem);
+  border-radius: var(--control-radius);
   border: 1px solid #cfd3dc;
   background: #ffffff;
   color: #1a1a1a;
@@ -226,16 +234,16 @@ body {
 
 .button-grid-horizontal {
   display: flex;
-  gap: 22px;
+  gap: clamp(0.5rem, 2.5cqw, 1.375rem);
   flex-direction: row;
   justify-content: center;
   flex-wrap: nowrap;
 }
 
 .topic-btn {
-  border-radius: 12px;
-  padding: 14px 35px;
-  font-size: 16px;
+  border-radius: var(--control-radius);
+  padding: clamp(0.6rem, 1.5cqw, 0.875rem) clamp(0.75rem, 3cqw, 2.1875rem);
+  font-size: clamp(0.875rem, 1.6cqw, 1rem);
   border: none;
   cursor: pointer;
   font-weight: 500;
@@ -243,7 +251,9 @@ body {
   color: rgba(0, 0, 0, 0.75);
   transition: 0.15s ease;
   box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
-  height: 46px;
+  min-height: clamp(2.625rem, 5cqw, 3rem);
+  max-width: 100%;
+  white-space: normal;
 }
 
 .topic-btn:hover {
@@ -317,7 +327,7 @@ body {
 
 /* CENTERED TITLE SPACING */
 .screen-header {
-  margin-bottom: 50px;
+  margin-bottom: clamp(1.5rem, 5cqw, 3.125rem);
 }
 
 /* HEADER ROW - Exit button top right */
@@ -331,18 +341,24 @@ body {
   flex-shrink: 0;
 }
 
-/* RESPONSIVE */
-@media (max-width: 720px) {
+/* Container Queries */
+@container app (max-width: 720px) {
   .app-card {
-    padding: 40px 20px;
+    padding: 0.75rem clamp(0.75rem, 3.5cqw, 1.25rem);
   }
 
-  .screen-header h1 {
-    font-size: 32px;
+  .screen-header {
+    margin-bottom: clamp(1rem, 4cqw, 1.75rem);
   }
 
-  .subtitle {
-    font-size: 32px;
+  .button-grid-horizontal,
+  .active-stage-container,
+  .active-user-section {
+    gap: clamp(0.5rem, 2cqw, 1rem);
+  }
+
+  .button-grid-horizontal {
+    flex-wrap: wrap;
   }
 }
 
@@ -350,13 +366,13 @@ body {
 .custom-topic-row {
   position: relative;
   width: 100%;
-  margin-top: 25px;
+  margin-top: clamp(1rem, 3cqw, 1.5625rem);
 }
 
 .custom-topic-row .text-input {
   width: 100%;
-  padding-right: 80px;
-  height: 46px;
+  padding-right: clamp(4.5rem, 12cqw, 5rem);
+  min-height: clamp(2.625rem, 5cqw, 3rem);
 }
 
 .custom-topic-row .text-input:disabled {
@@ -515,9 +531,9 @@ body {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  max-height: calc(100vh - 260px);
-  padding: 10px;
+  gap: clamp(0.5rem, 1.8cqw, 0.875rem);
+  max-height: calc(100vh - clamp(12rem, 28cqw, 16.25rem));
+  padding: clamp(0.35rem, 1.2cqw, 0.625rem);
   scroll-behavior: smooth;
 }
 
@@ -541,17 +557,17 @@ body {
 }
 
 .argument-box {
-  padding: 14px 20px;
-  border-radius: 16px;
-  min-height: 60px;
-  width: 90%;
+  padding: clamp(0.65rem, 1.8cqw, 0.875rem) clamp(0.75rem, 2.5cqw, 1.25rem);
+  border-radius: clamp(0.75rem, 2cqw, 1rem);
+  min-height: clamp(3rem, 7cqw, 3.75rem);
+  width: min(90%, 62rem);
   flex-shrink: 0;
   display: flex;
   align-items: flex-start;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: clamp(0.5rem, 3cqw, 1.25rem);
+  margin-right: clamp(0.5rem, 3cqw, 1.25rem);
   animation: fadeInUp 0.4s ease;
   font-size: 14px;
   line-height: 1.5;
@@ -976,7 +992,7 @@ body {
 }
 
 .debate-stage {
-  border-radius: 24px;
+  border-radius: clamp(1rem, 3cqw, 1.5rem);
   background: 
       radial-gradient(
         circle at center,
@@ -1021,22 +1037,22 @@ body {
   display: flex;
   justify-content: center;
   align-items: stretch;
-  gap: 60px;
+  gap: clamp(1rem, 6cqw, 3.75rem);
   margin-top: 10px;
-  transform: scale(1.4);
+  transform: scale(1);
   transform-origin: center center;
   padding: 20px 0;
 }
 
 .side-title {
-  font-size: 24px;
+  font-size: clamp(1.125rem, 2.8cqw, 1.5rem);
   font-weight: 700;
   margin-bottom: 20px;
 }
 
 .candidates-row {
   display: flex;
-  gap: 130px;
+  gap: clamp(0.75rem, 8cqw, 8.125rem);
   align-items: flex-end;
   justify-content: center;
   width: 100%;
@@ -1049,7 +1065,7 @@ body {
   bottom: auto;
   left: 50%;
   transform: translate(-50%, -250px);
-  width: 150px;
+  width: min(150px, 32cqw);
   min-height: 80px;
   max-height: 620px;
   border-radius: 16px;
@@ -1083,8 +1099,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  height: 500px;
-  gap: 130px;
+  min-height: clamp(18rem, 42cqw, 31.25rem);
+  height: auto;
+  gap: clamp(1rem, 8cqw, 8.125rem);
   margin-top: 0px;
   padding: 20px;
 }
@@ -1095,7 +1112,7 @@ body {
 
 .candidates-row-unified {
   display: flex;
-  gap: 100px;
+  gap: clamp(0.75rem, 6cqw, 6.25rem);
   align-items: flex-end;
   justify-content: center;
   width: 100%;
@@ -1104,10 +1121,10 @@ body {
 
 .introcandidates-row-left {
   display: flex;
-  gap: 60px;
+  gap: clamp(0.5rem, 4cqw, 3.75rem);
   align-items: flex-end;
   justify-content: right;
-  width: 500px;
+  width: min(31.25rem, 38cqw);
 }
 
 .introcandidates-row-center {
@@ -1118,10 +1135,10 @@ body {
 
 .introcandidates-row-right {
   display: flex;
-  gap: 60px;
+  gap: clamp(0.5rem, 4cqw, 3.75rem);
   align-items: flex-end;
   justify-content: left;
-  width: 500px;
+  width: min(31.25rem, 38cqw);
 }
 
 
@@ -1169,8 +1186,8 @@ body {
 /* Breitere Speech Bubbles beim Sprechen - nur in Debate Screens */
 .debate-stage .candidate-card.speaking .candidate-speech-bubble,
 .active-debate-stage .candidate-card.speaking .candidate-speech-bubble {
-  width: 300px;
-  max-height: 320px;
+  width: min(300px, 46cqw);
+  max-height: min(320px, 34cqw);
   transition: width 0.4s ease, max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
 }
 
@@ -1405,7 +1422,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 40px;
+  gap: clamp(0.75rem, 4cqw, 2.5rem);
   width: 100%;
 }
 
@@ -1417,7 +1434,7 @@ body {
 }
 
 .side-title-large {
-  font-size: 24px;
+  font-size: clamp(1.125rem, 2.8cqw, 1.5rem);
   font-weight: 700;
   margin-bottom: 20px;
   color: #1a1a1a;
@@ -1425,7 +1442,7 @@ body {
 
 .active-candidates-row {
   display: flex;
-  gap: 20px;
+  gap: clamp(0.5rem, 2cqw, 1.25rem);
   align-items: flex-end;
   justify-content: center;
   width: 100%
@@ -1442,8 +1459,8 @@ body {
 .active-user-section {
   display: flex;
   align-items: flex-end;
-  gap: 40px;
-  padding: 40px 20px;
+  gap: clamp(0.75rem, 4cqw, 2.5rem);
+  padding: clamp(1rem, 4cqw, 2.5rem) clamp(0.5rem, 2cqw, 1.25rem);
   margin-top: auto;
 }
 
@@ -1529,8 +1546,8 @@ body {
 .active-input-row {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: clamp(0.5rem, 2cqw, 1rem);
+  margin-bottom: clamp(0.75rem, 2cqw, 1rem);
 }
 
 .user-mic-icon {
@@ -1554,8 +1571,8 @@ body {
 }
 
 .active-send-btn {
-  padding: 12px 24px !important;
-  font-size: 18px !important;
+  padding: clamp(0.65rem, 1.5cqw, 0.75rem) clamp(0.75rem, 2.5cqw, 1.5rem) !important;
+  font-size: clamp(0.875rem, 1.8cqw, 1.125rem) !important;
   font-weight: 600;
   background: #d1d5db !important;
   color: #9ca3af !important;
@@ -1759,37 +1776,126 @@ body {
 .topic-intro-content {
   display: flex;
   flex-direction: row;
-  gap: 40px;
+  gap: clamp(1rem, 4cqw, 2.5rem);
   align-items: flex-start;
+  min-width: 0;
+}
+
+.topic-intro-wrapper {
+  margin-block: clamp(0.5rem, 2cqw, 2rem);
 }
 
 .topic-intro-text {
-  max-width: 600px;
+  max-width: 40rem;
   width: 100%;
   flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.topic-intro-text p {
+  margin-block: clamp(0.5rem, 1.5cqw, 1rem);
 }
 
 .topic-intro-image {
   flex: 1;
+  min-width: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .topic-intro-image img {
+  display: block;
+  width: min(100%, 34rem);
   max-width: 100%;
   height: auto;
-  border-radius: 12px;
+  border-radius: clamp(0.5rem, 1.5cqw, 0.75rem);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-@media (max-width: 768px) {
+@container app (max-width: 768px) {
+  .topic-intro-wrapper {
+    margin-block: 0.5rem;
+  }
+
+  .topic-intro-card {
+    padding: clamp(0.75rem, 2cqw, 1.25rem) !important;
+    border-radius: clamp(0.75rem, 2cqw, 1.5rem) !important;
+  }
+
+  .topic-intro-card .screen-header {
+    margin-bottom: clamp(0.5rem, 2cqw, 1rem) !important;
+  }
+
+  .topic-intro-card .screen-header h4 {
+    font-size: clamp(1rem, 2.5cqw, 1.5rem) !important;
+    margin-block: 0.25rem !important;
+  }
+
+  .topic-intro-card .screen-header h2 {
+    margin-top: clamp(0.5rem, 1.5cqw, 1rem) !important;
+  }
+
   .topic-intro-content {
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    gap: clamp(0.75rem, 3cqw, 1.5rem);
   }
   
   .topic-intro-image {
-    order: -1;
+    flex: 0 1 38%;
+    width: 38%;
+  }
+
+  .topic-intro-text {
+    flex: 1 1 62%;
+    max-width: none;
+  }
+
+  .topic-intro-text p {
+    margin-block: 0.35rem;
+  }
+
+  .topic-intro-text p:last-of-type {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .topic-intro-card .con-primary-btn {
+    width: min(100%, 12rem);
+    min-height: 2.25rem;
+    margin-block: 0.5rem;
+  }
+}
+
+@container app (max-width: 500px) {
+  .topic-intro-content {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .topic-intro-image {
+    width: 100%;
+    flex-basis: auto;
+  }
+
+  .topic-intro-image img {
+    width: min(100%, 22rem);
+    margin-inline: auto;
+  }
+
+  .topic-intro-text {
+    flex-basis: auto;
+  }
+}
+
+@container app (min-width: 1100px) {
+  .topic-intro-card {
+    padding-inline: clamp(2rem, 4cqw, 2.5rem) !important;
+  }
+
+  .topic-intro-content {
+    gap: clamp(2rem, 5cqw, 3.5rem);
   }
 }
 
@@ -1954,4 +2060,96 @@ body {
   height: 60%;
   background:  #ff4d50f6;
   border-radius: 999px;
+}
+
+/* Iframe-specific refinements. The app card is the query container. */
+@container app (max-width: 720px) {
+  .intro-stage {
+    transform: none;
+    padding: 0.75rem 0;
+  }
+
+  .arguments-stage {
+    padding: 0.75rem 0;
+  }
+
+  .candidates-row-unified {
+    gap: 0.5rem;
+  }
+
+  .introcandidates-row-left,
+  .introcandidates-row-right {
+    width: auto;
+    min-width: 0;
+    gap: 0.5rem;
+  }
+
+  .argument-box {
+    width: min(92%, 42rem);
+  }
+
+  .argument-yellow,
+  .argument-red {
+    margin-left: clamp(1rem, 6cqw, 2.5rem) !important;
+  }
+
+  .argument-turquoise,
+  .argument-blue,
+  .argument-green {
+    margin-right: clamp(1rem, 6cqw, 2.5rem) !important;
+  }
+
+  .debate-stage .candidate-card.speaking .candidate-speech-bubble,
+  .active-debate-stage .candidate-card.speaking .candidate-speech-bubble {
+    width: min(18rem, 54cqw);
+  }
+
+  .active-stage-container {
+    align-items: stretch;
+  }
+
+  .vertical-divider {
+    min-height: 12rem;
+  }
+
+  .active-text-input {
+    min-width: 0;
+    flex-basis: min(100%, 20rem);
+    padding: 0.75rem 0.875rem !important;
+  }
+
+  .active-input-row {
+    flex-wrap: wrap;
+  }
+
+  .active-send-btn {
+    margin-left: auto;
+  }
+
+  .top-exit-row > div:first-child > div:first-child {
+    width: min(11rem, 42cqw) !important;
+  }
+
+  .top-buttons-row button.exit-btn {
+    margin-left: 0 !important;
+  }
+}
+
+@container app (min-width: 1100px) {
+  .app-card {
+    padding-inline: clamp(2rem, 4cqw, 4rem);
+  }
+
+  .intro-stage {
+    transform: scale(1.15);
+  }
+
+  .arguments-stage {
+    min-height: clamp(28rem, 42cqw, 38rem);
+  }
+
+  .debate-arguments {
+    max-width: 90rem;
+    margin-inline: auto;
+  }
 }

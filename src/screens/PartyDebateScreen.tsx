@@ -301,7 +301,7 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   const handleChoiceSelect = (option: DebateTransitionOption) => {
     if (option.speak_as_user) {
       addUserMessage(option.label);
-      logEvent("Choice_made", participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
+      logEvent("choice_made", participantID, { choice: option.label, next: option.next });
     } else {
       incrementStep();
     }
@@ -311,7 +311,35 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   useEffect(() => {
     if (!hasStarted || !debateData) return;
     hasStartedRef.current = true;
-    setChatHistory([]);
+    const introMessages: ChatMessage[] = [];
+    const visited = new Set<string>();
+    let introNodeKey: string | null = debateData.start_node;
+
+    while (introNodeKey && !visited.has(introNodeKey)) {
+      visited.add(introNodeKey);
+      const introNode = debateData.nodes[introNodeKey];
+      if (!introNode) break;
+
+      if (introNode.kind === "intro-arguments") {
+        introNode.utterances.forEach((utterance) => {
+          introMessages.push({
+            id: getNextMessageId(),
+            type: utterance.speak_as_user ? "user" : "bot",
+            color: utterance.speak_as_user ? undefined : getRoleColor(utterance.speaker),
+            text: utterance.text,
+            side: utterance.speak_as_user ? "user" : getRoleSide(utterance.speaker),
+            isComplete: true,
+            isIntro: true,
+          });
+        });
+      }
+
+      introNodeKey = introNode.transition.type === "linear"
+        ? introNode.transition.next ?? null
+        : null;
+    }
+
+    setChatHistory(introMessages);
     setCompletedSteps(0);
     completedStepsRef.current = 0;
     setTotalSteps(totalStepsFromStart);
@@ -319,18 +347,14 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
     setShowDebateFinished(false);
     setPendingChoice(null);
     setChoicePrompt(null);
-    setCurrentUtteranceIndex(0);
+    const firstNodeKey = findFirstDebateNode(debateData.start_node);
+    const firstNode = firstNodeKey ? debateData.nodes[firstNodeKey] : undefined;
+    setCurrentUtteranceIndex(firstNode?.kind === "intro-arguments"
+      ? firstNode.utterances.length
+      : 0);
     setHasNodeStarted(false);
-    setCurrentNodeKey(findFirstDebateNode(debateData.start_node));
+    setCurrentNodeKey(firstNodeKey);
   }, [hasStarted, debateData, totalStepsFromStart]);
-
-  useEffect(() => {
-    if (!hasStarted || !debateData || isTyping || pendingChoice) return;
-    if (!currentNodeKey) return;
-    if (hasNodeStarted) return;
-    if (currentUtteranceIndex !== 0) return;
-    advanceConversation();
-  }, [advanceConversation, currentNodeKey, currentUtteranceIndex, debateData, hasNodeStarted, hasStarted, isTyping, pendingChoice]);
 
   // useEffect(() => {
   //   scrollToBottom();
@@ -450,13 +474,14 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
 
       {!hasStarted && debateData && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>3 / 4</span>
             </div>
             <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte. Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die am meist zutreffende Option.</p>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte. </p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die am meist zutreffende Option.</p>
               <button className="start-debate-btn" onClick={onStart}>Debatte starten</button>
             </div>
           </div>

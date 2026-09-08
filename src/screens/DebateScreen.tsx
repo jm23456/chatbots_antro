@@ -251,9 +251,20 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     if (!hasStarted) return;
     if (!hasStartedRef.current) {
       hasStartedRef.current = true;
-      advanceBubble();
+      const introMessages: ChatMessage[] = argumentsIntro.map((message) => ({
+        id: getNextMessageId(),
+        type: message.type,
+        color: message.color,
+        text: message.text,
+        side: message.side,
+        isComplete: true,
+        isIntro: true,
+      }));
+      setChatHistory(introMessages);
+      visibleBubblesRef.current = argumentsIntro.length;
+      setVisibleBubbles(argumentsIntro.length);
     }
-  }, [hasStarted]);
+  }, [argumentsIntro, hasStarted]);
 
   useEffect(() => {
     scrollToBottom();
@@ -302,9 +313,10 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("debateFinishedTitle")}</p>
+          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>4 / 4</span>
             </div>
             <div style={{ padding: "0rem 0.5rem 1.5rem 0.5rem" }}>
               {/* <p style={{ fontSize: "16px" }}>{t("debateFinishedText")}</p> */}
@@ -361,13 +373,14 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {!hasStarted && debateData && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
+       <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
+            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem",  alignItems: "baseline", gap: "10px",display: "flex", justifyContent: "center" }}>
+              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p> 
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#888"}}>3 / 4</span>
             </div>
-            <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte der fünf Chatbots.</p>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+            <div style={{ padding: "0.5rem 0.75rem 1rem 0.75rem" }}>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "15px", color: "#050505" }}>🗣 Nun beginnt die Debatte.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "15px", color: "#050505" }}>Anschliessend werden Sie erneut nach einem persönlichem Ranking der Chatbots gefragt. </p>
               <button className="start-debate-btn" onClick={onStart}>Debatte starten</button>
             </div>
           </div>
