@@ -235,7 +235,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
       pendingMessageIdRef.current = null;
       continueProgress();
       setIsTyping(false);
-    }, 2000);
+    }, debateConfig.typingDelayMs);
   };
 
   const continueProgress = () => {
@@ -244,7 +244,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
   const finishProgress = () => {
     setProgress(100);
-    setTimeout(() => setProgress(0), 300);
   };
 
   useEffect(() => {
@@ -267,9 +266,9 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
     if (visibleBubblesRef.current < argumentBubbles.length) {
       advanceBubble();
     } else {
+      // Same ending as Steer/Participate: the "finished" popup, then onExit.
       setShowDebateFinished(true);
       finishProgress();
-      onExit();
     }
   };
 

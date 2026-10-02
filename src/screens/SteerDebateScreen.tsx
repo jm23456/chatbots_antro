@@ -221,7 +221,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
       );
       setIsTyping(false);
       incrementStep();
-    }, 650);
+    }, debateConfig.typingDelayMs);
   }, [getNextMessageId, getRoleColor, getRoleSide, incrementStep]);
 
   const addUserMessage = (text: string) => {
@@ -284,7 +284,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     if (node.transition.type === "choice") {
       scrollToBottom();
       setPendingChoice(node.transition.options ?? []);
-      setChoicePrompt(node.transition.prompt ?? "Wähle eine Option:");
+      setChoicePrompt(node.transition.prompt ?? "Wählen Sie eine Option:");
       setHasNodeStarted(false);
       return;
     }
@@ -295,12 +295,18 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   const handleSelectChoice = useCallback((option: DebateTransitionOption) => {
     setPendingChoice(null);
     setChoicePrompt(null);
-    addUserMessage(option.label);
+    // Steering picks the topic but does not speak in the debate; only
+    // Participate options (speak_as_user) appear as the participant's message.
+    if (option.speak_as_user) {
+      addUserMessage(option.label);
+    } else {
+      incrementStep();
+    }
     setCurrentNodeKey(option.next || null);
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
     logEvent("Choice_made", participantID, { choice: option.label, next: option.next, timestamp: new Date().toLocaleTimeString() });
-  }, [addUserMessage, countVisibleProgressSteps, logEvent]);
+  }, [addUserMessage, incrementStep, countVisibleProgressSteps, logEvent]);
 
   const handleContinue = () => {
     if (!hasStarted) {
@@ -416,7 +422,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
         <section className="debate-arguments" ref={messagesContainerRef}>
           {chatHistory.map((msg) => (
             <div key={msg.id} className={`argument-box ${msg.type === "bot" ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}>
-              {msg.isIntro && <span className="intro-label">{msg.type === "user" ? "Du" : "Intro"}</span>}
+              {msg.isIntro && <span className="intro-label">{msg.type === "user" ? "Sie" : "Intro"}</span>}
               <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
                 {msg.type === "bot" && !msg.isComplete ? (
                   <span className="typing-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></span>
@@ -432,10 +438,10 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
 
           {pendingChoice && (
             <div style={{ marginTop: "12px", marginBottom: "12px", display: "flex", flexDirection: "column", gap: "10px", alignItems: "center" }}>
-              <p style={{ margin: 0, fontWeight: 600 }}>{choicePrompt || "Wähle eine Option:"}</p>
-              <div style={{ display: "flex", flexDirection: "row", gap: "8px", width: "100%", maxWidth: "520px" }}>
+              <p style={{ margin: 0, fontWeight: 600 }}>{choicePrompt || "Wählen Sie eine Option:"}</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%", maxWidth: "810px" }}>
                 {pendingChoice.map((option) => (
-                  <button key={option.option_id} className="con-primary-btn" style={{ width: "100%", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)" }} onClick={() => handleSelectChoice(option)}>
+                  <button key={option.option_id} className="con-primary-btn" style={{ padding: 20, maxWidth: "none", width: "80%", background: "#ffffff", color: "#5b21b6", border: "1px solid #8b5cf6", boxShadow: "0 2px 8px rgba(139, 92, 246, 0.18)" }} onClick={() => handleSelectChoice(option)}>
                     {option.label}
                   </button>
                 ))}

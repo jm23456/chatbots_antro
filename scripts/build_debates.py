@@ -70,7 +70,7 @@ def choice(rnd, role, offered, keyfor):
             o["speak_as_user"] = True
         opts.append(o)
     return {"type": "choice",
-            "prompt": "Was möchtest du in die Debatte einbringen?" if role == "party"
+            "prompt": "Was möchten Sie in die Debatte einbringen?" if role == "party"
                       else "Worüber soll als Nächstes diskutiert werden?",
             "timeout_seconds": None, "options": opts}
 

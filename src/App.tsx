@@ -12,7 +12,6 @@ import { LanguageProvider } from "./i18n/LanguageContext";
 import { useSearchParams } from "react-router-dom";
 import { logEvent, sendLogsToQualtrics } from "../logs/logs";
 import CandidatesIntro from "./screens/CandidatesIntro";
-import PartyCandidatesIntro from "./screens/PartyCandidatesIntro";
 
 
 const STEPS: Record<string, Step> = {
@@ -59,20 +58,9 @@ const App: React.FC = () => {
           />
         )}
 
-        {step === STEPS.INTRO && (role === "WATCH" || role === "STEER") && (
+        {/* One candidate intro for all three conditions, so it cannot differ between them. */}
+        {step === STEPS.INTRO && (
           <CandidatesIntro
-            onNext={() => {
-              setHasStarted(false);
-            }}
-            onExit={() => {
-              setStep(STEPS.SUMMARY);
-              setSelectedTopic("");
-              setHasStarted(false);
-            }}
-          />
-        )}
-        {step === STEPS.INTRO && role === "PARTY" && (
-          <PartyCandidatesIntro
             onNext={() => {
               setHasStarted(false);
             }}
