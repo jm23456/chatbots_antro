@@ -299,9 +299,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
   };
 
   const handleChoiceSelect = (option: DebateTransitionOption) => {
+    logEvent("Choice_made", participantID, { choice: option.label, next: option.next, timestamp: new Date().toLocaleTimeString() });
     if (option.speak_as_user) {
       addUserMessage(option.label);
-      logEvent("Choice_made", participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
     } else {
       incrementStep();
     }

@@ -2,7 +2,7 @@ import { debateConfig } from './debateConfig';
 
 export const appConfig = {
   app: {
-    defaultLanguage: 'en',
+    defaultLanguage: 'de',
     supportedLanguages: ['de', 'en'],
     title: 'Chatbot-Debattenarena',
   },

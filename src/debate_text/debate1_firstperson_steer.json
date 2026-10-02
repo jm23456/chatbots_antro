@@ -1,18 +1,16 @@
 {
   "schema_version": "1.0",
-
   "debate_id": "arena_healthcare_premiums",
   "title": "Steigende Krankenkassenprämien",
   "subtitle": "Warum die Kosten steigen und was das für uns bedeutet",
-  "introduction": "Sie treffen auf fünf Chatbots, die jeweils unterschiedliche Ansichten vertreten. Mit der Leertaste können Sie Schritt für Schritt durch die Debatte navigieren. ",
-  "source": "Arena SRF 07.10.2016 – Prämienschock (gekürztes Beispiel, 2 Runden)",
+  "introduction": "In dieser Applikation treffen Sie auf fünf Chatbots, die jeweils unterschiedliche Ansichten vertreten.",
+  "first_step": "Im ersten Schritt lernen Sie die Positionen der Chatbots kennen. Ordnen Sie dann nach Ihrer persönlichen Einschätzung, welcher Chatbot Ihrer Ansicht am nächsten kommt.",
+  "source": "Arena SRF 07.10.2016 – Prämienschock (gekürzt: Einführung + 4 Runden)",
   "language": "de",
-
   "condition": {
     "linguistic_style": "first_person",
     "interaction_level": "steering"
   },
-
   "roles": {
     "SYSTEM": {
       "label": "System",
@@ -23,135 +21,1137 @@
       "stance": "contra",
       "orientation": "kostenkritisch, steuerungsorientiert",
       "description": "Steigende Prämien sind Folge explodierender Kosten von immer mehr Behandlungen; es braucht Steuerungsmöglichkeiten für Krankenkassen.",
-      "display": { "color": "red", "avatar": "red_standard.jpg" }
+      "display": {
+        "color": "red",
+        "avatar": "red_standard.jpg"
+      }
     },
     "B": {
       "label": "Solidarität & soziale Perspektive",
       "stance": "pro",
       "orientation": "links/grün, sozialpolitisch",
       "description": "Prämien sind für viele Familien kaum mehr tragbar; Lösung liegt in Solidarität und fairer Verteilung von Kosten, nicht im Abbau von Leistungen.",
-      "display": { "color": "blue", "avatar": "blue_standard.jpg" }
+      "display": {
+        "color": "blue",
+        "avatar": "blue_standard.jpg"
+      }
     },
     "C": {
       "label": "Medizinische Fachperspektive",
       "stance": "undecided",
       "orientation": "ärztlich, spitalnah",
       "description": "Das System ist widersprüchlich: hervorragende Medizin, aber oft zu viel davon; es fehlt an Qualitätsanreizen.",
-      "display": { "color": "green", "avatar": "green_standard.jpg" }
+      "display": {
+        "color": "green",
+        "avatar": "green_standard.jpg"
+      }
     },
     "D": {
       "label": "Ökonomische Systemperspektive",
       "stance": "contra",
       "orientation": "gesundheitsökonomisch",
       "description": "Keine aussergewöhnlich hohen Gesundheitskosten; es braucht gezielte Eingriffe statt pauschalem Sparen.",
-      "display": { "color": "yellow", "avatar": "yellow_standard.jpg" }
+      "display": {
+        "color": "yellow",
+        "avatar": "yellow_standard.jpg"
+      }
     },
-    "E": { 
+    "E": {
       "label": "Betroffene Bevölkerung",
       "stance": "undecided",
       "orientation": "betroffen, alltagsnah",
       "description": "Finanzielle Belastung durch seit Jahren stärker steigende Prämien als Löhne; Erwartung an Effizienz und Transparenz.",
-      "display": { "color": "turquoise", "avatar": "grey_standard.jpg" }
+      "display": {
+        "color": "turquoise",
+        "avatar": "grey_standard.jpg"
+      }
     }
   },
-
   "rounds": [
-    { "round": 1, "topic": "Ursachen der steigenden Prämien" },
-    { "round": 2, "topic": "Lösungsansätze" }
+    {
+      "round": 1,
+      "topic": "Positionen und Ursachen"
+    },
+    {
+      "round": 2,
+      "topic": "Themenrunde 1"
+    },
+    {
+      "round": 3,
+      "topic": "Themenrunde 2"
+    },
+    {
+      "round": 4,
+      "topic": "Themenrunde 3"
+    }
   ],
-
   "start_node": "intro",
   "nodes": {
-
     "intro": {
       "round": 0,
       "kind": "intro",
       "utterances": [
-        { "uid": "intro_001", "speaker": "SYSTEM",
-          "text": "Die Krankenkassenprämien steigen nächstes Jahr im Schnitt um 4,5 Prozent. Seit Einführung der obligatorischen Krankenversicherung sind sie deutlich stärker gestiegen als Löhne oder Teuerung. Die Frage lautet: Wie krank ist unser Gesundheitssystem – und wo muss angesetzt werden?" }
+        {
+          "uid": "intro_001",
+          "arg_id": "intro",
+          "speaker": "SYSTEM",
+          "text": "Die Krankenkassenprämien steigen nächstes Jahr im Schnitt um 4,5 Prozent. Seit Einführung der obligatorischen Krankenversicherung sind sie deutlich stärker gestiegen als Löhne oder Teuerung. Die Frage lautet: Wie krank ist unser Gesundheitssystem und wo muss angesetzt werden?"
+        }
       ],
-      "transition": { "type": "linear", "next": "r1_trunk" }
+      "transition": {
+        "type": "linear",
+        "next": "r1_trunk"
+      }
     },
-
     "r1_trunk": {
       "round": 1,
       "kind": "intro-arguments",
       "topic": "Ursachen der steigenden Prämien",
+      "topic_id": "r1",
       "utterances": [
-        { "uid": "r1_001", "speaker": "A",
-          "text": "Für mich ist klar: Die steigenden Krankenkassenprämien sind kein Zufall, sondern die direkte Folge explodierender Kosten. Solange Krankenkassen jede Leistung bezahlen müssen, wird sich daran nichts ändern." },
-        { "uid": "r1_002", "speaker": "B",
-          "text": "Ich sehe vor allem ein Gerechtigkeitsproblem. Für viele aus dem Mittelstand werden die Prämien zunehmend zur Belastung, während sehr hohe Einkommen vergleichsweise wenig spüren." },
-        { "uid": "r1_003", "speaker": "C",
-          "text": "Aus medizinischer Sicht ist das System widersprüchlich. Wir haben eine sehr gute Versorgung, aber wir machen oft zu viel Medizin – es fehlt an Anreizen für Qualität." }
+        {
+          "uid": "r1_trunk_001",
+          "arg_id": "op_A",
+          "speaker": "A",
+          "text": "Ich sehe die Entwicklung noch dramatischer, als sie hier dargestellt wird. Für mich ist die Rechnung einfach: Die Prämien sind die Folge der Kosten, und die Kosten sind die Folge der Behandlungen. Je mehr behandelt wird, desto höher steigen die Prämien. Ich bin überzeugt, dass wir dort ansetzen müssen und nicht bei der Frage, wie wir die Rechnung verteilen."
+        },
+        {
+          "uid": "r1_trunk_002",
+          "arg_id": "op_B",
+          "speaker": "B",
+          "text": "Ich jammere nicht über die Kosten. Wir haben eines der besten Gesundheitssysteme der Welt, und ich profitiere davon wie alle anderen. Was mich beschäftigt, ist die Verteilung. Im Schnitt sind es 4,5 Prozent mehr, aber ich kenne Familien, die nächstes Jahr 15 Prozent mehr bezahlen, und andere, die null Prozent mehr bezahlen. Darin sehe ich die eigentliche Ungerechtigkeit."
+        },
+        {
+          "uid": "r1_trunk_003",
+          "arg_id": "op_C",
+          "speaker": "C",
+          "text": "In meinem Spital merke ich den Druck, der auf den Patienten lastet. Ich sehe Leute, die ihre Prämien nicht mehr bezahlen können. Gleichzeitig erlebe ich den Gesundheitsmarkt wie einen Supermarkt: An der Kasse bezahlt am Schluss niemand selbst. Ich glaube, es braucht auf beiden Seiten mehr Vernunft, bei den Patienten und bei uns Medizinern."
+        },
+        {
+          "uid": "r1_trunk_004",
+          "arg_id": "op_D",
+          "speaker": "D",
+          "text": "Persönlich rege ich mich über meine Prämienrechnung auch auf. Als Ökonom sehe ich es anders. Ich schaue auf den Anteil des Gesundheitswesens an der Gesamtwirtschaft, und der liegt seit zehn Jahren fast konstant bei 9 bis 11 Prozent, ähnlich wie in Deutschland oder Frankreich. Für ein reiches Land finde ich das eigentlich wenig."
+        },
+        {
+          "uid": "r1_trunk_005",
+          "arg_id": "op_E",
+          "speaker": "E",
+          "text": "Ich habe ein erstklassiges Gesundheitssystem, und die Kosten zwingen mich langsam in ein drittklassiges. Ich bezahle jeden Monat mehr, mein Lohn steigt aber nicht im gleichen Tempo. Ich mache mir vor allem Sorgen, wie das in zehn Jahren aussehen soll."
+        }
       ],
       "transition": {
         "type": "choice",
         "prompt": "Worüber soll als Nächstes diskutiert werden?",
         "timeout_seconds": null,
         "options": [
-          { "option_id": "r1_o1", "label": "Bei den Behandlungskosten ansetzen",
-            "default_option": true, "next": "r2_costs" },
-          { "option_id": "r1_o2", "label": "Über faire Verteilung sprechen",
-            "next": "r2_fairness" },
-          { "option_id": "r1_o3", "label": "Unnötige Medizin in den Fokus rücken",
-            "next": "r2_overuse" }
+          {
+            "option_id": "r1_o1",
+            "topic_id": "t1",
+            "label": "Über die Verteilung der Prämienlast sprechen",
+            "next": "r2_t1"
+          },
+          {
+            "option_id": "r1_o2",
+            "topic_id": "t2",
+            "label": "Den Kostentreibern im System nachgehen",
+            "next": "r2_t2"
+          },
+          {
+            "option_id": "r1_o3",
+            "topic_id": "t3",
+            "label": "Über unnötige Behandlungen sprechen",
+            "next": "r2_t3"
+          }
         ]
       }
     },
-
-    "r2_costs": {
+    "r2_t1": {
       "round": 2,
       "kind": "segment",
-      "topic": "Kostensteuerung und Sparpotenzial",
+      "topic": "Wer zahlt wie viel? Prämienlast und Verteilung",
+      "topic_id": "t1",
       "utterances": [
-        { "uid": "r2c_001", "speaker": "A",
-          "text": "Die Prämien sind die Folge der Kosten. Und die Kosten sind die Folge der Behandlungen. Je mehr Behandlungen anfallen, notwendige wie unnötige, desto höher steigen die Kosten und damit auch die Prämien." },
-        { "uid": "r2c_002", "speaker": "A",
-          "text": "Trotzdem müssen wir handeln. Wenn rund 20 Prozent der Leistungen unnötig oder unwirtschaftlich sind, sprechen wir von sechs bis acht Milliarden Franken Sparpotenzial pro Jahr." }
+        {
+          "uid": "r2_t1_001",
+          "arg_id": "ack_t1_v1",
+          "speaker": "B",
+          "text": "Gut, dass du damit anfängst. Ich schaue nämlich weniger auf die Durchschnittsprämie als darauf, bei wem die Rechnung landet."
+        },
+        {
+          "uid": "r2_t1_002",
+          "arg_id": "t1_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und alleinstehend. Ich habe zwei Kollegen gefragt, beide über 70, beide alleinstehend, beide mit genau der gleichen Zusatzversicherung wie ich. Der eine bezahlt 40 Franken weniger als ich, der andere 100 Franken weniger. Das kann ich niemandem erklären."
+        },
+        {
+          "uid": "r2_t1_003",
+          "arg_id": "t1_A",
+          "speaker": "A",
+          "text": "Ich kann Ihnen den Unterschied im Einzelfall auch nicht erklären. Ich weiss aber, wie wir rechnen: Prämien werden aufgrund einer Risikoanalyse kalkuliert, nach Alter, Geschlecht und Anfälligkeit für Krankheiten. Das ist keine Willkür, sondern eine Kalkulation. Und ich sage klar: Prämienverbilligungen ändern daran nichts, sie verschieben die Rechnung nur."
+        },
+        {
+          "uid": "r2_t1_004",
+          "arg_id": "t1_B",
+          "speaker": "B",
+          "text": "Für mich sind das zwei getrennte Probleme. Ich sehe, dass die untersten Einkommen über die Prämienverbilligung recht gut entlastet sind und die höchsten Einkommen bei uns die billigsten Prämien Europas bezahlen. Daraus folgere ich: Die Last landet in der Mitte. Ich bin selbst Vater von zwei Kindern und merke jeden Herbst, wenn die neue Prämienrechnung kommt, wie viel davon an uns hängen bleibt. Ich arbeite deshalb an einer gezielten Entlastung für Familien mit Kindern und für die 18- bis 25-Jährigen."
+        },
+        {
+          "uid": "r2_t1_005",
+          "arg_id": "t1_D",
+          "speaker": "D",
+          "text": "Ich höre immer, die Alterung sei die Ursache. Ich halte das für einen Mythos. Wenn ich mir die Studien anschaue, macht die demografische Alterung etwa 20 bis 25 Prozent des Kostenanstiegs aus, nicht mehr. Und ich frage mich: Wenn das die Ursache wäre, was genau wollen wir dann bekämpfen? Dass Menschen älter werden?"
+        }
       ],
-      "transition": { "type": "linear", "next": "summary" }
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r2_o1",
+            "topic_id": "t2",
+            "label": "Fragen, warum so viel in Spitäler und Geräte investiert wird",
+            "next": "r3_t1_t2"
+          },
+          {
+            "option_id": "r2_o2",
+            "topic_id": "t3",
+            "label": "Fragen, ob zu viele Untersuchungen gemacht werden",
+            "next": "r3_t1_t3"
+          },
+          {
+            "option_id": "r2_o3",
+            "topic_id": "t4",
+            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "next": "r3_t1_t4"
+          }
+        ]
+      }
     },
-
-    "r2_fairness": {
+    "r2_t2": {
       "round": 2,
       "kind": "segment",
-      "topic": "Faire Verteilung der Lasten",
+      "topic": "Wo entstehen die Kosten? Spitäler, Geräte und Qualität",
+      "topic_id": "t2",
       "utterances": [
-        { "uid": "r2f_001", "speaker": "B",
-          "text": "So kann es tatsächlich nicht mehr weitergehen. Für viele Bürgerinnen und Bürger ist diese Prämienlast kaum mehr tragbar. Gleichzeitig sind die Prämien stärker gestiegen als die eigentlichen Gesundheitskosten." },
-        { "uid": "r2f_002", "speaker": "B",
-          "text": "Den Grundleistungskatalog zu kürzen kann hier aber keine Lösung sein. Das würde zu einer Zweiklassenmedizin führen. Wir müssen sicherstellen, dass notwendige Behandlungen gezielt eingesetzt werden." }
+        {
+          "uid": "r2_t2_001",
+          "arg_id": "ack_t2_v1",
+          "speaker": "D",
+          "text": "Gute Frage, denn ich glaube, dass wir die Kosten meistens am falschen Ort suchen."
+        },
+        {
+          "uid": "r2_t2_002",
+          "arg_id": "t2_D",
+          "speaker": "D",
+          "text": "Ich nenne das einen Ausstattungswettbewerb. Ich beobachte, dass jedes Spital einen Operationsroboter braucht, weil sonst die Leute nicht kommen. Ich habe selbst im Verwaltungsrat eines Regionalspitals gesessen und erlebt, wie dieser Druck entsteht. Geplant wird das alles auf Kantonsebene, und für mich ist genau das das Hauptproblem: Der Kanton ist Planer, Finanzierer und Aufsicht zugleich, und das beisst sich. Ich würde in sieben bis zehn Versorgungsregionen denken statt in 26 Kantonen."
+        },
+        {
+          "uid": "r2_t2_003",
+          "arg_id": "t2_C",
+          "speaker": "C",
+          "text": "Wir Herzchirurgen haben vor 15 Jahren gesagt, dieser Operationsroboter sei Quatsch: zwei Millionen Franken Anschaffung, 200'000 Franken Unterhalt im Jahr, und die Resultate sind nicht besser. Ich bin stolz darauf, dass wir das nicht mitgemacht haben. Mehr ärgert mich etwas anderes: Ich liefere seit zehn Jahren Qualitätsindikatoren zu Sterblichkeit, Komplikationen und Infekten. Die Unterschiede zwischen den Spitälern sind teilweise eins zu sechs, und es hat keine Konsequenzen."
+        },
+        {
+          "uid": "r2_t2_004",
+          "arg_id": "t2_B",
+          "speaker": "B",
+          "text": "Ich erkläre das immer mit Bäckereien. In einem Dorf mit drei Bäckereien werden 1000 Brote pro Tag verkauft. Kommt eine vierte dazu, sind es weiterhin 1000. Bei Röntgenzentren ist es anders: Kommt ein fünftes dazu, werden mehr Bilder gemacht, ob nötig oder nicht. Ich habe gesehen, wie eine Finanzgesellschaft in ein solches Zentrum investiert und ihr Kapital in drei Jahren amortisiert hat. Ich finde, das muss man bremsen, aber nicht der Versicherer allein."
+        },
+        {
+          "uid": "r2_t2_005",
+          "arg_id": "t2_A",
+          "speaker": "A",
+          "text": "Da sind wir uns näher, als ich dachte. Mein Problem ist ein anderes: Ich muss am Schluss alles bezahlen. Ich habe kein Vetorecht, ich kann nicht sagen, diese Behandlung war überflüssig. Diesen Vertragszwang halte ich für einen wesentlichen Kostentreiber. Und ich bezahle heute die sehr gute Leistung zum genau gleichen Preis wie den Pfusch."
+        }
       ],
-      "transition": { "type": "linear", "next": "summary" }
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r2_o1",
+            "topic_id": "t1",
+            "label": "Doch zuerst fragen, wer die Prämien am stärksten spürt",
+            "next": "r3_t2_t1"
+          },
+          {
+            "option_id": "r2_o2",
+            "topic_id": "t3",
+            "label": "Fragen, ob zu viele Untersuchungen gemacht werden",
+            "next": "r3_t2_t3"
+          },
+          {
+            "option_id": "r2_o3",
+            "topic_id": "t4",
+            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "next": "r3_t2_t4"
+          }
+        ]
+      }
     },
-
-    "r2_overuse": {
+    "r2_t3": {
       "round": 2,
       "kind": "segment",
-      "topic": "Unnötige Behandlungen und Qualitätsanreize",
+      "topic": "Wie viel Medizin ist genug? Überversorgung und Eigenverantwortung",
+      "topic_id": "t3",
       "utterances": [
-        { "uid": "r2o_001", "speaker": "D",
-          "text": "Das stimmt. Es gibt Operationen, die nicht nötig wären. Und es gibt Patienten, die so lange von Arzt zu Arzt gehen, bis jemand den Eingriff durchführt." },
-        { "uid": "r2o_002", "speaker": "E",
-          "text": "Zusätzlich fehlt ein Qualitätsanreiz. Ein Spital, das effizient arbeitet, wird gleich entschädigt wie eines, das Patienten länger behält oder unnötige Untersuchungen macht." }
+        {
+          "uid": "r2_t3_001",
+          "arg_id": "ack_t3_v1",
+          "speaker": "C",
+          "text": "Das finde ich einen wichtigen Punkt. Ich stelle mir diese Frage in meinem Alltag ständig."
+        },
+        {
+          "uid": "r2_t3_002",
+          "arg_id": "t3_C",
+          "speaker": "C",
+          "text": "Ich gebe Ihnen ein Beispiel aus meinem Alltag: Kopfschmerzen. Viele Patienten haben das Gefühl, es brauche sofort eine Magnetresonanz-Untersuchung. Ich würde sagen, 99 Prozent davon sind unnötig. Aber wenn ich sie einmal nicht mache und einen Tumor verpasse, stehe ich vor Gericht. Und ich erlebe es immer wieder: Wer bei mir eine Operation nicht bekommt, geht zum nächsten Arzt, bis ihn jemand operiert."
+        },
+        {
+          "uid": "r2_t3_003",
+          "arg_id": "t3_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und habe viele Kollegen, die eine Patientenverfügung haben. Ich habe für mich entschieden: Ich will nicht an eine Maschine gehängt werden, die Tausende Franken pro Tag kostet, nur damit ich zehn Tage länger lebe. Wer das möchte, soll es bekommen, aber für mich gehört das nicht in die soziale Krankenversicherung."
+        },
+        {
+          "uid": "r2_t3_004",
+          "arg_id": "t3_A",
+          "speaker": "A",
+          "text": "Ich appelliere an die Eigenverantwortung der Patienten, und ich setze auf Information, Information, Information. Heute weiss jeder, welche Konsequenzen Rauchen hat. Aber ich sage auch klar: Ich will niemandem 20 Prozent abziehen, weil er raucht. Das postuliere ich nicht."
+        },
+        {
+          "uid": "r2_t3_005",
+          "arg_id": "t3_B",
+          "speaker": "B",
+          "text": "Ich habe erlebt, wie ein Politiker behauptet hat, man könne 20 Prozent der Leistungen streichen. Als die Journalisten nachfragten, hatte er nach zehn Minuten 0,5 Promille zusammengekratzt. Für mich ist die Lehre daraus: Es geht nicht darum, eine Leistung für alle zu streichen, sondern individuell zu entscheiden. Und ich finde es falsch, Kranke zu bestrafen. Die gleiche Krankheit kann auch von schlechten Arbeitsbedingungen kommen."
+        }
       ],
-      "transition": { "type": "linear", "next": "summary" }
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r2_o1",
+            "topic_id": "t1",
+            "label": "Doch zuerst fragen, wer die Prämien am stärksten spürt",
+            "next": "r3_t3_t1"
+          },
+          {
+            "option_id": "r2_o2",
+            "topic_id": "t2",
+            "label": "Fragen, warum so viel in Spitäler und Geräte investiert wird",
+            "next": "r3_t3_t2"
+          },
+          {
+            "option_id": "r2_o3",
+            "topic_id": "t4",
+            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "next": "r3_t3_t4"
+          }
+        ]
+      }
     },
-
-    "summary": {
+    "r3_t1_t2": {
       "round": 3,
+      "kind": "segment",
+      "topic": "Wo entstehen die Kosten? Spitäler, Geräte und Qualität",
+      "topic_id": "t2",
+      "utterances": [
+        {
+          "uid": "r3_t1_t2_001",
+          "arg_id": "ack_t2_v2",
+          "speaker": "D",
+          "text": "Bei den Investitionen in Spitäler und Geräte sehe ich als Ökonom den grössten Hebel."
+        },
+        {
+          "uid": "r3_t1_t2_002",
+          "arg_id": "t2_D",
+          "speaker": "D",
+          "text": "Ich nenne das einen Ausstattungswettbewerb. Ich beobachte, dass jedes Spital einen Operationsroboter braucht, weil sonst die Leute nicht kommen. Ich habe selbst im Verwaltungsrat eines Regionalspitals gesessen und erlebt, wie dieser Druck entsteht. Geplant wird das alles auf Kantonsebene, und für mich ist genau das das Hauptproblem: Der Kanton ist Planer, Finanzierer und Aufsicht zugleich, und das beisst sich. Ich würde in sieben bis zehn Versorgungsregionen denken statt in 26 Kantonen."
+        },
+        {
+          "uid": "r3_t1_t2_003",
+          "arg_id": "t2_C",
+          "speaker": "C",
+          "text": "Wir Herzchirurgen haben vor 15 Jahren gesagt, dieser Operationsroboter sei Quatsch: zwei Millionen Franken Anschaffung, 200'000 Franken Unterhalt im Jahr, und die Resultate sind nicht besser. Ich bin stolz darauf, dass wir das nicht mitgemacht haben. Mehr ärgert mich etwas anderes: Ich liefere seit zehn Jahren Qualitätsindikatoren zu Sterblichkeit, Komplikationen und Infekten. Die Unterschiede zwischen den Spitälern sind teilweise eins zu sechs, und es hat keine Konsequenzen."
+        },
+        {
+          "uid": "r3_t1_t2_004",
+          "arg_id": "t2_B",
+          "speaker": "B",
+          "text": "Ich erkläre das immer mit Bäckereien. In einem Dorf mit drei Bäckereien werden 1000 Brote pro Tag verkauft. Kommt eine vierte dazu, sind es weiterhin 1000. Bei Röntgenzentren ist es anders: Kommt ein fünftes dazu, werden mehr Bilder gemacht, ob nötig oder nicht. Ich habe gesehen, wie eine Finanzgesellschaft in ein solches Zentrum investiert und ihr Kapital in drei Jahren amortisiert hat. Ich finde, das muss man bremsen, aber nicht der Versicherer allein."
+        },
+        {
+          "uid": "r3_t1_t2_005",
+          "arg_id": "t2_A",
+          "speaker": "A",
+          "text": "Da sind wir uns näher, als ich dachte. Mein Problem ist ein anderes: Ich muss am Schluss alles bezahlen. Ich habe kein Vetorecht, ich kann nicht sagen, diese Behandlung war überflüssig. Diesen Vertragszwang halte ich für einen wesentlichen Kostentreiber. Und ich bezahle heute die sehr gute Leistung zum genau gleichen Preis wie den Pfusch."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t3",
+            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "next": "r4_t3_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t1_t3": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Wie viel Medizin ist genug? Überversorgung und Eigenverantwortung",
+      "topic_id": "t3",
+      "utterances": [
+        {
+          "uid": "r3_t1_t3_001",
+          "arg_id": "ack_t3_v2",
+          "speaker": "C",
+          "text": "Ob zu viele Untersuchungen gemacht werden, frage ich mich fast jeden Tag."
+        },
+        {
+          "uid": "r3_t1_t3_002",
+          "arg_id": "t3_C",
+          "speaker": "C",
+          "text": "Ich gebe Ihnen ein Beispiel aus meinem Alltag: Kopfschmerzen. Viele Patienten haben das Gefühl, es brauche sofort eine Magnetresonanz-Untersuchung. Ich würde sagen, 99 Prozent davon sind unnötig. Aber wenn ich sie einmal nicht mache und einen Tumor verpasse, stehe ich vor Gericht. Und ich erlebe es immer wieder: Wer bei mir eine Operation nicht bekommt, geht zum nächsten Arzt, bis ihn jemand operiert."
+        },
+        {
+          "uid": "r3_t1_t3_003",
+          "arg_id": "t3_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und habe viele Kollegen, die eine Patientenverfügung haben. Ich habe für mich entschieden: Ich will nicht an eine Maschine gehängt werden, die Tausende Franken pro Tag kostet, nur damit ich zehn Tage länger lebe. Wer das möchte, soll es bekommen, aber für mich gehört das nicht in die soziale Krankenversicherung."
+        },
+        {
+          "uid": "r3_t1_t3_004",
+          "arg_id": "t3_A",
+          "speaker": "A",
+          "text": "Ich appelliere an die Eigenverantwortung der Patienten, und ich setze auf Information, Information, Information. Heute weiss jeder, welche Konsequenzen Rauchen hat. Aber ich sage auch klar: Ich will niemandem 20 Prozent abziehen, weil er raucht. Das postuliere ich nicht."
+        },
+        {
+          "uid": "r3_t1_t3_005",
+          "arg_id": "t3_B",
+          "speaker": "B",
+          "text": "Ich habe erlebt, wie ein Politiker behauptet hat, man könne 20 Prozent der Leistungen streichen. Als die Journalisten nachfragten, hatte er nach zehn Minuten 0,5 Promille zusammengekratzt. Für mich ist die Lehre daraus: Es geht nicht darum, eine Leistung für alle zu streichen, sondern individuell zu entscheiden. Und ich finde es falsch, Kranke zu bestrafen. Die gleiche Krankheit kann auch von schlechten Arbeitsbedingungen kommen."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t2",
+            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "next": "r4_t2_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t1_t4": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Notfall statt Hausarzt: stimmt die Grundversorgung?",
+      "topic_id": "t4",
+      "utterances": [
+        {
+          "uid": "r3_t1_t4_001",
+          "arg_id": "ack_t4_v1",
+          "speaker": "B",
+          "text": "Dass so viele direkt in den Notfall gehen, verstehe ich sogar, gerade bei kleinen Kindern."
+        },
+        {
+          "uid": "r3_t1_t4_002",
+          "arg_id": "t4_E",
+          "speaker": "E",
+          "text": "Mein Mann war lange schwer krank, und ich war mit ihm fast jedes Wochenende im Notfall. Dort sassen Familien mit Kindern, die gehustet haben. Ich habe am Empfang gefragt, warum die nicht zum Hausarzt gehen. Man hat mir gesagt, viele wüssten das nicht."
+        },
+        {
+          "uid": "r3_t1_t4_003",
+          "arg_id": "t4_A",
+          "speaker": "A",
+          "text": "Ich kann das bestätigen: Rund 80 Prozent der Notfälle in den Spitalambulatorien sind Bagatellfälle. Sie gehören nicht ins Spital und verursachen enorme Kosten. Dazu kommt, dass ich zwischen den Kantonen einen enormen Wettbewerb mit Spitalbauten beobachte, gerade bei den Ambulatorien."
+        },
+        {
+          "uid": "r3_t1_t4_004",
+          "arg_id": "t4_B",
+          "speaker": "B",
+          "text": "Für mich stimmt dann etwas in der Grundversorgung nicht. Wir haben zu wenig Hausärzte in diesem Land und finden keine Nachfolger. Ich sehe auch, warum: Heute will niemand mehr 90 Stunden pro Woche arbeiten und Tag und Nacht erreichbar sein. Ich setze deshalb auf neue Modelle, auf Gemeinschaftspraxen und Notfallpraxen am Spital."
+        },
+        {
+          "uid": "r3_t1_t4_005",
+          "arg_id": "t4_C",
+          "speaker": "C",
+          "text": "Für mich ist der Hausarzt der Gatekeeper. Ich erwarte, dass er den Patienten führt, ihm einen Spezialisten empfiehlt und dass der Patient dieser Empfehlung dann auch folgt. Ich erlebe aber oft, dass Patienten hinter dem Rücken des Hausarztes noch drei andere aufsuchen."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t2",
+            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "next": "r4_t2_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t3",
+            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "next": "r4_t3_v3"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t2_t1": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Wer zahlt wie viel? Prämienlast und Verteilung",
+      "topic_id": "t1",
+      "utterances": [
+        {
+          "uid": "r3_t2_t1_001",
+          "arg_id": "ack_t1_v2",
+          "speaker": "B",
+          "text": "Wer die Prämien am stärksten spürt, ist für mich die entscheidende Frage. Ich sehe die Belastung sehr ungleich verteilt."
+        },
+        {
+          "uid": "r3_t2_t1_002",
+          "arg_id": "t1_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und alleinstehend. Ich habe zwei Kollegen gefragt, beide über 70, beide alleinstehend, beide mit genau der gleichen Zusatzversicherung wie ich. Der eine bezahlt 40 Franken weniger als ich, der andere 100 Franken weniger. Das kann ich niemandem erklären."
+        },
+        {
+          "uid": "r3_t2_t1_003",
+          "arg_id": "t1_A",
+          "speaker": "A",
+          "text": "Ich kann Ihnen den Unterschied im Einzelfall auch nicht erklären. Ich weiss aber, wie wir rechnen: Prämien werden aufgrund einer Risikoanalyse kalkuliert, nach Alter, Geschlecht und Anfälligkeit für Krankheiten. Das ist keine Willkür, sondern eine Kalkulation. Und ich sage klar: Prämienverbilligungen ändern daran nichts, sie verschieben die Rechnung nur."
+        },
+        {
+          "uid": "r3_t2_t1_004",
+          "arg_id": "t1_B",
+          "speaker": "B",
+          "text": "Für mich sind das zwei getrennte Probleme. Ich sehe, dass die untersten Einkommen über die Prämienverbilligung recht gut entlastet sind und die höchsten Einkommen bei uns die billigsten Prämien Europas bezahlen. Daraus folgere ich: Die Last landet in der Mitte. Ich bin selbst Vater von zwei Kindern und merke jeden Herbst, wenn die neue Prämienrechnung kommt, wie viel davon an uns hängen bleibt. Ich arbeite deshalb an einer gezielten Entlastung für Familien mit Kindern und für die 18- bis 25-Jährigen."
+        },
+        {
+          "uid": "r3_t2_t1_005",
+          "arg_id": "t1_D",
+          "speaker": "D",
+          "text": "Ich höre immer, die Alterung sei die Ursache. Ich halte das für einen Mythos. Wenn ich mir die Studien anschaue, macht die demografische Alterung etwa 20 bis 25 Prozent des Kostenanstiegs aus, nicht mehr. Und ich frage mich: Wenn das die Ursache wäre, was genau wollen wir dann bekämpfen? Dass Menschen älter werden?"
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t3",
+            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "next": "r4_t3_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t2_t3": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Wie viel Medizin ist genug? Überversorgung und Eigenverantwortung",
+      "topic_id": "t3",
+      "utterances": [
+        {
+          "uid": "r3_t2_t3_001",
+          "arg_id": "ack_t3_v2",
+          "speaker": "C",
+          "text": "Ob zu viele Untersuchungen gemacht werden, frage ich mich fast jeden Tag."
+        },
+        {
+          "uid": "r3_t2_t3_002",
+          "arg_id": "t3_C",
+          "speaker": "C",
+          "text": "Ich gebe Ihnen ein Beispiel aus meinem Alltag: Kopfschmerzen. Viele Patienten haben das Gefühl, es brauche sofort eine Magnetresonanz-Untersuchung. Ich würde sagen, 99 Prozent davon sind unnötig. Aber wenn ich sie einmal nicht mache und einen Tumor verpasse, stehe ich vor Gericht. Und ich erlebe es immer wieder: Wer bei mir eine Operation nicht bekommt, geht zum nächsten Arzt, bis ihn jemand operiert."
+        },
+        {
+          "uid": "r3_t2_t3_003",
+          "arg_id": "t3_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und habe viele Kollegen, die eine Patientenverfügung haben. Ich habe für mich entschieden: Ich will nicht an eine Maschine gehängt werden, die Tausende Franken pro Tag kostet, nur damit ich zehn Tage länger lebe. Wer das möchte, soll es bekommen, aber für mich gehört das nicht in die soziale Krankenversicherung."
+        },
+        {
+          "uid": "r3_t2_t3_004",
+          "arg_id": "t3_A",
+          "speaker": "A",
+          "text": "Ich appelliere an die Eigenverantwortung der Patienten, und ich setze auf Information, Information, Information. Heute weiss jeder, welche Konsequenzen Rauchen hat. Aber ich sage auch klar: Ich will niemandem 20 Prozent abziehen, weil er raucht. Das postuliere ich nicht."
+        },
+        {
+          "uid": "r3_t2_t3_005",
+          "arg_id": "t3_B",
+          "speaker": "B",
+          "text": "Ich habe erlebt, wie ein Politiker behauptet hat, man könne 20 Prozent der Leistungen streichen. Als die Journalisten nachfragten, hatte er nach zehn Minuten 0,5 Promille zusammengekratzt. Für mich ist die Lehre daraus: Es geht nicht darum, eine Leistung für alle zu streichen, sondern individuell zu entscheiden. Und ich finde es falsch, Kranke zu bestrafen. Die gleiche Krankheit kann auch von schlechten Arbeitsbedingungen kommen."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t1",
+            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "next": "r4_t1_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t2_t4": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Notfall statt Hausarzt: stimmt die Grundversorgung?",
+      "topic_id": "t4",
+      "utterances": [
+        {
+          "uid": "r3_t2_t4_001",
+          "arg_id": "ack_t4_v1",
+          "speaker": "B",
+          "text": "Dass so viele direkt in den Notfall gehen, verstehe ich sogar, gerade bei kleinen Kindern."
+        },
+        {
+          "uid": "r3_t2_t4_002",
+          "arg_id": "t4_E",
+          "speaker": "E",
+          "text": "Mein Mann war lange schwer krank, und ich war mit ihm fast jedes Wochenende im Notfall. Dort sassen Familien mit Kindern, die gehustet haben. Ich habe am Empfang gefragt, warum die nicht zum Hausarzt gehen. Man hat mir gesagt, viele wüssten das nicht."
+        },
+        {
+          "uid": "r3_t2_t4_003",
+          "arg_id": "t4_A",
+          "speaker": "A",
+          "text": "Ich kann das bestätigen: Rund 80 Prozent der Notfälle in den Spitalambulatorien sind Bagatellfälle. Sie gehören nicht ins Spital und verursachen enorme Kosten. Dazu kommt, dass ich zwischen den Kantonen einen enormen Wettbewerb mit Spitalbauten beobachte, gerade bei den Ambulatorien."
+        },
+        {
+          "uid": "r3_t2_t4_004",
+          "arg_id": "t4_B",
+          "speaker": "B",
+          "text": "Für mich stimmt dann etwas in der Grundversorgung nicht. Wir haben zu wenig Hausärzte in diesem Land und finden keine Nachfolger. Ich sehe auch, warum: Heute will niemand mehr 90 Stunden pro Woche arbeiten und Tag und Nacht erreichbar sein. Ich setze deshalb auf neue Modelle, auf Gemeinschaftspraxen und Notfallpraxen am Spital."
+        },
+        {
+          "uid": "r3_t2_t4_005",
+          "arg_id": "t4_C",
+          "speaker": "C",
+          "text": "Für mich ist der Hausarzt der Gatekeeper. Ich erwarte, dass er den Patienten führt, ihm einen Spezialisten empfiehlt und dass der Patient dieser Empfehlung dann auch folgt. Ich erlebe aber oft, dass Patienten hinter dem Rücken des Hausarztes noch drei andere aufsuchen."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t1",
+            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "next": "r4_t1_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t3",
+            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "next": "r4_t3_v3"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t3_t1": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Wer zahlt wie viel? Prämienlast und Verteilung",
+      "topic_id": "t1",
+      "utterances": [
+        {
+          "uid": "r3_t3_t1_001",
+          "arg_id": "ack_t1_v2",
+          "speaker": "B",
+          "text": "Wer die Prämien am stärksten spürt, ist für mich die entscheidende Frage. Ich sehe die Belastung sehr ungleich verteilt."
+        },
+        {
+          "uid": "r3_t3_t1_002",
+          "arg_id": "t1_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und alleinstehend. Ich habe zwei Kollegen gefragt, beide über 70, beide alleinstehend, beide mit genau der gleichen Zusatzversicherung wie ich. Der eine bezahlt 40 Franken weniger als ich, der andere 100 Franken weniger. Das kann ich niemandem erklären."
+        },
+        {
+          "uid": "r3_t3_t1_003",
+          "arg_id": "t1_A",
+          "speaker": "A",
+          "text": "Ich kann Ihnen den Unterschied im Einzelfall auch nicht erklären. Ich weiss aber, wie wir rechnen: Prämien werden aufgrund einer Risikoanalyse kalkuliert, nach Alter, Geschlecht und Anfälligkeit für Krankheiten. Das ist keine Willkür, sondern eine Kalkulation. Und ich sage klar: Prämienverbilligungen ändern daran nichts, sie verschieben die Rechnung nur."
+        },
+        {
+          "uid": "r3_t3_t1_004",
+          "arg_id": "t1_B",
+          "speaker": "B",
+          "text": "Für mich sind das zwei getrennte Probleme. Ich sehe, dass die untersten Einkommen über die Prämienverbilligung recht gut entlastet sind und die höchsten Einkommen bei uns die billigsten Prämien Europas bezahlen. Daraus folgere ich: Die Last landet in der Mitte. Ich bin selbst Vater von zwei Kindern und merke jeden Herbst, wenn die neue Prämienrechnung kommt, wie viel davon an uns hängen bleibt. Ich arbeite deshalb an einer gezielten Entlastung für Familien mit Kindern und für die 18- bis 25-Jährigen."
+        },
+        {
+          "uid": "r3_t3_t1_005",
+          "arg_id": "t1_D",
+          "speaker": "D",
+          "text": "Ich höre immer, die Alterung sei die Ursache. Ich halte das für einen Mythos. Wenn ich mir die Studien anschaue, macht die demografische Alterung etwa 20 bis 25 Prozent des Kostenanstiegs aus, nicht mehr. Und ich frage mich: Wenn das die Ursache wäre, was genau wollen wir dann bekämpfen? Dass Menschen älter werden?"
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t2",
+            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "next": "r4_t2_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t3_t2": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Wo entstehen die Kosten? Spitäler, Geräte und Qualität",
+      "topic_id": "t2",
+      "utterances": [
+        {
+          "uid": "r3_t3_t2_001",
+          "arg_id": "ack_t2_v2",
+          "speaker": "D",
+          "text": "Bei den Investitionen in Spitäler und Geräte sehe ich als Ökonom den grössten Hebel."
+        },
+        {
+          "uid": "r3_t3_t2_002",
+          "arg_id": "t2_D",
+          "speaker": "D",
+          "text": "Ich nenne das einen Ausstattungswettbewerb. Ich beobachte, dass jedes Spital einen Operationsroboter braucht, weil sonst die Leute nicht kommen. Ich habe selbst im Verwaltungsrat eines Regionalspitals gesessen und erlebt, wie dieser Druck entsteht. Geplant wird das alles auf Kantonsebene, und für mich ist genau das das Hauptproblem: Der Kanton ist Planer, Finanzierer und Aufsicht zugleich, und das beisst sich. Ich würde in sieben bis zehn Versorgungsregionen denken statt in 26 Kantonen."
+        },
+        {
+          "uid": "r3_t3_t2_003",
+          "arg_id": "t2_C",
+          "speaker": "C",
+          "text": "Wir Herzchirurgen haben vor 15 Jahren gesagt, dieser Operationsroboter sei Quatsch: zwei Millionen Franken Anschaffung, 200'000 Franken Unterhalt im Jahr, und die Resultate sind nicht besser. Ich bin stolz darauf, dass wir das nicht mitgemacht haben. Mehr ärgert mich etwas anderes: Ich liefere seit zehn Jahren Qualitätsindikatoren zu Sterblichkeit, Komplikationen und Infekten. Die Unterschiede zwischen den Spitälern sind teilweise eins zu sechs, und es hat keine Konsequenzen."
+        },
+        {
+          "uid": "r3_t3_t2_004",
+          "arg_id": "t2_B",
+          "speaker": "B",
+          "text": "Ich erkläre das immer mit Bäckereien. In einem Dorf mit drei Bäckereien werden 1000 Brote pro Tag verkauft. Kommt eine vierte dazu, sind es weiterhin 1000. Bei Röntgenzentren ist es anders: Kommt ein fünftes dazu, werden mehr Bilder gemacht, ob nötig oder nicht. Ich habe gesehen, wie eine Finanzgesellschaft in ein solches Zentrum investiert und ihr Kapital in drei Jahren amortisiert hat. Ich finde, das muss man bremsen, aber nicht der Versicherer allein."
+        },
+        {
+          "uid": "r3_t3_t2_005",
+          "arg_id": "t2_A",
+          "speaker": "A",
+          "text": "Da sind wir uns näher, als ich dachte. Mein Problem ist ein anderes: Ich muss am Schluss alles bezahlen. Ich habe kein Vetorecht, ich kann nicht sagen, diese Behandlung war überflüssig. Diesen Vertragszwang halte ich für einen wesentlichen Kostentreiber. Und ich bezahle heute die sehr gute Leistung zum genau gleichen Preis wie den Pfusch."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t1",
+            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "next": "r4_t1_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t4",
+            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "next": "r4_t4_v2"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r3_t3_t4": {
+      "round": 3,
+      "kind": "segment",
+      "topic": "Notfall statt Hausarzt: stimmt die Grundversorgung?",
+      "topic_id": "t4",
+      "utterances": [
+        {
+          "uid": "r3_t3_t4_001",
+          "arg_id": "ack_t4_v1",
+          "speaker": "B",
+          "text": "Dass so viele direkt in den Notfall gehen, verstehe ich sogar, gerade bei kleinen Kindern."
+        },
+        {
+          "uid": "r3_t3_t4_002",
+          "arg_id": "t4_E",
+          "speaker": "E",
+          "text": "Mein Mann war lange schwer krank, und ich war mit ihm fast jedes Wochenende im Notfall. Dort sassen Familien mit Kindern, die gehustet haben. Ich habe am Empfang gefragt, warum die nicht zum Hausarzt gehen. Man hat mir gesagt, viele wüssten das nicht."
+        },
+        {
+          "uid": "r3_t3_t4_003",
+          "arg_id": "t4_A",
+          "speaker": "A",
+          "text": "Ich kann das bestätigen: Rund 80 Prozent der Notfälle in den Spitalambulatorien sind Bagatellfälle. Sie gehören nicht ins Spital und verursachen enorme Kosten. Dazu kommt, dass ich zwischen den Kantonen einen enormen Wettbewerb mit Spitalbauten beobachte, gerade bei den Ambulatorien."
+        },
+        {
+          "uid": "r3_t3_t4_004",
+          "arg_id": "t4_B",
+          "speaker": "B",
+          "text": "Für mich stimmt dann etwas in der Grundversorgung nicht. Wir haben zu wenig Hausärzte in diesem Land und finden keine Nachfolger. Ich sehe auch, warum: Heute will niemand mehr 90 Stunden pro Woche arbeiten und Tag und Nacht erreichbar sein. Ich setze deshalb auf neue Modelle, auf Gemeinschaftspraxen und Notfallpraxen am Spital."
+        },
+        {
+          "uid": "r3_t3_t4_005",
+          "arg_id": "t4_C",
+          "speaker": "C",
+          "text": "Für mich ist der Hausarzt der Gatekeeper. Ich erwarte, dass er den Patienten führt, ihm einen Spezialisten empfiehlt und dass der Patient dieser Empfehlung dann auch folgt. Ich erlebe aber oft, dass Patienten hinter dem Rücken des Hausarztes noch drei andere aufsuchen."
+        }
+      ],
+      "transition": {
+        "type": "choice",
+        "prompt": "Worüber soll als Nächstes diskutiert werden?",
+        "timeout_seconds": null,
+        "options": [
+          {
+            "option_id": "r3_o1",
+            "topic_id": "t1",
+            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "next": "r4_t1_v3"
+          },
+          {
+            "option_id": "r3_o2",
+            "topic_id": "t2",
+            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "next": "r4_t2_v3"
+          },
+          {
+            "option_id": "r3_o3",
+            "topic_id": "t5",
+            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "next": "r4_t5_v1"
+          }
+        ]
+      }
+    },
+    "r4_t1_v3": {
+      "round": 4,
+      "kind": "segment",
+      "topic": "Wer zahlt wie viel? Prämienlast und Verteilung",
+      "topic_id": "t1",
+      "utterances": [
+        {
+          "uid": "r4_t1_v3_001",
+          "arg_id": "ack_t1_v3",
+          "speaker": "B",
+          "text": "Dann komme ich gerne noch zur Belastung der Haushalte, denn genau dort sehe ich das eigentliche Problem."
+        },
+        {
+          "uid": "r4_t1_v3_002",
+          "arg_id": "t1_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und alleinstehend. Ich habe zwei Kollegen gefragt, beide über 70, beide alleinstehend, beide mit genau der gleichen Zusatzversicherung wie ich. Der eine bezahlt 40 Franken weniger als ich, der andere 100 Franken weniger. Das kann ich niemandem erklären."
+        },
+        {
+          "uid": "r4_t1_v3_003",
+          "arg_id": "t1_A",
+          "speaker": "A",
+          "text": "Ich kann Ihnen den Unterschied im Einzelfall auch nicht erklären. Ich weiss aber, wie wir rechnen: Prämien werden aufgrund einer Risikoanalyse kalkuliert, nach Alter, Geschlecht und Anfälligkeit für Krankheiten. Das ist keine Willkür, sondern eine Kalkulation. Und ich sage klar: Prämienverbilligungen ändern daran nichts, sie verschieben die Rechnung nur."
+        },
+        {
+          "uid": "r4_t1_v3_004",
+          "arg_id": "t1_B",
+          "speaker": "B",
+          "text": "Für mich sind das zwei getrennte Probleme. Ich sehe, dass die untersten Einkommen über die Prämienverbilligung recht gut entlastet sind und die höchsten Einkommen bei uns die billigsten Prämien Europas bezahlen. Daraus folgere ich: Die Last landet in der Mitte. Ich bin selbst Vater von zwei Kindern und merke jeden Herbst, wenn die neue Prämienrechnung kommt, wie viel davon an uns hängen bleibt. Ich arbeite deshalb an einer gezielten Entlastung für Familien mit Kindern und für die 18- bis 25-Jährigen."
+        },
+        {
+          "uid": "r4_t1_v3_005",
+          "arg_id": "t1_D",
+          "speaker": "D",
+          "text": "Ich höre immer, die Alterung sei die Ursache. Ich halte das für einen Mythos. Wenn ich mir die Studien anschaue, macht die demografische Alterung etwa 20 bis 25 Prozent des Kostenanstiegs aus, nicht mehr. Und ich frage mich: Wenn das die Ursache wäre, was genau wollen wir dann bekämpfen? Dass Menschen älter werden?"
+        }
+      ],
+      "transition": {
+        "type": "linear",
+        "next": "summary"
+      }
+    },
+    "r4_t2_v3": {
+      "round": 4,
+      "kind": "segment",
+      "topic": "Wo entstehen die Kosten? Spitäler, Geräte und Qualität",
+      "topic_id": "t2",
+      "utterances": [
+        {
+          "uid": "r4_t2_v3_001",
+          "arg_id": "ack_t2_v3",
+          "speaker": "D",
+          "text": "Dann schaue ich zum Schluss noch auf die Spitäler, denn dort liegen rund 40 Prozent der Kosten."
+        },
+        {
+          "uid": "r4_t2_v3_002",
+          "arg_id": "t2_D",
+          "speaker": "D",
+          "text": "Ich nenne das einen Ausstattungswettbewerb. Ich beobachte, dass jedes Spital einen Operationsroboter braucht, weil sonst die Leute nicht kommen. Ich habe selbst im Verwaltungsrat eines Regionalspitals gesessen und erlebt, wie dieser Druck entsteht. Geplant wird das alles auf Kantonsebene, und für mich ist genau das das Hauptproblem: Der Kanton ist Planer, Finanzierer und Aufsicht zugleich, und das beisst sich. Ich würde in sieben bis zehn Versorgungsregionen denken statt in 26 Kantonen."
+        },
+        {
+          "uid": "r4_t2_v3_003",
+          "arg_id": "t2_C",
+          "speaker": "C",
+          "text": "Wir Herzchirurgen haben vor 15 Jahren gesagt, dieser Operationsroboter sei Quatsch: zwei Millionen Franken Anschaffung, 200'000 Franken Unterhalt im Jahr, und die Resultate sind nicht besser. Ich bin stolz darauf, dass wir das nicht mitgemacht haben. Mehr ärgert mich etwas anderes: Ich liefere seit zehn Jahren Qualitätsindikatoren zu Sterblichkeit, Komplikationen und Infekten. Die Unterschiede zwischen den Spitälern sind teilweise eins zu sechs, und es hat keine Konsequenzen."
+        },
+        {
+          "uid": "r4_t2_v3_004",
+          "arg_id": "t2_B",
+          "speaker": "B",
+          "text": "Ich erkläre das immer mit Bäckereien. In einem Dorf mit drei Bäckereien werden 1000 Brote pro Tag verkauft. Kommt eine vierte dazu, sind es weiterhin 1000. Bei Röntgenzentren ist es anders: Kommt ein fünftes dazu, werden mehr Bilder gemacht, ob nötig oder nicht. Ich habe gesehen, wie eine Finanzgesellschaft in ein solches Zentrum investiert und ihr Kapital in drei Jahren amortisiert hat. Ich finde, das muss man bremsen, aber nicht der Versicherer allein."
+        },
+        {
+          "uid": "r4_t2_v3_005",
+          "arg_id": "t2_A",
+          "speaker": "A",
+          "text": "Da sind wir uns näher, als ich dachte. Mein Problem ist ein anderes: Ich muss am Schluss alles bezahlen. Ich habe kein Vetorecht, ich kann nicht sagen, diese Behandlung war überflüssig. Diesen Vertragszwang halte ich für einen wesentlichen Kostentreiber. Und ich bezahle heute die sehr gute Leistung zum genau gleichen Preis wie den Pfusch."
+        }
+      ],
+      "transition": {
+        "type": "linear",
+        "next": "summary"
+      }
+    },
+    "r4_t3_v3": {
+      "round": 4,
+      "kind": "segment",
+      "topic": "Wie viel Medizin ist genug? Überversorgung und Eigenverantwortung",
+      "topic_id": "t3",
+      "utterances": [
+        {
+          "uid": "r4_t3_v3_001",
+          "arg_id": "ack_t3_v3",
+          "speaker": "C",
+          "text": "Über Grenzen rede ich gerne, auch wenn ich sie im Spital nicht immer ziehen kann."
+        },
+        {
+          "uid": "r4_t3_v3_002",
+          "arg_id": "t3_C",
+          "speaker": "C",
+          "text": "Ich gebe Ihnen ein Beispiel aus meinem Alltag: Kopfschmerzen. Viele Patienten haben das Gefühl, es brauche sofort eine Magnetresonanz-Untersuchung. Ich würde sagen, 99 Prozent davon sind unnötig. Aber wenn ich sie einmal nicht mache und einen Tumor verpasse, stehe ich vor Gericht. Und ich erlebe es immer wieder: Wer bei mir eine Operation nicht bekommt, geht zum nächsten Arzt, bis ihn jemand operiert."
+        },
+        {
+          "uid": "r4_t3_v3_003",
+          "arg_id": "t3_E",
+          "speaker": "E",
+          "text": "Ich bin 72 und habe viele Kollegen, die eine Patientenverfügung haben. Ich habe für mich entschieden: Ich will nicht an eine Maschine gehängt werden, die Tausende Franken pro Tag kostet, nur damit ich zehn Tage länger lebe. Wer das möchte, soll es bekommen, aber für mich gehört das nicht in die soziale Krankenversicherung."
+        },
+        {
+          "uid": "r4_t3_v3_004",
+          "arg_id": "t3_A",
+          "speaker": "A",
+          "text": "Ich appelliere an die Eigenverantwortung der Patienten, und ich setze auf Information, Information, Information. Heute weiss jeder, welche Konsequenzen Rauchen hat. Aber ich sage auch klar: Ich will niemandem 20 Prozent abziehen, weil er raucht. Das postuliere ich nicht."
+        },
+        {
+          "uid": "r4_t3_v3_005",
+          "arg_id": "t3_B",
+          "speaker": "B",
+          "text": "Ich habe erlebt, wie ein Politiker behauptet hat, man könne 20 Prozent der Leistungen streichen. Als die Journalisten nachfragten, hatte er nach zehn Minuten 0,5 Promille zusammengekratzt. Für mich ist die Lehre daraus: Es geht nicht darum, eine Leistung für alle zu streichen, sondern individuell zu entscheiden. Und ich finde es falsch, Kranke zu bestrafen. Die gleiche Krankheit kann auch von schlechten Arbeitsbedingungen kommen."
+        }
+      ],
+      "transition": {
+        "type": "linear",
+        "next": "summary"
+      }
+    },
+    "r4_t4_v2": {
+      "round": 4,
+      "kind": "segment",
+      "topic": "Notfall statt Hausarzt: stimmt die Grundversorgung?",
+      "topic_id": "t4",
+      "utterances": [
+        {
+          "uid": "r4_t4_v2_001",
+          "arg_id": "ack_t4_v2",
+          "speaker": "B",
+          "text": "Ob die Grundversorgung noch stimmt, ist für mich die Kernfrage. In den Bergregionen sehe ich, wie dünn das Netz ist."
+        },
+        {
+          "uid": "r4_t4_v2_002",
+          "arg_id": "t4_E",
+          "speaker": "E",
+          "text": "Mein Mann war lange schwer krank, und ich war mit ihm fast jedes Wochenende im Notfall. Dort sassen Familien mit Kindern, die gehustet haben. Ich habe am Empfang gefragt, warum die nicht zum Hausarzt gehen. Man hat mir gesagt, viele wüssten das nicht."
+        },
+        {
+          "uid": "r4_t4_v2_003",
+          "arg_id": "t4_A",
+          "speaker": "A",
+          "text": "Ich kann das bestätigen: Rund 80 Prozent der Notfälle in den Spitalambulatorien sind Bagatellfälle. Sie gehören nicht ins Spital und verursachen enorme Kosten. Dazu kommt, dass ich zwischen den Kantonen einen enormen Wettbewerb mit Spitalbauten beobachte, gerade bei den Ambulatorien."
+        },
+        {
+          "uid": "r4_t4_v2_004",
+          "arg_id": "t4_B",
+          "speaker": "B",
+          "text": "Für mich stimmt dann etwas in der Grundversorgung nicht. Wir haben zu wenig Hausärzte in diesem Land und finden keine Nachfolger. Ich sehe auch, warum: Heute will niemand mehr 90 Stunden pro Woche arbeiten und Tag und Nacht erreichbar sein. Ich setze deshalb auf neue Modelle, auf Gemeinschaftspraxen und Notfallpraxen am Spital."
+        },
+        {
+          "uid": "r4_t4_v2_005",
+          "arg_id": "t4_C",
+          "speaker": "C",
+          "text": "Für mich ist der Hausarzt der Gatekeeper. Ich erwarte, dass er den Patienten führt, ihm einen Spezialisten empfiehlt und dass der Patient dieser Empfehlung dann auch folgt. Ich erlebe aber oft, dass Patienten hinter dem Rücken des Hausarztes noch drei andere aufsuchen."
+        }
+      ],
+      "transition": {
+        "type": "linear",
+        "next": "summary"
+      }
+    },
+    "r4_t5_v1": {
+      "round": 4,
+      "kind": "segment",
+      "topic": "Tarife und Politik: warum bewegt sich nichts?",
+      "topic_id": "t5",
+      "utterances": [
+        {
+          "uid": "r4_t5_v1_001",
+          "arg_id": "ack_t5_v1",
+          "speaker": "A",
+          "text": "Das ist die richtige Frage. Ich glaube, an Vorschlägen fehlt es nicht, sondern an Mehrheiten."
+        },
+        {
+          "uid": "r4_t5_v1_002",
+          "arg_id": "t5_E",
+          "speaker": "E",
+          "text": "Für mich ist das alles Kleinkram. Ich habe das Gefühl, wir treten auf Wasserschläuchen herum: Überall spritzt etwas heraus, aber an die Struktur kommt niemand. Und wenn mir jemand sagt, wir könnten uns das leisten, weil es nur 10 Prozent kostet, dann soll er das bitte mir erklären. Ich bezahle 500 Franken im Monat."
+        },
+        {
+          "uid": "r4_t5_v1_003",
+          "arg_id": "t5_A",
+          "speaker": "A",
+          "text": "Ich habe ganz konkrete Vorschläge. Ich will die Einzelfallabrechnung durch Pauschalen ersetzen und das System vereinfachen, damit wir die Kosten besser steuern können. Nur habe ich im Parlament die Mehrheit nicht. Das ist mein Problem."
+        },
+        {
+          "uid": "r4_t5_v1_004",
+          "arg_id": "t5_D",
+          "speaker": "D",
+          "text": "Ich finde das einfacher, als es hier dargestellt wird. Das Tarifsystem hat rund 4700 Positionen. Ich habe selbst an der letzten Revision mitgearbeitet. Ich muss aber nicht alle revidieren: Mit den 300 wichtigsten deckt man etwa 80 Prozent aller Leistungen ab. Das ist machbar."
+        },
+        {
+          "uid": "r4_t5_v1_005",
+          "arg_id": "t5_B",
+          "speaker": "B",
+          "text": "Ein Zauberrezept habe ich nicht, und ich habe auch noch keines gehört. Was ich sehe: Es gibt Ärzte, die dieselbe Leistung heute vier- oder fünfmal schneller erbringen und immer noch gleich bezahlt werden. Deshalb brauche ich neue Tarife. Und ich sage offen: Wenn in der Kommission die Kassenvertreter fast die Mehrheit haben und selbst bestimmen, wer sie beaufsichtigt, ist das für mich nicht tragbar."
+        }
+      ],
+      "transition": {
+        "type": "linear",
+        "next": "summary"
+      }
+    },
+    "summary": {
+      "round": 5,
       "kind": "summary",
       "utterances": [
-        { "uid": "sum_001", "speaker": "SYSTEM",
-          "text": "Die Debatte zeigt, dass die steigende Krankenkassenprämien können mehrere Ursachen haben:",
-              "points": [
-        "Mengenausweitung bei medizinischen Behandlungen",
-        "Fehlanreize im Gesundheitssystem",
-        "Ungleiche Verteilung der Gesundheitskosten"
-      ], "conclusion": "Einfache Lösungen gibt es nicht. Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen." }
+        {
+          "uid": "sum_001",
+          "arg_id": "summary",
+          "speaker": "SYSTEM",
+          "text": "Die Debatte zeigt, dass die steigenden Krankenkassenprämien mehrere Ursachen haben:",
+          "points": [
+            "Mengenausweitung bei medizinischen Behandlungen",
+            "Fehlanreize und fehlende Qualitätsanreize im Gesundheitssystem",
+            "Ungleiche Verteilung der Gesundheitskosten"
+          ],
+          "conclusion": "Einfache Lösungen gibt es nicht. Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen."
+        }
       ],
-      "transition": { "type": "end" }
+      "transition": {
+        "type": "end"
+      }
     }
   }
 }

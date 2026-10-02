@@ -239,9 +239,9 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
   };
 
   const advanceConversation = useCallback(() => {
-    if (!debateData) {console.log("no debate data, cannot advance conversation.", pendingChoice)}; 
-    if (isTyping) {console.log("Istyping, cannot advance conversation.", pendingChoice)}; 
-    if (pendingChoice) {console.log("Pending choice exists, cannot advance conversation.", pendingChoice)}; // Debugging log
+    if (!debateData) return;
+    if (isTyping) return;
+    if (pendingChoice) return;
     if (!currentNodeKey) {
       finishDebate();
       return;
@@ -299,19 +299,16 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
     setCurrentNodeKey(option.next || null);
     setCurrentUtteranceIndex(0);
     setHasNodeStarted(false);
-    logEvent("Choice_made", option.next, participantID, { choice: option.label, timestamp: new Date().toLocaleTimeString() });
+    logEvent("Choice_made", participantID, { choice: option.label, next: option.next, timestamp: new Date().toLocaleTimeString() });
   }, [addUserMessage, countVisibleProgressSteps, logEvent]);
 
   const handleContinue = () => {
-    console.log("Wir gehen weiter!");
     if (!hasStarted) {
-      console.log("Wir gehen OPTION 1!");
       onStart();
       return;
     }
-    if (!debateData) {console.log("Wir gehen OPTION 2!")}; 
-    if (isTyping) {console.log("Wir gehen OPTION 2!", pendingChoice)}; 
-    console.log("Wir gehen OPTION 4!");
+    if (!debateData) return;
+    if (isTyping || pendingChoice) return;
     advanceConversation();
   };
 

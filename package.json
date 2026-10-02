@@ -8,6 +8,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "validate": "node scripts/validate_debates.mjs",
+    "build:debates": "python3 scripts/build_debates.py && node scripts/validate_debates.mjs",
     "preview": "vite preview",
     "deploy": "vite build && gh-pages -d dist"
   },
