@@ -118,7 +118,7 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
             </div>
             <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
               {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Als Nächstes stellen sich die fünf Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden danach zu ordnen, wie sehr Sie ihnen zustimmen.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Als Nächstes stellen sich die fünf Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden nach Ihrer Präferenz zu ordnen.</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Fortfahren</button>
           </div>
         </div>

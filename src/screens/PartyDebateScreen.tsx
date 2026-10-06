@@ -454,7 +454,8 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
             </div>
             <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte. Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die am meist zutreffende Option.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte. Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die Option, die am besten auf Sie zutrifft.</p>
+              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Nach der Debatte werden Sie die Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
               <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
               <button className="start-debate-btn" onClick={onStart}>Debatte starten</button>
             </div>
