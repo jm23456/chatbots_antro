@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Restyle Mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" />
+<style>
+  :root {
+    --paper: #F4F1EA;
+    --surface: #FFFFFF;
+    --surface-2: #FAF8F3;
+    --ink: #1B1A17;
+    --ink-2: #57534B;
+    --ink-3: #8E897E;
+    --rule: #E3DED3;
+    --rule-strong: #CFC8BA;
+
+    --accent: #1B1A17;          /* primary actions are ink, not a brand hue */
+    --accent-fg: #F4F1EA;
+    --focus: #2F5BD3;
+
+    /* speaker palette: same hue families as before, calmer */
+    --red: #C4513E;     --red-tint: #F7E7E2;
+    --yellow: #C99A2E;  --yellow-tint: #F6EDD6;
+    --green: #4E8A5E;   --green-tint: #E3EFE5;
+    --turquoise: #2F949C; --turquoise-tint: #DDEFF0;
+    --blue: #3B5FC0;    --blue-tint: #E2E8F7;
+
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 0 rgba(27,26,23,.04), 0 12px 32px -12px rgba(27,26,23,.18);
+
+    --serif: "Source Serif 4", Georgia, serif;
+    --sans: "Inter Tight", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: #E9E5DC; color: var(--ink);
+    font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- page chrome for the mockup itself ---------- */
+  .doc { max-width: 1180px; margin: 0 auto; padding: 48px 16px 96px; }
+  .doc > header h1 { font: 600 40px/1.1 var(--serif); margin: 0 0 8px; }
+  .doc > header p { color: var(--ink-2); max-width: 720px; margin: 0; }
+  .frame-label {
+    font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink-2); margin: 56px 0 12px; display: flex; gap: 12px; align-items: center;
+  }
+  .frame-label::after { content: ""; flex: 1; height: 1px; background: var(--rule-strong); }
+  .frame {
+    background: var(--paper); border-radius: 18px; overflow: hidden;
+    box-shadow: 0 30px 60px -30px rgba(0,0,0,.35); position: relative;
+    min-height: 640px; display: flex; flex-direction: column;
+  }
+
+  .specs { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+  .spec { background: var(--paper); border-radius: 14px; padding: 20px 24px; }
+  .spec h3 { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); margin: 0 0 14px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+  .sw { width: 92px; font: 500 11px var(--mono); color: var(--ink-2); }
+  .sw i { display: block; height: 44px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(0,0,0,.06); }
+  .type-sample .d { font: 600 32px/1.15 var(--serif); }
+  .type-sample .b { font: 400 16px/1.55 var(--sans); color: var(--ink-2); margin-top: 6px; }
+  .type-sample .m { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-top: 10px; }
+
+  /* ---------- app components (these become App.css) ---------- */
+  .topbar {
+    display: flex; align-items: center; gap: 16px; padding: 18px 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .progress { display: flex; align-items: center; gap: 12px; }
+  .progress .track { width: 180px; height: 4px; background: var(--rule); border-radius: 99px; overflow: hidden; }
+  .progress .fill { height: 100%; background: var(--ink); border-radius: 99px; }
+  .progress span { font: 500 12px var(--mono); color: var(--ink-2); }
+
+  .title { font: 600 42px/1.12 var(--serif); letter-spacing: 0; margin: 0; }
+  .title-sm { font: 600 30px/1.15 var(--serif); letter-spacing: 0; margin: 0; text-align: center; }
+  .lede { font: 400 19px/1.45 var(--serif); color: var(--ink-2); margin: 10px 0 0; }
+
+  .btn {
+    font: 500 15px var(--sans); border: 0; cursor: pointer;
+    background: var(--accent); color: var(--accent-fg);
+    padding: 13px 26px; border-radius: 999px; display: inline-flex; align-items: center; gap: 10px;
+    transition: transform .12s ease, background .12s ease;
+  }
+  .btn:hover { background: #33312C; }
+  .btn:active { transform: translateY(1px); }
+  .btn .arrow { transition: transform .15s ease; }
+  .btn:hover .arrow { transform: translateX(3px); }
+  .btn[disabled] { background: var(--rule-strong); color: var(--surface); cursor: default; }
+  .btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--rule-strong); }
+  .btn-ghost:hover { background: var(--surface); }
+
+  .footer { margin-top: auto; padding: 18px 32px 24px; display: flex; justify-content: center; align-items: center; gap: 18px; }
+
+  /* topic intro */
+  .topic { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; padding: 40px 48px 8px; align-items: start; }
+  .topic figure { margin: 0; background: var(--surface); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+  .topic figure img { width: 100%; display: block; border-radius: 6px; }
+  .topic figcaption { font: 500 11px var(--mono); color: var(--ink-3); margin-top: 10px; letter-spacing: .04em; }
+  .topic .text p { margin: 0 0 14px; color: var(--ink-2); }
+  .topic .text p:first-child::first-letter { font: 600 52px/0.9 var(--serif); float: left; margin: 4px 8px 0 0; color: var(--ink); }
+  .topic-head { padding: 40px 48px 0; border-bottom: 1px solid var(--rule); padding-bottom: 28px; }
+
+  /* candidate stage */
+  .stage { flex: 1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 18px; padding: 32px 40px; align-items: end; }
+  .cand { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .cand .bubble {
+    background: var(--surface); border-radius: var(--radius); padding: 14px 16px; font-size: 13.5px; line-height: 1.5;
+    box-shadow: var(--shadow); border-top: 3px solid var(--c); color: var(--ink-2); min-height: 40px; width: 100%;
+    max-height: 300px; overflow: auto; position: relative; transition: opacity .2s;
+  }
+  .cand .bubble::after { content: ""; position: absolute; left: 50%; bottom: -7px; width: 14px; height: 14px; background: var(--surface); transform: translateX(-50%) rotate(45deg); border-radius: 2px; }
+  .cand.dim .bubble { opacity: .55; }
+  .cand.empty .bubble { visibility: hidden; }
+  .dot {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--c);
+    box-shadow: inset 0 -4px 0 rgba(0,0,0,.12);
+    position: relative;
+  }
+  .cand.speaking .dot::before {
+    content: ""; position: absolute; inset: -7px; border-radius: 50%; border: 2px solid var(--c); opacity: .5;
+    animation: pulse 1.6s ease-out infinite;
+  }
+  .cand.speaking .bubble { color: var(--ink); }
+  @keyframes pulse { from { transform: scale(.9); opacity: .7; } to { transform: scale(1.25); opacity: 0; } }
+  .plinth { grid-column: 1 / -1; height: 1px; background: var(--rule-strong); margin-top: -8px; }
+
+  /* debate */
+  .debate-head { text-align: center; padding: 22px 32px 8px; }
+  .thread { flex: 1; padding: 12px 48px 8px; display: flex; flex-direction: column; gap: 14px; max-width: 980px; width: 100%; margin: 0 auto; }
+  .msg { display: flex; gap: 14px; align-items: flex-start; max-width: 78%; }
+  .msg.right { align-self: flex-end; flex-direction: row-reverse; }
+  .msg .mdot { width: 28px; height: 28px; border-radius: 50%; background: var(--c); flex: none; margin-top: 4px; box-shadow: inset 0 -3px 0 rgba(0,0,0,.12); }
+  .msg .card {
+    background: var(--surface); border-radius: var(--radius); padding: 14px 18px; font-size: 15px; line-height: 1.55;
+    box-shadow: var(--shadow); position: relative; border-left: 3px solid var(--c);
+  }
+  .msg.right .card { border-left: 0; border-right: 3px solid var(--c); }
+  .msg .tag { font: 500 10px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); display: block; margin-bottom: 4px; }
+  .msg.user { align-self: center; max-width: 60%; }
+  .msg.user .card { background: var(--ink); color: var(--paper); border: 0; text-align: center; border-radius: 999px; padding: 10px 22px; font-size: 14px; }
+  .typing { display: inline-flex; gap: 5px; padding: 6px 0; }
+  .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); animation: blink 1.2s infinite; }
+  .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+  @keyframes blink { 0%, 60%, 100% { opacity: .25; } 30% { opacity: 1; } }
+
+  .choices { align-self: center; width: 100%; max-width: 640px; margin-top: 10px; padding-top: 18px; border-top: 1px dashed var(--rule-strong); }
+  .choices p { text-align: center; font: 600 20px var(--serif); margin: 0 0 14px; }
+  .choice {
+    width: 100%; display: flex; align-items: center; gap: 14px; text-align: left; margin-bottom: 8px;
+    background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; padding: 14px 18px;
+    font: 500 15px var(--sans); color: var(--ink); cursor: pointer; transition: border-color .12s, transform .12s;
+  }
+  .choice:hover { border-color: var(--ink); transform: translateX(2px); }
+  .choice .go { margin-left: auto; color: var(--ink-3); }
+
+  /* modal */
+  .scrim { position: absolute; inset: 0; background: rgba(27,26,23,.38); backdrop-filter: blur(3px); display: grid; place-items: center; padding: 16px; }
+  .modal { background: var(--surface); border-radius: 18px; max-width: 520px; width: 100%; padding: 28px 32px 26px; box-shadow: 0 40px 80px -20px rgba(0,0,0,.4); }
+  .modal .eyebrow { display: block; margin-bottom: 8px; }
+  .modal h2 { font: 600 27px/1.2 var(--serif); margin: 0 0 14px; }
+  .modal p { color: var(--ink-2); margin: 0 0 12px; font-size: 15.5px; }
+  .modal .actions { display: flex; justify-content: flex-end; margin-top: 20px; }
+  .modal ol { padding-left: 0; list-style: none; counter-reset: s; margin: 4px 0 0; }
+  .modal ol li { counter-increment: s; display: flex; gap: 12px; color: var(--ink-2); font-size: 15px; margin-bottom: 10px; }
+  .modal ol li::before { content: counter(s); font: 500 11px var(--mono); flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--paper); display: grid; place-items: center; color: var(--ink); margin-top: 1px; }
+
+  /* summary */
+  .summary { max-width: 680px; margin: 0 auto; padding: 48px 24px; }
+  .summary p { color: var(--ink-2); }
+  .summary ul { padding: 0; list-style: none; border-top: 1px solid var(--rule); }
+  .summary li { padding: 12px 0; border-bottom: 1px solid var(--rule); color: var(--ink-2); display: flex; gap: 14px; }
+  .summary li::before { content: "—"; color: var(--ink-3); }
+
+  .c-red { --c: var(--red); } .c-yellow { --c: var(--yellow); } .c-green { --c: var(--green); }
+  .c-turquoise { --c: var(--turquoise); } .c-blue { --c: var(--blue); }
+
+  @media (max-width: 760px) {
+    .topic { grid-template-columns: 1fr; padding: 24px; gap: 24px; }
+    .topic-head { padding: 24px 24px 20px; }
+    .title { font-size: 32px; }
+    .stage { grid-template-columns: 1fr; padding: 20px; }
+    .thread { padding: 12px 16px; }
+    .msg { max-width: 100%; }
+    .specs { grid-template-columns: 1fr; }
+    .topbar { padding: 14px 16px; }
+    .progress .track { width: 100px; }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <header>
+    <div class="eyebrow" style="margin-bottom:10px">Branch · restyle · Mockup v2</div>
+    <h1>Debate app — visual refresh</h1>
+    <p>Warm paper, ink-black type and actions, a serif display face. The five speaker colours stay in the same hue families (so the JSON <code>color</code> values and any colour–stance mapping are untouched) but are calmer. All copy, order of screens and controls are unchanged — only styling.</p>
+  </header>
+
+  <div class="specs">
+    <div class="spec">
+      <h3>Palette</h3>
+      <div class="swatches">
+        <div class="sw"><i style="background:var(--paper)"></i>paper</div>
+        <div class="sw"><i style="background:var(--ink)"></i>ink</div>
+        <div class="sw"><i style="background:var(--ink-2)"></i>ink-2</div>
+        <div class="sw"><i style="background:var(--rule)"></i>rule</div>
+      </div>
+      <div class="swatches" style="margin-top:10px">
+        <div class="sw"><i style="background:var(--red)"></i>red</div>
+        <div class="sw"><i style="background:var(--yellow)"></i>yellow</div>
+        <div class="sw"><i style="background:var(--green)"></i>green</div>
+        <div class="sw"><i style="background:var(--turquoise)"></i>turquoise</div>
+        <div class="sw"><i style="background:var(--blue)"></i>blue</div>
+      </div>
+    </div>
+    <div class="spec type-sample">
+      <h3>Type</h3>
+      <div class="d">Steigende Krankenkassenprämien</div>
+      <div class="b">Inter Tight for body and controls — neutral, compact, very legible at 15–16px.</div>
+      <div class="m">JetBrains Mono · labels &amp; meta</div>
+    </div>
+  </div>
+
+  <!-- 1 TOPIC INTRO -->
+  <div class="frame-label">01 · Einführung ins Thema</div>
+  <div class="frame">
+    <div class="topic-head">
+      <div class="eyebrow">Einführung ins Thema</div>
+      <h1 class="title" style="margin-top:10px">Steigende Krankenkassenprämien</h1>
+      <p class="lede">Warum die Kosten steigen und was das für uns bedeutet</p>
+    </div>
+    <div class="topic">
+      <figure>
+        <img src="../public/Infografik_Praemien.png" alt="Infografik Prämien" />
+        <figcaption>Krankenkassenprämien vs. Löhne und Teuerung</figcaption>
+      </figure>
+      <div class="text">
+        <p>Die Krankenkassenprämien steigen nächstes Jahr im Schnitt um 4,5 Prozent. Seit Einführung der obligatorischen Krankenversicherung sind sie deutlich stärker gestiegen als Löhne oder Teuerung.</p>
+        <p>Die Frage ist, ob wir zu viel für unser Gesundheitssystem bezahlen — und wo gespart werden könnte, ohne dass die Versorgung leidet.</p>
+        <div style="margin-top:28px"><button class="btn">Fortfahren <span class="arrow">→</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 INSTRUCTION MODAL -->
+  <div class="frame-label">02 · Anleitung (alle Pop-ups)</div>
+  <div class="frame">
+    <div class="topbar"><span class="eyebrow">Präsentation der Kandidaten</span></div>
+    <div class="stage">
+      <div class="cand c-red empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-blue empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-green empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-yellow empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-turquoise empty"><div class="bubble"></div><div class="dot"></div></div>
+    </div>
+    <div class="scrim">
+      <div class="modal">
+        <span class="eyebrow">Anleitung</span>
+        <h2>Bereit, die Debatte zu starten?</h2>
+        <p>Nun beginnt die Debatte. Zwischendurch werden Sie gefragt, in welche Richtung die Debatte weitergehen soll. Wählen Sie dann die Option, die Sie am meisten interessiert.</p>
+        <p>Nach der Debatte werden Sie die Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
+        <p>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+        <div class="actions"><button class="btn">Debatte starten <span class="arrow">→</span></button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 CANDIDATES -->
+  <div class="frame-label">03 · Präsentation der Kandidaten</div>
+  <div class="frame">
+    <div class="topbar"><span class="eyebrow">Präsentation der Kandidaten</span></div>
+    <div class="stage">
+      <div class="cand c-red dim"><div class="bubble">Ich sehe die Entwicklung noch dramatischer, als sie hier dargestellt wird. Für mich ist die Rechnung einfach: Die Prämien sind die Folge der Kosten, und die Kosten sind die Folge der Behandlungen.</div><div class="dot"></div></div>
+      <div class="cand c-blue speaking"><div class="bubble">Ich jammere nicht über die Kosten. Wir haben eines der besten Gesundheitssysteme der Welt, und ich profitiere davon wie alle anderen. Was mich beschäftigt, ist die Verteilung.</div><div class="dot"></div></div>
+      <div class="cand c-green empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-yellow empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="cand c-turquoise empty"><div class="bubble"></div><div class="dot"></div></div>
+      <div class="plinth"></div>
+    </div>
+    <div class="footer"><button class="btn">Fortfahren <span class="arrow">→</span></button></div>
+  </div>
+
+  <!-- 4 DEBATE (steer) -->
+  <div class="frame-label">04 · Debatte (Steer-Bedingung, Auswahl offen)</div>
+  <div class="frame">
+    <div class="topbar">
+      <div class="progress"><div class="track"><div class="fill" style="width:34%"></div></div><span>34%</span></div>
+    </div>
+    <div class="debate-head"><h1 class="title-sm">Steigende Krankenkassenprämien</h1></div>
+    <div class="thread">
+      <div class="msg c-red"><div class="mdot"></div><div class="card"><span class="tag">Intro</span>Ich sehe die Entwicklung noch dramatischer, als sie hier dargestellt wird. Für mich ist die Rechnung einfach: Die Prämien sind die Folge der Kosten.</div></div>
+      <div class="msg c-blue right"><div class="mdot"></div><div class="card"><span class="tag">Intro</span>Ich jammere nicht über die Kosten. Was mich beschäftigt, ist die Verteilung. Im Schnitt sind es 4,5 Prozent mehr, aber ich kenne Familien, die nächstes Jahr 15 Prozent mehr bezahlen.</div></div>
+      <div class="msg user"><div class="card">Über die Verteilung der Prämienlast sprechen</div></div>
+      <div class="msg c-blue right"><div class="mdot"></div><div class="card">Gut, dass du damit anfängst. Ich schaue nämlich weniger auf die Durchschnittsprämie als darauf, bei wem die Rechnung landet.</div></div>
+      <div class="msg c-turquoise"><div class="mdot"></div><div class="card"><span class="typing"><i></i><i></i><i></i></span></div></div>
+      <div class="choices">
+        <p>Worüber soll als Nächstes diskutiert werden?</p>
+        <button class="choice">Fragen, warum so viel in Spitäler und Geräte investiert wird<span class="go">→</span></button>
+        <button class="choice">Fragen, ob zu viele Untersuchungen gemacht werden<span class="go">→</span></button>
+        <button class="choice">Über Notfall und Hausarztversorgung sprechen<span class="go">→</span></button>
+      </div>
+    </div>
+    <div class="footer">
+      <button class="btn" disabled>Fortfahren <span class="arrow">→</span></button>
+    </div>
+  </div>
+
+  <!-- 5 SUMMARY -->
+  <div class="frame-label">05 · Zusammenfassung</div>
+  <div class="frame" style="min-height:520px">
+    <div class="summary">
+      <h1 class="title" style="margin:0 0 20px">Zusammenfassung</h1>
+      <p>In der Debatte wurden unterschiedliche Sichtweisen auf die steigenden Prämien vertreten.</p>
+      <ul>
+        <li>Die Kosten folgen aus der Menge der Behandlungen.</li>
+        <li>Problematisch ist vor allem die Verteilung der Prämienlast.</li>
+        <li>Spitäler investieren in einen Ausstattungswettbewerb.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</body>
+</html>

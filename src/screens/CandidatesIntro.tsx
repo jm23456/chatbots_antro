@@ -112,13 +112,13 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
 
         {showStartOverlay && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+          <div className="start-debate-modal">
+            <div className="modal-head">
+              <p className="modal-title">Anleitung</p>
             </div>
-            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
-              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Als Nächstes stellen sich die fünf Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden nach Ihrer Präferenz zu ordnen.</p>
+            <div className="modal-body">
+              {/* <p className="modal-text"></p> */}
+              <p className="modal-text">Als Nächstes stellen sich die fünf Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden nach Ihrer Präferenz zu ordnen.</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Fortfahren</button>
           </div>
         </div>
@@ -128,13 +128,13 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
 
       {showEndOverlay &&(
              <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+          <div className="start-debate-modal">
+            <div className="modal-head">
+              <p className="modal-title">Anleitung</p>
             </div>
-            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}>Bitte fahren Sie nun in Qualtrics fort.</p>
-              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>debateFirstStep</p> */}
+            <div className="modal-body">
+              <p className="modal-text">Bitte fahren Sie nun in Qualtrics fort.</p>
+              {/* <p className="modal-text">debateFirstStep</p> */}
           </div>
         </div>
         </div>

@@ -119,30 +119,24 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
 
       {showStartOverlay && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden", height: "auto", maxWidth: "600px", borderRadius: "1.5rem" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "24px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>Anleitung</p>
+          <div className="start-debate-modal">
+            <div className="modal-head">
+              <p className="modal-title">Anleitung</p>
             </div>
-            <div style={{ padding: "1rem 1rem 1.5rem 1rem" }}>
-              {/* <p className="modal-text" style={{ fontSize: "16px", marginBottom: "14px", color: "#050505" }}></p> */}
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "16px", color: "#050505" }}>Auf dieser Seite lesen Sie eine kurze Einführung in das Thema der Debatte. Bitte lesen Sie den Text aufmerksam durch und klicken Sie danach auf «Fortfahren».</p>
+            <div className="modal-body">
+              {/* <p className="modal-text"></p> */}
+              <p className="modal-text">Auf dieser Seite lesen Sie eine kurze Einführung in das Thema der Debatte. Bitte lesen Sie den Text aufmerksam durch und klicken Sie danach auf «Fortfahren».</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Starten</button>
           </div>
         </div>
         </div>
       )}
 
-      <div className="screen topic-intro-card" style={{
-        boxShadow: "0 10px 40px rgba(80, 60, 160, 0.2), 0 8px 24px rgba(80, 60, 160, 0.12), 0 0 80px rgba(80, 60, 160, 0.08)",
-        padding: "24px 40px",
-        margin: "0 auto",
-        maxWidth: "1000px",
-        borderRadius: "24px"
-      }}>
-        <header className="screen-header" style={{marginBottom: "30px"}}>
-          <h4 style={{ fontSize: "28px", textAlign: "center", marginBottom: "5px" }}>{t("topicIntro")}</h4>
-          <p className="subtitle" style={{ marginTop: "10px"}}>{debateTitle}</p>
-          <h2 style={{ textAlign: "center", marginTop: "30px" }}>{debateSubtitle}</h2>
+      <div className="screen topic-intro-card">
+        <header className="screen-header topic-intro-header">
+          <h4 className="eyebrow">{t("topicIntro")}</h4>
+          <h1 className="subtitle">{debateTitle}</h1>
+          <h2 className="lede">{debateSubtitle}</h2>
         </header>
         <section className="screen-body scrollable">
           <div className="topic-intro-content">
@@ -152,13 +146,13 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
             <div className="topic-intro-text">
               {introText ? (
                 introText.split(/\n{1,}/).map((para, i) => (
-                  <p key={i} style={i === introText.split(/\n{1,}/).length - 1 ? { marginBottom: "35px" } : {}}>{para}</p>
+                  <p key={i}>{para}</p>
                 ))
               ) : (
                 <>
                   <p>{t("topicIntroText1")}</p>
                   <p>{t("topicIntroText2")}</p>
-                  <p style={{ marginBottom: "35px" }}>{t("topicIntroText3")}</p>
+                  <p>{t("topicIntroText3")}</p>
                 </>
               )}
               <button className="con-primary-btn" onClick={onNext}>

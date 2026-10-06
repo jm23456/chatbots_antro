@@ -301,11 +301,11 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {showDebateFinished && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("debateFinishedTitle")}</p>
+          <div className="start-debate-modal">
+            <div className="modal-head">
+              <p className="modal-title">{t("debateFinishedTitle")}</p>
             </div>
-            <div style={{ padding: "0rem 0.5rem 1.5rem 0.5rem" }}>
+            <div className="modal-body">
               {/* <p style={{ fontSize: "16px" }}>{t("debateFinishedText")}</p> */}
               <button className="start-debate-btn" onClick={() => { setShowDebateFinished(false); onExit(); }}>Fortfahren</button>
             </div>
@@ -313,22 +313,22 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
         </div>
       )}
 
-      <div className="top-exit-row" style={{ marginBottom: "0px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginRight: "auto" }}>
-          <div style={{ width: "180px", height: "8px", backgroundColor: "#e5e7eb", borderRadius: "999px", overflow: "hidden" }}>
-            <div style={{ width: `${progress}%`, height: "100%", background: "#7c3aed", transition: "width 150ms linear" }} />
+      <div className="top-exit-row">
+        <div className="progress">
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
-          <div>{Math.round(progress)}%</div>
+          <div className="progress-label">{Math.round(progress)}%</div>
         </div>
         {debateConfig.showExitButton && (
           <div className="top-buttons-row">
-            <button className="exit-btn" style={{ marginLeft: "605px" }} onClick={handleExitClick}>{t("exit")}</button>
+            <button className="exit-btn" onClick={handleExitClick}>{t("exit")}</button>
           </div>
         )}
       </div>
 
-      <header className="screen-header" style={{ marginBottom: "10px", marginTop: "0px" }}>
-        <p className="subtitle" style={{ marginTop: "0px" }}>{displayTopicTitle}</p>
+      <header className="screen-header debate-header">
+        <h1 className="subtitle">{displayTopicTitle}</h1>
       </header>
 
       {noDebateFound ? (
@@ -349,9 +349,6 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
                   msg.text
                 )}
               </span>
-              {msg.type === "bot" && msg.isComplete && (
-                <button className="report-btn" title={t("flag")} onClick={() => alert(`Nachricht gemeldet`)}>⚠️</button>
-              )}
             </div>
           ))}
           <div ref={messagesEndRef} />
@@ -360,21 +357,21 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
 
       {!hasStarted && debateData && (
         <div className="start-debate-modal-overlay">
-          <div className="start-debate-modal" style={{ padding: 0, overflow: "hidden" }}>
-            <div style={{ background: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)", padding: "1.25rem 1.5rem", borderRadius: "1.5rem 1.5rem 0 0", marginBottom: "0.5rem" }}>
-              <p style={{ fontSize: "20px", fontWeight: "600", margin: 0, color: "#5b21b6" }}>{t("ready")}</p>
+          <div className="start-debate-modal">
+            <div className="modal-head">
+              <p className="modal-title">{t("ready")}</p>
             </div>
-            <div style={{ padding: "0rem 0.5rem 1rem 0.5rem" }}>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>🗣 Nun beginnt die Debatte.</p>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Nach der Debatte werden Sie die Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
-              <p className="modal-text" style={{ fontSize: "16px", marginBottom: "10px", color: "#050505" }}>Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+            <div className="modal-body">
+              <p className="modal-text">Nun beginnt die Debatte.</p>
+              <p className="modal-text">Nach der Debatte werden Sie die Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
+              <p className="modal-text">Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
               <button className="start-debate-btn" onClick={onStart}>Debatte starten</button>
             </div>
           </div>
         </div>
       )}
 
-      <div className="footer-end-row" style={{ marginTop: "16px", marginBottom: "16px", display: "flex", justifyContent: "center" }}>
+      <div className="footer-end-row">
         {hasStarted && debateData && (
           <div className="action-row">
             <button className="con-primary-btn" onClick={handleContinue} disabled={isTyping}>{isTyping || visibleBubblesRef.current < argumentBubbles.length ? "Fortfahren" : "Debatte beenden"}</button>
