@@ -7,9 +7,12 @@ Graph shape (all six files): intro -> round 1 (five opening statements) ->
 three topic rounds -> summary.
 
   watching        rounds 2-4 run WATCH_ORDER, no choices.
-  steering        each round is preceded by a choice of exactly three topics.
-  participating   same, but the option is spoken by the participant and the
-                  lead bot answers it.
+  steering        each round is preceded by a choice of exactly three topics
+                  (a moderating role: the participant picks what comes next).
+  participating   rounds 2-4 run PARTY_ORDER (= WATCH_ORDER). Before each topic
+                  the participant takes a stance by picking their own argument
+                  (pro / neutral / contra); it is shown as their message and
+                  the topic's lead bot responds to it in place of the lead-in.
 
 The option pool never shrinks: unpicked options are carried forward with a
 reworded label and one new topic joins each round, so every choice moment
@@ -20,7 +23,8 @@ import json, os, sys, itertools, collections
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from debate_content import (OPENINGS, TOPICS, POOL_R2, NEW_AT, WATCH_ORDER,
-                            POOL_ORDER, LEAD_SPEAKER, LEAD, LABELS, ACKS)
+                            POOL_ORDER, LEAD_SPEAKER, LEAD, LABELS, ACKS,
+                            PARTY_ORDER, STANCE_ORDER, STANCES)
 
 DIR = "src/debate_text"
 BASE = json.load(open(f"{DIR}/debate1_firstperson_watch.json", encoding="utf-8"))
@@ -59,20 +63,40 @@ def topic_node(nodekey, topic, var, rnd, role, v, transition):
             "transition": transition}
 
 
-def choice(rnd, role, offered, keyfor):
-    """`offered` is [(topic, label variant)], always three of them."""
-    opts = []
-    for n, (topic, var) in enumerate(offered, start=1):
-        o = {"option_id": f"r{rnd}_o{n}", "topic_id": topic,
-             "label": LABELS[(topic, var)]["party" if role == "party" else "steer"],
-             "next": keyfor(topic, var)}
-        if role == "party":
-            o["speak_as_user"] = True
-        opts.append(o)
-    return {"type": "choice",
-            "prompt": "Was möchten Sie in die Debatte einbringen?" if role == "party"
-                      else "Worüber soll als Nächstes diskutiert werden?",
+def choice(rnd, offered, keyfor):
+    """Steering: `offered` is [(topic, label variant)], always three of them."""
+    opts = [{"option_id": f"r{rnd}_o{n}", "topic_id": topic,
+             "label": LABELS[(topic, var)]["steer"], "next": keyfor(topic, var)}
+            for n, (topic, var) in enumerate(offered, start=1)]
+    return {"type": "choice", "prompt": "Worüber soll als Nächstes diskutiert werden?",
             "timeout_seconds": None, "options": opts}
+
+
+def stance_key(rnd, topic, stance):
+    return f"r{rnd}_{topic}_{stance}"
+
+
+def stance_choice(rnd, topic):
+    """Participating: three arguments on `topic`, spoken as the participant."""
+    st = STANCES[topic]
+    return {"type": "choice",
+            "prompt": f"{st['question']} Wählen Sie Ihr Argument:",
+            "timeout_seconds": None,
+            "options": [{"option_id": f"r{rnd}_{stance}", "topic_id": topic, "stance": stance,
+                         "label": st["options"][stance]["label"],
+                         "next": stance_key(rnd, topic, stance), "speak_as_user": True}
+                        for stance in STANCE_ORDER]}
+
+
+def stance_node(rnd, topic, stance, v, transition):
+    """The lead bot's response to the chosen argument, then the topic as usual."""
+    resp = STANCES[topic]["options"][stance]
+    specs = [dict(arg_id=f"resp_{topic}_{stance}", speaker=LEAD_SPEAKER[topic],
+                  fp=resp["fp"], pv=resp["pv"])] + TOPICS[topic]["utts"]
+    k = stance_key(rnd, topic, stance)
+    return k, {"round": rnd, "kind": "segment", "topic": TOPICS[topic]["topic"], "topic_id": topic,
+               "stance": stance, "utterances": [utt(k, i + 1, s, v) for i, s in enumerate(specs)],
+               "transition": transition}
 
 
 def offered_in(rnd, picked):
@@ -106,6 +130,15 @@ def build(ling, role):
         for i, (k, t) in enumerate(zip(keys, WATCH_ORDER)):
             nxt = keys[i + 1] if i + 1 < len(keys) else "summary"
             nodes[k] = topic_node(k, t, 1, i + 2, role, v, {"type": "linear", "next": nxt})
+    elif role == "party":
+        for i, t in enumerate(PARTY_ORDER):
+            rnd = i + 2
+            nxt = ({"type": "linear", "next": "summary"} if i + 1 == len(PARTY_ORDER)
+                   else stance_choice(rnd + 1, PARTY_ORDER[i + 1]))
+            for stance in STANCE_ORDER:
+                k, n = stance_node(rnd, t, stance, v, nxt)
+                nodes[k] = n
+        trunk["transition"] = stance_choice(2, PARTY_ORDER[0])
     else:
         # Round 4 nodes are terminal, so one per (topic, variant) is enough.
         r4 = lambda t, var: f"r4_{t}_v{var}"
@@ -120,13 +153,13 @@ def build(ling, role):
             for p2, _ in offered_in(3, {p1}):
                 k = f"r3_{p1}_{p2}"
                 nodes[k] = topic_node(k, p2, variant(p2, 3), 3, role, v,
-                                      choice(3, role, offered_in(4, {p1, p2}), r4))
+                                      choice(3, offered_in(4, {p1, p2}), r4))
         for p1 in POOL_R2:
             k = f"r2_{p1}"
             nodes[k] = topic_node(k, p1, variant(p1, 2), 2, role, v,
-                                  choice(2, role, offered_in(3, {p1}),
+                                  choice(2, offered_in(3, {p1}),
                                          lambda t, var, a=p1: f"r3_{a}_{t}"))
-        trunk["transition"] = choice(1, role, offered_in(2, set()),
+        trunk["transition"] = choice(1, offered_in(2, set()),
                                      lambda t, var: f"r2_{t}")
 
     nodes["r1_trunk"] = trunk

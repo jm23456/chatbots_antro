@@ -137,33 +137,21 @@ LEAD = {
             pv="Damit stellt sich die Frage, die im klinischen Alltag am meisten beschäftigt: Wie viel Medizin ist genug?"),
 }
 
-# One label per (topic, appearance). Reworded each time so a carried-forward
-# option does not read as the same option again.
+# Steering labels, one per (topic, appearance). Reworded each time so a
+# carried-forward option does not read as the same option again.
 LABELS = {
- ("t1", 1): dict(steer="Über die Verteilung der Prämienlast sprechen",
-                 party="Mich beschäftigt vor allem, wer wie viel bezahlt."),
- ("t1", 2): dict(steer="Doch zuerst fragen, wer die Prämien am stärksten spürt",
-                 party="Ich würde jetzt gerne wissen, wer die Prämien am stärksten spürt."),
- ("t1", 3): dict(steer="Zum Schluss über die Belastung der Haushalte sprechen",
-                 party="Zum Schluss interessiert mich, wie stark die Haushalte belastet werden."),
- ("t2", 1): dict(steer="Den Kostentreibern im System nachgehen",
-                 party="Ich möchte wissen, wo die Kosten überhaupt entstehen."),
- ("t2", 2): dict(steer="Fragen, warum so viel in Spitäler und Geräte investiert wird",
-                 party="Ich frage mich, warum so viel in Spitäler und Geräte investiert wird."),
- ("t2", 3): dict(steer="Zum Schluss über die Kosten in den Spitälern sprechen",
-                 party="Zum Schluss möchte ich über die Kosten in den Spitälern sprechen."),
- ("t3", 1): dict(steer="Über unnötige Behandlungen sprechen",
-                 party="Ich frage mich, ob nicht einfach zu viel Medizin gemacht wird."),
- ("t3", 2): dict(steer="Fragen, ob zu viele Untersuchungen gemacht werden",
-                 party="Ich würde gerne wissen, ob zu viele Untersuchungen gemacht werden."),
- ("t3", 3): dict(steer="Zum Schluss über die Grenzen der Medizin sprechen",
-                 party="Zum Schluss interessieren mich die Grenzen der Medizin."),
- ("t4", 1): dict(steer="Über Notfall und Hausarztversorgung sprechen",
-                 party="Mich interessiert, warum so viele direkt in den Notfall gehen."),
- ("t4", 2): dict(steer="Fragen, ob die Grundversorgung noch stimmt",
-                 party="Ich frage mich, ob die Grundversorgung überhaupt noch stimmt."),
- ("t5", 1): dict(steer="Über Tarife und die Blockade in der Politik sprechen",
-                 party="Zum Schluss möchte ich wissen, warum die Politik das nicht löst."),
+ ("t1", 1): dict(steer="Über die Verteilung der Prämienlast sprechen"),
+ ("t1", 2): dict(steer="Doch zuerst fragen, wer die Prämien am stärksten spürt"),
+ ("t1", 3): dict(steer="Zum Schluss über die Belastung der Haushalte sprechen"),
+ ("t2", 1): dict(steer="Den Kostentreibern im System nachgehen"),
+ ("t2", 2): dict(steer="Fragen, warum so viel in Spitäler und Geräte investiert wird"),
+ ("t2", 3): dict(steer="Zum Schluss über die Kosten in den Spitälern sprechen"),
+ ("t3", 1): dict(steer="Über unnötige Behandlungen sprechen"),
+ ("t3", 2): dict(steer="Fragen, ob zu viele Untersuchungen gemacht werden"),
+ ("t3", 3): dict(steer="Zum Schluss über die Grenzen der Medizin sprechen"),
+ ("t4", 1): dict(steer="Über Notfall und Hausarztversorgung sprechen"),
+ ("t4", 2): dict(steer="Fragen, ob die Grundversorgung noch stimmt"),
+ ("t5", 1): dict(steer="Über Tarife und die Blockade in der Politik sprechen"),
 }
 
 # The lead bot picks the chosen framing up, so the choice visibly lands.
@@ -192,4 +180,71 @@ ACKS = {
                  pv="Ob die Grundversorgung noch stimmt, ist die Kernfrage. In Bergregionen zeigt sich, wie dünn das Netz ist."),
  ("t5", 1): dict(fp="Das ist die richtige Frage. Ich glaube, an Vorschlägen fehlt es nicht, sondern an Mehrheiten.",
                  pv="Das ist die richtige Frage. An Vorschlägen fehlt es nicht, sondern an Mehrheiten."),
+}
+
+# ---------------------------------------------------------------------------
+# Participating: the participant takes a STANCE by picking their own argument
+# (pro / neutral / contra) before each topic. Topics run in WATCH_ORDER, so the
+# debate content is the same as in watching; only the opening exchange differs.
+# The chosen argument is shown as the participant's message, and the topic's
+# lead speaker responds to it in place of the lead-in line.
+#
+# Rules for the responses:
+#   - fp and pv carry identical propositional content (as everywhere).
+#   - NO strong experiential claims (body, biography, own money, own workplace),
+#     so the dose stays at 10 per path, identical to watching and steering.
+#   - No direct address (no du/Sie), so the bots' form of address stays neutral.
+# ---------------------------------------------------------------------------
+PARTY_ORDER = WATCH_ORDER
+STANCE_ORDER = ["pro", "neutral", "contra"]
+
+STANCES = {
+ "t1": dict(
+  question="Sollen Familien und junge Erwachsene gezielt bei den Prämien entlastet werden?",
+  options={
+   "pro": dict(
+    label="Ja. Die Last landet beim Mittelstand. Familien mit Kindern und junge Erwachsene sollten gezielt entlastet werden, zum Beispiel über höhere Prämienverbilligungen.",
+    fp="Genau darum geht es mir. Ich halte eine gezielte Entlastung der Mitte für den richtigen Weg, weil dort die Last heute am grössten ist.",
+    pv="Genau darum geht es. Eine gezielte Entlastung der Mitte ist der richtige Weg, weil dort die Last heute am grössten ist."),
+   "neutral": dict(
+    label="Entlastung hilft kurzfristig. Solange die Kosten weiter steigen, löst sie das Problem aber nicht.",
+    fp="Da stimme ich zu: Entlastung allein löst das Problem nicht. Ich finde aber, solange die Kosten nicht sinken, darf die Mitte nicht allein bezahlen.",
+    pv="Entlastung allein löst das Problem tatsächlich nicht. Solange die Kosten nicht sinken, darf die Mitte aber nicht allein bezahlen."),
+   "contra": dict(
+    label="Nein. Prämienverbilligungen verschieben die Rechnung nur. Am Ende bezahlen wir sie trotzdem, einfach über die Steuern.",
+    fp="Ich halte dieses Argument für teilweise richtig: Verbilligungen senken die Kosten nicht. Ich finde sie trotzdem nötig, weil sonst ausgerechnet die Mitte die Rechnung trägt.",
+    pv="Dieses Argument ist teilweise richtig: Verbilligungen senken die Kosten nicht. Nötig sind sie trotzdem, weil sonst ausgerechnet die Mitte die Rechnung trägt."),
+  }),
+ "t2": dict(
+  question="Soll die Spitalplanung über die Kantonsgrenzen hinweg gesteuert werden?",
+  options={
+   "pro": dict(
+    label="Ja. Es gibt zu viele Spitäler und zu viele teure Geräte. Die Planung sollte überregional erfolgen, nicht in jedem Kanton für sich.",
+    fp="Das sehe ich genauso. Ich halte die kantonale Planung für das Kernproblem, weil jeder Kanton ein eigenes, voll ausgestattetes Spital will.",
+    pv="Das trifft den Kern. Die kantonale Planung ist das Hauptproblem, weil jeder Kanton ein eigenes, voll ausgestattetes Spital will."),
+   "neutral": dict(
+    label="Die Spitäler sollten besser zusammenarbeiten. Die Versorgung in den Regionen muss aber gesichert bleiben.",
+    fp="Ich halte diesen Mittelweg für realistisch. Ich glaube aber, die Zusammenarbeit muss verbindlich sein, sonst baut am Ende doch wieder jeder Kanton für sich.",
+    pv="Dieser Mittelweg ist realistisch. Die Zusammenarbeit muss aber verbindlich sein, sonst baut am Ende doch wieder jeder Kanton für sich."),
+   "contra": dict(
+    label="Nein. Ein Spital in der Nähe ist wichtig, gerade auf dem Land. Wer Spitäler zusammenlegt, spart am falschen Ort.",
+    fp="Die Sorge um die Versorgung auf dem Land verstehe ich. Ich glaube aber, dass Nähe allein keine Qualität garantiert und dass diese Nähe heute sehr teuer ist.",
+    pv="Die Sorge um die Versorgung auf dem Land ist verständlich. Nähe allein garantiert aber keine Qualität, und diese Nähe ist heute sehr teuer."),
+  }),
+ "t3": dict(
+  question="Sollen Patientinnen und Patienten mehr Eigenverantwortung für ihre Gesundheitskosten tragen?",
+  options={
+   "pro": dict(
+    label="Ja. Wer selbst mehr bezahlt, überlegt sich besser, ob eine Untersuchung wirklich nötig ist.",
+    fp="Ich finde, da ist etwas dran: Kostenbewusstsein hilft. Ich glaube aber nicht, dass Patienten allein beurteilen können, welche Untersuchung nötig ist.",
+    pv="Daran ist etwas: Kostenbewusstsein hilft. Patienten allein können aber kaum beurteilen, welche Untersuchung nötig ist."),
+   "neutral": dict(
+    label="Eigenverantwortung ja, aber nicht nur bei den Patienten. Auch Ärztinnen und Ärzte müssen unnötige Behandlungen vermeiden.",
+    fp="Da stimme ich zu. Ich finde, die Verantwortung liegt auf beiden Seiten, und das gilt ausdrücklich auch für die Ärzteschaft.",
+    pv="Dem ist zuzustimmen. Die Verantwortung liegt auf beiden Seiten, und das gilt ausdrücklich auch für die Ärzteschaft."),
+   "contra": dict(
+    label="Nein. Krankheit sucht man sich nicht aus. Wer krank ist, darf nicht zusätzlich bestraft werden, sonst verzichten Leute auf nötige Behandlungen.",
+    fp="Diese Sorge teile ich. Niemand soll aus Kostengründen auf eine nötige Behandlung verzichten. Ich halte es trotzdem für richtig, über unnötige Behandlungen offen zu reden.",
+    pv="Diese Sorge ist berechtigt. Niemand soll aus Kostengründen auf eine nötige Behandlung verzichten. Über unnötige Behandlungen offen zu reden, bleibt trotzdem richtig."),
+  }),
 }
