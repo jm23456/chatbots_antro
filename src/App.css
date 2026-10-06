@@ -54,6 +54,11 @@ body {
   width: 100%;
   max-width: none;
   min-height: 100vh;
+  /* padding inside the 100vh, otherwise the page is always taller than the iframe;
+     screens fill the remaining height via flex instead of their own 100vh */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   padding: clamp(0.75rem, 2.5cqw, 2rem) var(--content-gutter);
   background: var(--bg-card);
   border-radius: 0;
@@ -1391,8 +1396,16 @@ body {
 /* ========== ACTIVE DEBATE SCREEN ========== */
 .active-debate-screen {
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1;
+  min-height: 0;
   display: flex;
+}
+
+/* the chat takes exactly the height left between header and footer, at any frame size */
+.active-debate-screen .debate-arguments {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
 }
 
 .active-debate-screen .top-exit-row {
@@ -1810,6 +1823,9 @@ body {
   width: min(100%, 34rem);
   max-width: 100%;
   height: auto;
+  /* keeps the topic page within a short iframe (e.g. a laptop at 85vh) */
+  max-height: 38vh;
+  object-fit: contain;
   border-radius: clamp(0.5rem, 1.5cqw, 0.75rem);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -2152,4 +2168,43 @@ body {
     max-width: 90rem;
     margin-inline: auto;
   }
+}
+
+/* CANDIDATES INTRO - current statement in one wide panel above the row of speakers */
+.intro-statement {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 44rem;
+  margin: clamp(0.75rem, 3cqw, 2rem) auto 0;
+  padding: clamp(0.75rem, 2.5cqw, 1.25rem) clamp(0.9rem, 3cqw, 1.5rem);
+  border-radius: 16px;
+  border-left: 6px solid;
+  font-size: clamp(0.95rem, 2cqw, 1.05rem);
+  line-height: 1.5;
+  white-space: pre-line;
+  background: #f9fafb;
+}
+.intro-statement.candidate-red       { background: #fef2f2; border-left-color: #f87171; }
+.intro-statement.candidate-blue      { background: #eff6ff; border-left-color: #60a5fa; }
+.intro-statement.candidate-green     { background: #f0fdf4; border-left-color: #34d399; }
+.intro-statement.candidate-yellow    { background: #fefce8; border-left-color: #fbbf24; }
+.intro-statement.candidate-turquoise { background: #ecfeff; border-left-color: #67e8f9; }
+
+.arguments-stage.intro-dots {
+  min-height: 0;
+  align-items: center;
+  padding: clamp(1.25rem, 4cqw, 2.5rem) 0;
+}
+/* CandidateCard wraps itself in another .arguments-stage; without bubbles it needs no stage height */
+.intro-dots .arguments-stage {
+  min-height: 0;
+  padding: 0;
+}
+/* dots in normal flow, so each card takes up space and narrow screens don't overlap them */
+.intro-dots .candidate-dot {
+  position: static;
+  transform: none;
+}
+.arguments-stage.intro-dots {
+  gap: clamp(0.75rem, 6cqw, 3rem);
 }

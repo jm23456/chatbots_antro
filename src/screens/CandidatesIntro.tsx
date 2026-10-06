@@ -141,26 +141,22 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
       )}
 
       <section className="screen-body">
-        <div className="arguments-stage intro-no-dim">
+        {/* The current statement gets one wide panel instead of a narrow bubble above
+            the speaker's dot, so it stays readable on phones and in the Qualtrics frame. */}
+        {activeArgument && (
+          <div className={`intro-statement candidate-${getRoleColor(activeArgument.speaker)}`}>
+            {activeArgument.text}
+          </div>
+        )}
+        <div className="arguments-stage intro-no-dim intro-dots">
         {allSpeakers.map((speaker) => {
-          const color = getRoleColor(speaker);
           const isActive = activeArgument?.speaker === speaker;
-
-          const speakerArguments = shownArguments
-            .map((index) => introArguments[index])
-            .filter((arg) => arg.speaker === speaker);
-          const lastArgumentText = speakerArguments.length > 0 ? speakerArguments[speakerArguments.length - 1].text : undefined;
-          const bubbleText = isActive ? activeArgument?.text : lastArgumentText;
-
           return (
             <CandidateCard
               key={speaker}
-              color={color}
-              hasMic={isActive}
+              color={getRoleColor(speaker)}
               isSpeaking={isActive}
-              showBubble={Boolean(bubbleText)}
-              bubbleText={bubbleText}
-              bubbleLabel={bubbleText ? "" : "Introduction"}
+              withBubble={false}
             />
           );
         })}

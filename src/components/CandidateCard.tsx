@@ -9,6 +9,8 @@ interface CandidateCardProps {
   bubbleLabel?: string;
   isSpeaking?: boolean;
   isPaused?: boolean;
+  // false: the speaker's text is shown elsewhere, so no floating bubble (not even on hover)
+  withBubble?: boolean;
 }
 
 const CandidateCard: React.FC<CandidateCardProps> = ({
@@ -20,10 +22,11 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
   bubbleLabel = "Introduction",
   isSpeaking = false,
   isPaused = false,
+  withBubble = true,
 }) => {
   const [hovered, setHovered] = useState(false);
   const bubbleRef = useRef<HTMLDivElement>(null);
-  const bubbleVisible = showBubble || hovered || bubbleText !== undefined || isTyping;
+  const bubbleVisible = withBubble && (showBubble || hovered || bubbleText !== undefined || isTyping);
 
   useEffect(() => {
     if (bubbleRef.current && bubbleText !== undefined) {
