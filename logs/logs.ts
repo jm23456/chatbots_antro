@@ -63,12 +63,13 @@ export const getLogs = () => {
 
 // Always sends the complete log, never just the newest event: the Qualtrics
 // listener can simply overwrite its embedded data field with each message.
+// Type and shape (an array) match the Qualtrics listener, which stringifies it.
 export const sendLogsToQualtrics = () => {
 
   window.parent.postMessage(
     {
-      type: "debate_logs",
-      logs: JSON.stringify(logs)
+      type: "DEBATE_LOG",
+      logs: [...logs]
     },
     "*"
   );

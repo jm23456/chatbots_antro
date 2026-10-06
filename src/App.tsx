@@ -28,7 +28,7 @@ const App: React.FC = () => {
   const urlTopic = params.get("topic") ?? "";
   const urlLing = params.get("ling") as Ling ?? null;
   const urlRole = params.get("role") as Role ?? null;
-  const participantID = params.get("participant_id") ?? null;
+  const participantID = params.get("participantId") ?? null;
   const initialStep = params.get("step") ?? STEPS.TOPIC_INTRO;
   const [step, setStep] = useState<string>(initialStep);
   const [selectedTopic, setSelectedTopic] = useState<string>(urlTopic ?? "");
