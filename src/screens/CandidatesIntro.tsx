@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import CandidateCard from "../components/CandidateCard";
+import SpeakerTag from "../components/SpeakerTag";
 import "../App.css";
 import type { DebateData } from "../types/types";
 import { useSearchParams } from "react-router-dom";
@@ -145,6 +146,7 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
             the speaker's dot, so it stays readable on phones and in the Qualtrics frame. */}
         {activeArgument && (
           <div className={`intro-statement candidate-${getRoleColor(activeArgument.speaker)}`}>
+            <SpeakerTag color={activeArgument.color} />
             {activeArgument.text}
           </div>
         )}
@@ -152,12 +154,14 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
         {allSpeakers.map((speaker) => {
           const isActive = activeArgument?.speaker === speaker;
           return (
-            <CandidateCard
-              key={speaker}
-              color={getRoleColor(speaker)}
-              isSpeaking={isActive}
-              withBubble={false}
-            />
+            <div key={speaker} className="intro-dot-with-name">
+              <CandidateCard
+                color={getRoleColor(speaker)}
+                isSpeaking={isActive}
+                withBubble={false}
+              />
+              <SpeakerTag color={getRoleColor(speaker)} />
+            </div>
           );
         })}
 

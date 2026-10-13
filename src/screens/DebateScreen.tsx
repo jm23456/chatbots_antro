@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import ExitWarningModal from "../components/ExitWarningModal";
+import SpeakerTag from "../components/SpeakerTag";
 import type { ChatMessage, DebateData } from "../types/types";
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
@@ -343,6 +344,7 @@ const DebateScreen: React.FC<DebateScreenProps> = ({
             <div key={msg.id} className={`argument-box ${msg.type === "bot" ? `argument-${msg.color}` : "argument-user"}${msg.isIntro ? " argument-intro" : ""}`}>
               {msg.isIntro && <span className="intro-label">Intro</span>}
               <span className={msg.type === "bot" ? "argument-label" : "argument-text"}>
+                {msg.type === "bot" && msg.color && <SpeakerTag color={msg.color} />}
                 {msg.type === "bot" && !msg.isComplete ? (
                   <span className="typing-dots"><span className="dot"></span><span className="dot"></span><span className="dot"></span></span>
                 ) : (
