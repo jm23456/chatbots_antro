@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import "../App.css";
 import { useLanguage } from '../hooks/useLanguage';
 import { useSearchParams } from 'react-router-dom';
+import SpeakerTag from '../components/SpeakerTag';
 
 interface SummaryProps {
   topicTitle: string;
@@ -18,23 +19,29 @@ type DebateUtterance = {
   conclusion?: string;
 };
 
+type SpeakerPosition = {
+  speaker: string;
+  text: string;
+};
+
 type DebateNode = {
   round?: number;
   kind: string;
   topic?: string;
   utterances: DebateUtterance[];
+  positions?: SpeakerPosition[];
   transition?: any;
 };
 
 type DebateData = {
   start_node: string;
   nodes: Record<string, DebateNode>;
+  roles?: Record<string, { display?: { color?: string } }>;
 };
 
 type DebateSummary = {
   text?: string;
-  points?: string[];
-  conclusion?: string;
+  positions: { color: string; text: string }[];
 };
 
 const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
@@ -61,25 +68,14 @@ const Summary: React.FC<SummaryProps> = ({ onStartAnother, participantID }) => {
         const summaryNode = debateData.nodes?.summary;
         if (!summaryNode) return null;
 
-        const textValue = (summaryNode as any).text;
-        const text = typeof textValue === 'string' && textValue.trim().length
-          ? textValue.trim()
-          : summaryNode.utterances?.map((u) => u.text).join('\n\n');
+        // one position summary per speaker, shown with the speaker's colour name and shape
+        const text = summaryNode.utterances?.map((u) => u.text).join('\n\n');
+        const positions = (summaryNode.positions ?? []).map((p) => ({
+          color: debateData.roles?.[p.speaker]?.display?.color ?? 'gray',
+          text: p.text,
+        }));
 
-        const points = summaryNode.utterances
-          ?.flatMap((u) => u.points ?? [])
-          .filter(Boolean);
-
-        const conclusion = summaryNode.utterances
-          ?.map((u) => (typeof u.conclusion === 'string' ? u.conclusion.trim() : undefined))
-          .filter(Boolean)
-          .join('\n\n');
-
-        return {
-          text: text || undefined,
-          points: points?.length ? points : undefined,
-          conclusion: conclusion || undefined,
-        };
+        return { text: text || undefined, positions };
       }, [debateData]);
 
 const handleNext = () => {
@@ -132,7 +128,7 @@ const handleNext = () => {
 
       </section>
       <header className="screen-header summary-header">
-        <h1 className="subtitle">Zusammenfassung</h1>
+        <h1 className="subtitle">Positionen der KI-Teilnehmenden</h1>
         {/* <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p> */}
       </header>
 
@@ -144,21 +140,14 @@ const handleNext = () => {
               <p key={idx}>{paragraph}</p>
             ))}
 
-            {debateSummary.points && debateSummary.points.length > 0 && (
-              <ul>
-                {debateSummary.points.map((point, idx) => (
-                  <li key={idx}>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {debateSummary.conclusion && (
-              <p className="summary-conclusion">
-                {debateSummary.conclusion}
-              </p>
-            )}
+            <ul className="summary-positions">
+              {debateSummary.positions.map((p) => (
+                <li key={p.color} className={`summary-position candidate-${p.color}`}>
+                  <SpeakerTag color={p.color} />
+                  <p>{p.text}</p>
+                </li>
+              ))}
+            </ul>
           </>
         ) : (
           <p>{t('noDebateFound')}</p>

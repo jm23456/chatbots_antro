@@ -1140,13 +1140,29 @@
           "uid": "sum_001",
           "arg_id": "summary",
           "speaker": "SYSTEM",
-          "text": "Die Debatte zeigt, dass die steigenden Krankenkassenprämien mehrere Ursachen haben:",
-          "points": [
-            "Mengenausweitung bei medizinischen Behandlungen",
-            "Fehlanreize und fehlende Qualitätsanreize im Gesundheitssystem",
-            "Ungleiche Verteilung der Gesundheitskosten"
-          ],
-          "conclusion": "Einfache Lösungen gibt es nicht. Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen."
+          "text": "So lassen sich die Positionen der KI-Teilnehmenden nach der Debatte zusammenfassen:"
+        }
+      ],
+      "positions": [
+        {
+          "speaker": "A",
+          "text": "Sieht die Ursache der steigenden Prämien in der wachsenden Menge an Behandlungen. Will deshalb bei den Kosten ansetzen statt bei ihrer Verteilung, mit mehr Eigenverantwortung der Patienten und mehr Steuerungsmöglichkeiten für die Krankenkassen."
+        },
+        {
+          "speaker": "B",
+          "text": "Sieht das Hauptproblem in der ungleichen Verteilung der Prämienlast, die vor allem den Mittelstand und Familien trifft. Will diese gezielt entlasten und unnötige Mehrleistungen bremsen, ohne Kranke mit Leistungskürzungen zu bestrafen."
+        },
+        {
+          "speaker": "C",
+          "text": "Sieht Fehlanreize auf beiden Seiten: Patienten verlangen oft mehr Medizin als nötig, und Spitäler erbringen unnötige Leistungen. Will mehr Vernunft bei Patienten und Ärzteschaft und dass Unterschiede in der Behandlungsqualität Konsequenzen haben."
+        },
+        {
+          "speaker": "D",
+          "text": "Hält die Gesundheitskosten, gemessen an der Gesamtwirtschaft, für stabil und für ein reiches Land nicht übermässig hoch. Will die Probleme bei den Strukturen lösen, etwa mit einer Spitalplanung über die Kantonsgrenzen hinweg."
+        },
+        {
+          "speaker": "E",
+          "text": "Sieht die Haushalte zunehmend belastet, weil die Prämien schneller steigen als die Löhne und gleiche Versicherungen unterschiedlich viel kosten. Will, dass sich die soziale Krankenversicherung auf das Nötige beschränkt."
         }
       ],
       "transition": {

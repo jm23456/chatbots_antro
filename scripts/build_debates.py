@@ -24,7 +24,8 @@ import json, os, sys, itertools, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from debate_content import (OPENINGS, TOPICS, POOL_R2, NEW_AT, WATCH_ORDER,
                             POOL_ORDER, LEAD_SPEAKER, LEAD, LABELS, ACKS,
-                            PARTY_ORDER, STANCE_ORDER, STANCES)
+                            PARTY_ORDER, STANCE_ORDER, STANCES,
+                            SUMMARY_INTRO, POSITIONS)
 
 DIR = "src/debate_text"
 BASE = json.load(open(f"{DIR}/debate1_firstperson_watch.json", encoding="utf-8"))
@@ -163,13 +164,11 @@ def build(ling, role):
                                      lambda t, var: f"r2_{t}")
 
     nodes["r1_trunk"] = trunk
+    # End screen: one position summary per speaker (same in every condition). Kept out of
+    # "utterances" so it is not counted or shown as a debate turn.
     nodes["summary"] = {"round": 5, "kind": "summary", "utterances": [{
-        "uid": "sum_001", "arg_id": "summary", "speaker": "SYSTEM",
-        "text": "Die Debatte zeigt, dass die steigenden Krankenkassenprämien mehrere Ursachen haben:",
-        "points": ["Mengenausweitung bei medizinischen Behandlungen",
-                   "Fehlanreize und fehlende Qualitätsanreize im Gesundheitssystem",
-                   "Ungleiche Verteilung der Gesundheitskosten"],
-        "conclusion": "Einfache Lösungen gibt es nicht. Reformen müssen Kosten, Qualität und Verantwortung gemeinsam berücksichtigen."}],
+        "uid": "sum_001", "arg_id": "summary", "speaker": "SYSTEM", "text": SUMMARY_INTRO}],
+        "positions": [{"speaker": k, "text": POSITIONS[k]} for k in sorted(POSITIONS)],
         "transition": {"type": "end"}}
     d["nodes"] = {k: nodes[k] for k in
                   ["intro", "r1_trunk"] + sorted(k for k in nodes if k not in ("intro", "r1_trunk", "summary")) + ["summary"]}

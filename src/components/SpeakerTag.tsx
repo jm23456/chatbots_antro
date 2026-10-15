@@ -1,10 +1,12 @@
 import React from "react";
 import { useLanguage } from "../hooks/useLanguage";
 import type { TranslationKey } from "../i18n/translations";
+import SpeakerIcon from "./SpeakerIcon";
 
 type Color = "red" | "yellow" | "green" | "turquoise" | "blue" | "gray";
 
 // Colour name of each speaker; the same words are the options of the Qualtrics ranking.
+// The shape icon in front of it is fixed per colour (see SpeakerIcon).
 const COLOR_KEYS: Record<Color, TranslationKey> = {
   red: "colorRed",
   blue: "colorBlue",
@@ -20,7 +22,7 @@ const SpeakerTag: React.FC<{ color: string }> = ({ color }) => {
   if (!key) return null;
   return (
     <span className="speaker-tag">
-      <span className={`speaker-tag-dot speaker-${color}`} aria-hidden="true" />
+      <SpeakerIcon color={color} className={`speaker-tag-dot speaker-${color}`} />
       {t(key)}
     </span>
   );

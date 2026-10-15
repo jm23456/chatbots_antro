@@ -248,3 +248,34 @@ STANCES = {
     pv="Diese Sorge ist berechtigt. Niemand soll aus Kostengründen auf eine nötige Behandlung verzichten. Über unnötige Behandlungen offen zu reden, bleibt trotzdem richtig."),
   }),
 }
+
+# ---------------------------------------------------------------------------
+# End screen: each speaker's position after the debate, to support the post-debate
+# preference ranking. Deliberately IDENTICAL in all six conditions:
+#   - third person and impersonal, so neither linguistic style leaks into it
+#     (no lived experience, no "ich"), and no roles/professions are named;
+#   - built only from points each speaker makes in the openings and in topics t1-t3,
+#     stated generally enough to stay true for every steering path (t4/t5 add nothing new);
+#   - same two-sentence frame for everyone (problem -> what they want), similar length,
+#     no evaluative wording, so no speaker reads as stronger or weaker.
+# Order follows the speaker order of the intro (A-E).
+# ---------------------------------------------------------------------------
+SUMMARY_INTRO = "So lassen sich die Positionen der KI-Teilnehmenden nach der Debatte zusammenfassen:"
+
+POSITIONS = {
+ "A": "Sieht die Ursache der steigenden Prämien in der wachsenden Menge an Behandlungen. "
+      "Will deshalb bei den Kosten ansetzen statt bei ihrer Verteilung, mit mehr Eigenverantwortung "
+      "der Patienten und mehr Steuerungsmöglichkeiten für die Krankenkassen.",
+ "B": "Sieht das Hauptproblem in der ungleichen Verteilung der Prämienlast, die vor allem den Mittelstand "
+      "und Familien trifft. Will diese gezielt entlasten und unnötige Mehrleistungen bremsen, ohne Kranke "
+      "mit Leistungskürzungen zu bestrafen.",
+ "C": "Sieht Fehlanreize auf beiden Seiten: Patienten verlangen oft mehr Medizin als nötig, und Spitäler "
+      "erbringen unnötige Leistungen. Will mehr Vernunft bei Patienten und Ärzteschaft und dass Unterschiede "
+      "in der Behandlungsqualität Konsequenzen haben.",
+ "D": "Hält die Gesundheitskosten, gemessen an der Gesamtwirtschaft, für stabil und für ein reiches Land "
+      "nicht übermässig hoch. Will die Probleme bei den Strukturen lösen, etwa mit einer Spitalplanung "
+      "über die Kantonsgrenzen hinweg.",
+ "E": "Sieht die Haushalte zunehmend belastet, weil die Prämien schneller steigen als die Löhne und gleiche "
+      "Versicherungen unterschiedlich viel kosten. Will, dass sich die soziale Krankenversicherung auf das "
+      "Nötige beschränkt.",
+}

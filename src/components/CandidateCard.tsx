@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import SpeakerIcon from "./SpeakerIcon";
 
 interface CandidateCardProps {
   color: "yellow" | "green" | "red" | "blue" | "turquoise" | "gray";
@@ -63,7 +64,9 @@ const CandidateCard: React.FC<CandidateCardProps> = ({
           )}
         </div>
       )}
-      <div className={`candidate-dot candidate-${color}`}></div>
+      <div className={`candidate-dot candidate-${color}`}>
+        <SpeakerIcon color={color} />
+      </div>
 
       {/* <div className={`candidate-robot ${hasMic ? "has-mic" : ""}`}>
         <div className={`argument-box argument-${color}`}>

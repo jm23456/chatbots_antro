@@ -70,7 +70,7 @@ de: {
     goToSummary: "Zur Zusammenfassung",
     summaryPopup1: "Runde 3 von 3 ●●●",
     summaryPopup2: "Debatte beendet",
-    summaryPopup3: "Hier können Sie die wichtigsten Stichpunkte der Debatte nochmals durchlesen",
+    summaryPopup3: "Hier können Sie die Positionen aller KI-Teilnehmenden nochmals nachlesen.",
     skipSpeaker: "Nachricht direkt anzeigen"
 },
 en: {

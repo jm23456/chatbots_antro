@@ -627,9 +627,14 @@ body {
   transform: translateY(-50%);
   width: clamp(32px, 9cqw, 44px);
   height: clamp(32px, 9cqw, 44px);
-  border-radius: 50%;
-  background: var(--c);
-  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* the speaker's shape icon (SpeakerIcon) fills the dot */
+.candidate-dot .speaker-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--c);
 }
 
 .candidate-card.speaking .candidate-dot::before {
@@ -1011,6 +1016,12 @@ body {
   max-width: 1000px;
   margin: 0 auto;
   padding: clamp(0.25rem, 2cqw, 1.5rem) 0 clamp(0.5rem, 2cqw, 1.5rem);
+  /* like the debate chat: the card takes the height that is left and scrolls inside,
+     so the five positions never make the page taller than the Qualtrics frame */
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .summary-header {
@@ -1018,6 +1029,11 @@ body {
 }
 
 .summary-card {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   max-width: 800px;
   margin: 0 auto;
   padding: clamp(1rem, 3cqw, 1.75rem) 0 clamp(0.25rem, 1cqw, 0.75rem);
@@ -1028,6 +1044,10 @@ body {
 }
 
 .summary-body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  width: 100%;
   max-width: 600px;
   margin: 0 auto;
   padding: 0 32px;
@@ -1060,6 +1080,26 @@ body {
 
 .summary-conclusion {
   margin-top: 1.25rem;
+}
+
+/* one position per speaker, marked like the chat messages (left rule in the speaker colour) */
+.summary-body ul.summary-positions {
+  border-top: none;
+  margin: 0.75rem 0 1rem;
+}
+.summary-body li.summary-position {
+  display: block;
+  padding: 0.6rem 0 0.6rem 0.85rem;
+  margin-bottom: 0.6rem;
+  border-bottom: none;
+  border-left: 3px solid var(--c, var(--ink-3));
+}
+.summary-body li.summary-position::before {
+  content: none;
+}
+.summary-body li.summary-position p {
+  margin: 0;
+  color: var(--ink);
 }
 
 /* Iframe-specific refinements. The app card is the query container. */
@@ -1151,7 +1191,7 @@ body {
   }
 }
 
-/* SPEAKER TAG - colour dot + colour name, the same words as the Qualtrics ranking options */
+/* SPEAKER TAG - shape icon in the speaker colour + colour name, the same words as the Qualtrics ranking options */
 .speaker-tag {
   display: flex;
   align-items: center;
@@ -1165,10 +1205,9 @@ body {
 }
 .speaker-tag-dot {
   flex-shrink: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--c, var(--ink-3));
+  width: 14px;
+  height: 14px;
+  fill: var(--c, var(--ink-3));
 }
 .speaker-tag-dot.speaker-red       { --c: var(--red); }
 .speaker-tag-dot.speaker-yellow    { --c: var(--yellow); }
