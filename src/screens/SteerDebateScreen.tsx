@@ -459,7 +459,7 @@ const SteerDebateScreen: React.FC<SteerDebateScreenProps> = ({
             </div>
             <div className="modal-body">
               <p className="modal-text">Nun beginnt die Debatte. Zwischendurch werden Sie gefragt, in welche Richtung die Debatte weitergehen soll. Wählen Sie dann die Option, die Sie am meisten interessiert.</p>
-              <p className="modal-text">Nach der Debatte werden Sie die Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
+              <p className="modal-text">Nach der Debatte werden Sie die KI-Teilnehmenden erneut nach Ihrer Präferenz ordnen.</p>
               <p className="modal-text">Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
               <button className="start-debate-btn" onClick= { onStart }>Debatte starten</button>
             </div>

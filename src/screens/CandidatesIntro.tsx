@@ -119,7 +119,7 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
             </div>
             <div className="modal-body">
               {/* <p className="modal-text"></p> */}
-              <p className="modal-text">Als Nächstes stellen sich die fünf Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden nach Ihrer Präferenz zu ordnen.</p>
+              <p className="modal-text">Als Nächstes stellen sich die fünf KI-Teilnehmenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf Teilnehmenden nach Ihrer Präferenz zu ordnen.</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Fortfahren</button>
           </div>
         </div>
