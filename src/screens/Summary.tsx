@@ -119,7 +119,7 @@ const handleNext = () => {
               <p className="modal-title">Anleitung</p>
             </div>
             <div className="modal-body">
-              <p className="modal-text">Bitte fahren Sie nun in Qualtrics fort.</p>
+              <p className="modal-text">Klicken Sie auf die Schaltfläche "Nächste Seite" in der rechten Ecke.</p>
               {/* <p className="modal-text">debateFirstStep</p> */}
           </div>
         </div>
@@ -128,7 +128,7 @@ const handleNext = () => {
 
       </section>
       <header className="screen-header summary-header">
-        <h1 className="subtitle">Positionen der KI-Teilnehmenden</h1>
+        <h1 className="subtitle">Positionen der KI-Debattierenden</h1>
         {/* <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p> */}
       </header>
 
