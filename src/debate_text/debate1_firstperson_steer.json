@@ -148,19 +148,19 @@
           {
             "option_id": "r1_o1",
             "topic_id": "t1",
-            "label": "Über die Verteilung der Prämienlast sprechen",
+            "label": "Verteilung der Prämienlast",
             "next": "r2_t1"
           },
           {
             "option_id": "r1_o2",
             "topic_id": "t2",
-            "label": "Den Kostentreibern im System nachgehen",
+            "label": "Kostentreiber im System",
             "next": "r2_t2"
           },
           {
             "option_id": "r1_o3",
             "topic_id": "t3",
-            "label": "Über unnötige Behandlungen sprechen",
+            "label": "Unnötige Behandlungen",
             "next": "r2_t3"
           }
         ]
@@ -211,19 +211,19 @@
           {
             "option_id": "r2_o1",
             "topic_id": "t2",
-            "label": "Fragen, warum so viel in Spitäler und Geräte investiert wird",
+            "label": "Investitionen in Spitäler und Geräte",
             "next": "r3_t1_t2"
           },
           {
             "option_id": "r2_o2",
             "topic_id": "t3",
-            "label": "Fragen, ob zu viele Untersuchungen gemacht werden",
+            "label": "Zu viele Untersuchungen",
             "next": "r3_t1_t3"
           },
           {
             "option_id": "r2_o3",
             "topic_id": "t4",
-            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "label": "Notfall und Hausarztversorgung",
             "next": "r3_t1_t4"
           }
         ]
@@ -274,19 +274,19 @@
           {
             "option_id": "r2_o1",
             "topic_id": "t1",
-            "label": "Doch zuerst fragen, wer die Prämien am stärksten spürt",
+            "label": "Prämienlast für Familien und Mittelstand",
             "next": "r3_t2_t1"
           },
           {
             "option_id": "r2_o2",
             "topic_id": "t3",
-            "label": "Fragen, ob zu viele Untersuchungen gemacht werden",
+            "label": "Zu viele Untersuchungen",
             "next": "r3_t2_t3"
           },
           {
             "option_id": "r2_o3",
             "topic_id": "t4",
-            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "label": "Notfall und Hausarztversorgung",
             "next": "r3_t2_t4"
           }
         ]
@@ -337,19 +337,19 @@
           {
             "option_id": "r2_o1",
             "topic_id": "t1",
-            "label": "Doch zuerst fragen, wer die Prämien am stärksten spürt",
+            "label": "Prämienlast für Familien und Mittelstand",
             "next": "r3_t3_t1"
           },
           {
             "option_id": "r2_o2",
             "topic_id": "t2",
-            "label": "Fragen, warum so viel in Spitäler und Geräte investiert wird",
+            "label": "Investitionen in Spitäler und Geräte",
             "next": "r3_t3_t2"
           },
           {
             "option_id": "r2_o3",
             "topic_id": "t4",
-            "label": "Über Notfall und Hausarztversorgung sprechen",
+            "label": "Notfall und Hausarztversorgung",
             "next": "r3_t3_t4"
           }
         ]
@@ -400,19 +400,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t3",
-            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "label": "Grenzen der Medizin",
             "next": "r4_t3_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -463,19 +463,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t2",
-            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "label": "Kosten in den Spitälern",
             "next": "r4_t2_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -526,19 +526,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t2",
-            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "label": "Kosten in den Spitälern",
             "next": "r4_t2_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t3",
-            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "label": "Grenzen der Medizin",
             "next": "r4_t3_v3"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -589,19 +589,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t3",
-            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "label": "Grenzen der Medizin",
             "next": "r4_t3_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -652,19 +652,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t1",
-            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "label": "Belastung der Haushalte",
             "next": "r4_t1_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -715,19 +715,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t1",
-            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "label": "Belastung der Haushalte",
             "next": "r4_t1_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t3",
-            "label": "Zum Schluss über die Grenzen der Medizin sprechen",
+            "label": "Grenzen der Medizin",
             "next": "r4_t3_v3"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -778,19 +778,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t2",
-            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "label": "Kosten in den Spitälern",
             "next": "r4_t2_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -841,19 +841,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t1",
-            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "label": "Belastung der Haushalte",
             "next": "r4_t1_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t4",
-            "label": "Fragen, ob die Grundversorgung noch stimmt",
+            "label": "Grundversorgung",
             "next": "r4_t4_v2"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]
@@ -904,19 +904,19 @@
           {
             "option_id": "r3_o1",
             "topic_id": "t1",
-            "label": "Zum Schluss über die Belastung der Haushalte sprechen",
+            "label": "Belastung der Haushalte",
             "next": "r4_t1_v3"
           },
           {
             "option_id": "r3_o2",
             "topic_id": "t2",
-            "label": "Zum Schluss über die Kosten in den Spitälern sprechen",
+            "label": "Kosten in den Spitälern",
             "next": "r4_t2_v3"
           },
           {
             "option_id": "r3_o3",
             "topic_id": "t5",
-            "label": "Über Tarife und die Blockade in der Politik sprechen",
+            "label": "Tarife und politische Blockade",
             "next": "r4_t5_v1"
           }
         ]

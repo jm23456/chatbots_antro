@@ -137,21 +137,21 @@ LEAD = {
             pv="Damit stellt sich die Frage, die im klinischen Alltag am meisten beschäftigt: Wie viel Medizin ist genug?"),
 }
 
-# Steering labels, one per (topic, appearance). Reworded each time so a
-# carried-forward option does not read as the same option again.
+# Steering labels, one per (topic, appearance): the bare topic, no verb. Reworded
+# each time so a carried-forward option does not read as the same option again.
 LABELS = {
- ("t1", 1): dict(steer="Über die Verteilung der Prämienlast sprechen"),
- ("t1", 2): dict(steer="Doch zuerst fragen, wer die Prämien am stärksten spürt"),
- ("t1", 3): dict(steer="Zum Schluss über die Belastung der Haushalte sprechen"),
- ("t2", 1): dict(steer="Den Kostentreibern im System nachgehen"),
- ("t2", 2): dict(steer="Fragen, warum so viel in Spitäler und Geräte investiert wird"),
- ("t2", 3): dict(steer="Zum Schluss über die Kosten in den Spitälern sprechen"),
- ("t3", 1): dict(steer="Über unnötige Behandlungen sprechen"),
- ("t3", 2): dict(steer="Fragen, ob zu viele Untersuchungen gemacht werden"),
- ("t3", 3): dict(steer="Zum Schluss über die Grenzen der Medizin sprechen"),
- ("t4", 1): dict(steer="Über Notfall und Hausarztversorgung sprechen"),
- ("t4", 2): dict(steer="Fragen, ob die Grundversorgung noch stimmt"),
- ("t5", 1): dict(steer="Über Tarife und die Blockade in der Politik sprechen"),
+ ("t1", 1): dict(steer="Verteilung der Prämienlast"),
+ ("t1", 2): dict(steer="Prämienlast für Familien und Mittelstand"),
+ ("t1", 3): dict(steer="Belastung der Haushalte"),
+ ("t2", 1): dict(steer="Kostentreiber im System"),
+ ("t2", 2): dict(steer="Investitionen in Spitäler und Geräte"),
+ ("t2", 3): dict(steer="Kosten in den Spitälern"),
+ ("t3", 1): dict(steer="Unnötige Behandlungen"),
+ ("t3", 2): dict(steer="Zu viele Untersuchungen"),
+ ("t3", 3): dict(steer="Grenzen der Medizin"),
+ ("t4", 1): dict(steer="Notfall und Hausarztversorgung"),
+ ("t4", 2): dict(steer="Grundversorgung"),
+ ("t5", 1): dict(steer="Tarife und politische Blockade"),
 }
 
 # The lead bot picks the chosen framing up, so the choice visibly lands.
