@@ -103,7 +103,6 @@ const handleNext = () => {
               <div className="modal-body">
                 {/* <p style={{fontSize: "18px", marginTop: "10px", fontWeight: "600"}}>{t("summaryPopup2")}</p> */}
                 <p className="modal-text">{t("summaryPopup3")}</p>
-                <p className="modal-text">Fahren Sie anschliessend in Qualtrics fort.</p>
                 <button className="start-debate-btn" onClick={() => {setShowPopup(false); handleNext();} }>
                   Fortfahren
                 </button>
@@ -128,7 +127,7 @@ const handleNext = () => {
 
       </section>
       <header className="screen-header summary-header">
-        <h1 className="subtitle">Positionen der KI-Debattierenden</h1>
+        <h1 className="subtitle">Zusammenfassung der Positionen der KI-Bots</h1>
         {/* <p className="intro-text" style={{marginTop: "0px"}}>{t("debatedShowed")}</p> */}
       </header>
 

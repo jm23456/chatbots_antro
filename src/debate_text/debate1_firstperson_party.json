@@ -3,8 +3,8 @@
   "debate_id": "arena_healthcare_premiums",
   "title": "Steigende Krankenkassenprämien",
   "subtitle": "Warum die Kosten steigen und was das für uns bedeutet",
-  "introduction": "In dieser Applikation treffen Sie auf fünf KI-Debattierende, die jeweils unterschiedliche Ansichten vertreten.",
-  "first_step": "Im ersten Schritt lernen Sie die Positionen der KI-Debattierenden kennen. Ordnen Sie sie dann danach, wie nahe sie Ihrer persönlichen Ansicht kommen.",
+  "introduction": "In dieser Applikation treffen Sie auf fünf KI-Bots, die jeweils unterschiedliche Ansichten vertreten.",
+  "first_step": "Im ersten Schritt lernen Sie die Positionen der KI-Bots kennen. Ordnen Sie sie dann danach, wie nahe sie Ihrer persönlichen Ansicht kommen.",
   "source": "Arena SRF 07.10.2016 – Prämienschock (gekürzt: Einführung + 4 Runden)",
   "language": "de",
   "condition": {
@@ -729,7 +729,7 @@
           "uid": "sum_001",
           "arg_id": "summary",
           "speaker": "SYSTEM",
-          "text": "So lassen sich die Positionen der KI-Debattierenden nach der Debatte zusammenfassen:"
+          "text": "So lassen sich die Positionen der KI-Bots nach der Debatte zusammenfassen:"
         }
       ],
       "positions": [

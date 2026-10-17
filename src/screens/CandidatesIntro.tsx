@@ -108,7 +108,7 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
   return (
     <div className="screen">
       <header className="screen-header">
-        <p className="subtitle">Vorstellung der KI-Debattierenden</p>
+        <p className="subtitle">Vorstellung der KI-Bots</p>
       </header>
 
         {showStartOverlay && (
@@ -119,7 +119,10 @@ const CandidatesIntro: React.FC<CandidatesIntroProps> = ({ onNext, onExit }) => 
             </div>
             <div className="modal-body">
               {/* <p className="modal-text"></p> */}
-              <p className="modal-text">Als Nächstes stellen sich die fünf KI-Debattierenden der Debatte nacheinander mit ihrer Position vor. Klicken Sie auf «Starten» und danach jeweils auf «Fortfahren». Anschliessend werden Sie gebeten, die fünf KI-Debattierenden nach Ihrer Präferenz zu ordnen.</p>
+              <p className="modal-text">Bevor wir mit der Debatte beginnen, stellen sich die fünf KI-Bots der Debatte nacheinander vor. Die Vorstellung beinhaltet deren individuelle Position.</p>
+              <p className="modal-text">Klicken Sie auf «Starten» und anschliessend auf «Fortfahren».</p>
+              <p className="modal-text"><strong>Wichtig: Beachten Sie, dass Sie lediglich auf «Fortfahren» klicken können. Lesen Sie sich deshalb alle Vorstellungen gründlich durch, bevor Sie zum nächsten KI-Bot-Statement klicken.</strong></p>
+              <p className="modal-text">Nach der Vorstellung werden Sie gebeten, die fünf KI-Bots nach Präferenz zu ordnen.</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Fortfahren</button>
           </div>
         </div>

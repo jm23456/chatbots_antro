@@ -260,7 +260,7 @@ STANCES = {
 #     no evaluative wording, so no speaker reads as stronger or weaker.
 # Order follows the speaker order of the intro (A-E).
 # ---------------------------------------------------------------------------
-SUMMARY_INTRO = "So lassen sich die Positionen der KI-Debattierenden nach der Debatte zusammenfassen:"
+SUMMARY_INTRO = "So lassen sich die Positionen der KI-Bots nach der Debatte zusammenfassen:"
 
 POSITIONS = {
  "A": "Sieht die Ursache der steigenden Prämien in der wachsenden Menge an Behandlungen. "

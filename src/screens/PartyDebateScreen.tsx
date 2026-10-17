@@ -453,9 +453,9 @@ const PartyDebateScreen: React.FC<PartyDebateScreenProps> = ({
               <p className="modal-title">{t("ready")}</p>
             </div>
             <div className="modal-body">
-              <p className="modal-text">Nun beginnt die Debatte. Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die Option, die am besten auf Sie zutrifft.</p>
-              <p className="modal-text">Nach der Debatte werden Sie die KI-Debattierenden erneut nach Ihrer Präferenz ordnen.</p>
-              <p className="modal-text">Mit der Leertaste und dem Fortschrittsknopf können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+              <p className="modal-text">Zwischendurch werden Sie nach Ihrer Meinung gefragt. Wählen Sie dann die Option, die am besten auf Sie zutrifft.</p>
+              <p className="modal-text">Mithilfe der Leertaste und des «Fortfahren»-Buttons können Sie Schritt für Schritt durch die Debatte navigieren.</p>
+              <p className="modal-text">Wichtiger Hinweis: Nach Abschluss der Debatte werden Sie gebeten, noch einmal die KI-Bots auf Basis Ihrer persönlichen Präferenz zu ordnen.</p>
               <button className="start-debate-btn" onClick={onStart}>Debatte starten</button>
             </div>
           </div>

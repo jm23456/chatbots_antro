@@ -125,7 +125,7 @@ const TopicIntro: React.FC<TopicIntroProps> = ({ onNext, onExit }) => {
             </div>
             <div className="modal-body">
               {/* <p className="modal-text"></p> */}
-              <p className="modal-text">Auf dieser Seite lesen Sie eine kurze Einführung in das Thema der Debatte. Bitte lesen Sie den Text aufmerksam durch und klicken Sie danach auf «Fortfahren».</p>
+              <p className="modal-text">Im Folgenden erhalten Sie eine kurze Einführung in das Thema der Debatte, die Sie als Teilnehmer*in verfolgen. Bitte lesen Sie diese aufmerksam durch, bevor Sie anschliessend auf «Fortfahren» klicken.</p>
               <button className="start-debate-btn" onClick= { () => setShowStartOverlay(false) }>Starten</button>
           </div>
         </div>
